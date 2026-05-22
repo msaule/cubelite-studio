@@ -16,6 +16,7 @@ class GenerationProfile:
     simplify_after_generation: bool
     target_face_count: int
     guidance_scale: float
+    top_p: float | None
     use_kv_cache: bool
     decoder_chunk_size: int
     inference_dtype: str
@@ -38,6 +39,7 @@ PROFILES: dict[str, GenerationProfile] = {
         simplify_after_generation=True,
         target_face_count=10000,
         guidance_scale=0.0,
+        top_p=None,
         use_kv_cache=False,
         decoder_chunk_size=20000,
         inference_dtype="bfloat16",
@@ -55,6 +57,7 @@ PROFILES: dict[str, GenerationProfile] = {
         simplify_after_generation=True,
         target_face_count=10000,
         guidance_scale=0.0,
+        top_p=None,
         use_kv_cache=False,
         decoder_chunk_size=20000,
         inference_dtype="bfloat16",
@@ -72,6 +75,7 @@ PROFILES: dict[str, GenerationProfile] = {
         simplify_after_generation=True,
         target_face_count=16000,
         guidance_scale=1.0,
+        top_p=0.9,
         use_kv_cache=False,
         decoder_chunk_size=60000,
         inference_dtype="bfloat16",
@@ -89,6 +93,7 @@ PROFILES: dict[str, GenerationProfile] = {
         simplify_after_generation=True,
         target_face_count=18000,
         guidance_scale=1.0,
+        top_p=0.9,
         use_kv_cache=False,
         decoder_chunk_size=30000,
         inference_dtype="bfloat16",
@@ -106,6 +111,7 @@ PROFILES: dict[str, GenerationProfile] = {
         simplify_after_generation=False,
         target_face_count=30000,
         guidance_scale=3.0,
+        top_p=0.9,
         use_kv_cache=True,
         decoder_chunk_size=100000,
         inference_dtype="bfloat16",
@@ -123,6 +129,7 @@ PROFILES: dict[str, GenerationProfile] = {
         simplify_after_generation=True,
         target_face_count=8000,
         guidance_scale=0.0,
+        top_p=None,
         use_kv_cache=False,
         decoder_chunk_size=20000,
         inference_dtype="bfloat16",

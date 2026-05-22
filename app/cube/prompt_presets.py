@@ -1,4 +1,7 @@
 PROMPT_PRESETS = [
+    "a purple crystal blade fantasy sword with green gem accents, single object, ornate hilt, sharp blade, game asset",
+    "a stylized low poly wooden row boat, single object, curved hull, simple game asset, clean silhouette",
+    "lowpoly paper craft victorian rabbit, single character figurine, stylized toy, long ears, seated pose, clean silhouette",
     "low poly fantasy sword, single object",
     "simple wooden crate, game asset",
     "cartoon mushroom house, small prop",
@@ -20,9 +23,10 @@ PROMPT_GUIDANCE = {
     "good": "low poly wooden treasure chest, single object, simple geometry, game asset",
     "bad": "huge ultra detailed medieval city with thousands of buildings and tiny decorations",
     "notes": [
+        "Object-specific prompts from Cube's own examples can outperform generic Roblox checklist prompts.",
         "Single objects tend to work better than full scenes.",
         "Low-poly prompts are better aligned with Roblox import workflows.",
         "Simple geometry is easier to simplify, inspect, and import.",
-        "Avoid extremely detailed prompts when using low-VRAM mode.",
+        "Run multiple candidates for portfolio-quality assets; technical success is not the same as semantic quality.",
     ],
 }

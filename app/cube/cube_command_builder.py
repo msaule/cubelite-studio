@@ -61,6 +61,8 @@ def build_cubelite_low_vram_template(repo_path: Path, python_executable: str | N
         "{decoder_chunk_size}",
         "--guidance-scale",
         "{guidance_scale}",
+        "--top-p",
+        "{top_p}",
         "--dtype",
         "{inference_dtype}",
     ]
@@ -119,6 +121,7 @@ def build_cube_command(
         "{fp16}": "true" if profile.use_fp16 else "false",
         "{cpu_offload}": "true" if profile.enable_cpu_offload else "false",
         "{guidance_scale}": str(profile.guidance_scale),
+        "{top_p}": "0.0" if profile.top_p is None else str(profile.top_p),
         "{use_kv_cache}": "true" if profile.use_kv_cache else "false",
         "{decoder_chunk_size}": str(profile.decoder_chunk_size),
         "{inference_dtype}": profile.inference_dtype,

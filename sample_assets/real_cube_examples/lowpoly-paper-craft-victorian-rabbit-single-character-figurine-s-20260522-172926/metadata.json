@@ -1,0 +1,67 @@
+{
+  "prompt": "lowpoly paper craft victorian rabbit, single character figurine, stylized toy, long ears, seated pose, clean silhouette",
+  "timestamp": "2026-05-22T17:29:26.909228+00:00",
+  "profile": "6GB Quality",
+  "dry_run": false,
+  "cubelite_studio_version": "0.1.0",
+  "cube_3d_repo_path_used": "...\\official_cube\\cube",
+  "model_weights_path_used": "...\\cube\\model_weights",
+  "gpu_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "total_vram_gb": 6.0,
+  "peak_vram_gb": 4.053,
+  "generation_time_seconds": 380.1787969999714,
+  "original_mesh_stats": {
+    "success": true,
+    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\lowpoly-paper-craft-victorian-rabbit-single-character-figurine-s-20260522-172304\\output.obj",
+    "file_size_mb": 0.424,
+    "vertex_count": 6402,
+    "face_count": 12800,
+    "triangle_count": 12800,
+    "bounding_box_dimensions": [
+      0.944,
+      1.8747,
+      1.1909
+    ],
+    "center_point": [
+      -0.0156,
+      -0.2859,
+      0.0238
+    ],
+    "approximate_scale": 1.8747,
+    "has_normals": false,
+    "has_materials": false,
+    "watertight": true,
+    "object_count": 1,
+    "warnings": [],
+    "error_message": ""
+  },
+  "optimized_mesh_stats": {
+    "success": true,
+    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\lowpoly-paper-craft-victorian-rabbit-single-character-figurine-s-20260522-172304\\optimized.obj",
+    "file_size_mb": 1.184,
+    "vertex_count": 6402,
+    "face_count": 12800,
+    "triangle_count": 12800,
+    "bounding_box_dimensions": [
+      0.944,
+      1.8747,
+      1.1909
+    ],
+    "center_point": [
+      -0.0156,
+      -0.2859,
+      0.0238
+    ],
+    "approximate_scale": 1.8747,
+    "has_normals": true,
+    "has_materials": false,
+    "watertight": true,
+    "object_count": 1,
+    "warnings": [],
+    "error_message": ""
+  },
+  "readiness_score": 100,
+  "readiness_status": "Ready to test",
+  "warnings": [],
+  "license_note": "This asset was generated using a workflow around Roblox Cube 3D. Users are responsible for following the original Cube 3D license and Roblox platform rules."
+}

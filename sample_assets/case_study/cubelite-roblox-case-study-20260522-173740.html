@@ -25,12 +25,12 @@
   <h1>CubeLite Studio</h1>
   <p class="lead">Low-VRAM Cube 3D workflow and benchmarking toolkit for Roblox creators. Real Cube 3D v0.5 generations completed on a 6GB RTX 4050 Laptop GPU after the official high-memory path hit CUDA out-of-memory.</p>
   <section class="metrics">
-    <div class="metric"><span>Real assets</span><strong>8</strong></div>
+    <div class="metric"><span>Real assets</span><strong>11</strong></div>
     <div class="metric"><span>Peak VRAM</span><strong>4.17 GB</strong></div>
-    <div class="metric"><span>Avg seconds</span><strong>237.79</strong></div>
-    <div class="metric"><span>Avg readiness</span><strong>94.00/100</strong></div>
+    <div class="metric"><span>Avg seconds</span><strong>279.96</strong></div>
+    <div class="metric"><span>Avg readiness</span><strong>95.64/100</strong></div>
   </section>
-  <img class="contact" src="cubelite-real-results-contact-sheet-20260522-155355.png" alt="CubeLite real output contact sheet">
+  <img class="contact" src="cubelite-real-results-contact-sheet-20260522-173740.png" alt="CubeLite real output contact sheet">
   <h2>Generated Evidence</h2>
   <section class="grid"><article class="card">
   <img src="../real_cube_examples/low-poly-closed-wooden-treasure-chest-single-object-blocky-game-6gb-quality-simplified-20260522-155153/preview.png" alt="low poly closed wooden treasure chest, single object, blocky game asset, simple geometry, flat lid, metal bands 6gb quality simplified">
@@ -52,6 +52,20 @@
   <p class="muted">Benchmark Safe · Ready to test</p>
   <p>Showcase · 218.43 sec · 3.93 GB VRAM · 2856 tris · 92/100</p>
   <p class="muted">Strong low-poly cube prop with clean silhouette and practical triangle count.</p>
+</article>
+<article class="card">
+  <img src="../real_cube_examples/a-purple-crystal-blade-fantasy-sword-with-green-gem-accents-sing-20260522-172231/preview.png" alt="a purple crystal blade fantasy sword with green gem accents, single object, ornate hilt, sharp blade, game asset">
+  <h3>a purple crystal blade fantasy sword with green gem accents, single obje</h3>
+  <p class="muted">6GB Quality · Ready to test</p>
+  <p>Showcase · 375.87 sec · 4.05 GB VRAM · 1880 tris · 100/100</p>
+  <p class="muted">Best prompt-adherence result so far: readable fantasy sword silhouette with ornate hilt, 1,880 triangles, readiness 100/100.</p>
+</article>
+<article class="card">
+  <img src="../real_cube_examples/a-stylized-low-poly-wooden-row-boat-single-object-curved-hull-si-20260522-173614/preview.png" alt="a stylized low poly wooden row boat, single object, curved hull, simple game asset, clean silhouette">
+  <h3>a stylized low poly wooden row boat, single object, curved hull, simple </h3>
+  <p class="muted">6GB Quality · Ready to test</p>
+  <p>Usable baseline · 378.98 sec · 4.05 GB VRAM · 9220 tris · 100/100</p>
+  <p class="muted">Readable curved hull and good Roblox-readiness metrics, though it needs better presentation angles and likely manual cleanup.</p>
 </article>
 <article class="card">
   <img src="../real_cube_examples/low-poly-fantasy-sword-single-object-20260522-140606/preview.png" alt="low poly fantasy sword, single object">
@@ -87,6 +101,13 @@
   <p class="muted">Low VRAM BBox Test · Ready to test</p>
   <p>Failure case · n/a · n/a · 472 tris · 100/100</p>
   <p class="muted">Useful negative example: the benchmark succeeded technically, but the mesh did not produce a good shield.</p>
+</article>
+<article class="card">
+  <img src="../real_cube_examples/lowpoly-paper-craft-victorian-rabbit-single-character-figurine-s-20260522-172926/preview.png" alt="lowpoly paper craft victorian rabbit, single character figurine, stylized toy, long ears, seated pose, clean silhouette">
+  <h3>lowpoly paper craft victorian rabbit, single character figurine, stylize</h3>
+  <p class="muted">6GB Quality · Ready to test</p>
+  <p>Failure case · 380.18 sec · 4.05 GB VRAM · 12800 tris · 100/100</p>
+  <p class="muted">Technically successful but semantically messy; kept as evidence for why CubeLite needs candidate search and curation.</p>
 </article></section>
   <h2>Low-VRAM Method</h2>
   <p>CubeLite stages CLIP, GPT, and shape decoding separately; keeps CLIP on CPU; disables guidance for the lowest profile; avoids KV cache; unloads GPT before decoding; and decodes with <code>bfloat16</code> plus smaller chunks.</p>

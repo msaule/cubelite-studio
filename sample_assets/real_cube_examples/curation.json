@@ -14,29 +14,44 @@
     "quality_label": "Showcase",
     "reviewer_note": "Strong low-poly cube prop with clean silhouette and practical triangle count."
   },
-  "low-poly-fantasy-sword-single-object-20260522-140606": {
+  "a-purple-crystal-blade-fantasy-sword-with-green-gem-accents-sing-20260522-172231": {
     "showcase_rank": 4,
+    "quality_label": "Showcase",
+    "reviewer_note": "Best prompt-adherence result so far: readable fantasy sword silhouette with ornate hilt, 1,880 triangles, readiness 100/100."
+  },
+  "a-stylized-low-poly-wooden-row-boat-single-object-curved-hull-si-20260522-173614": {
+    "showcase_rank": 5,
+    "quality_label": "Usable baseline",
+    "reviewer_note": "Readable curved hull and good Roblox-readiness metrics, though it needs better presentation angles and likely manual cleanup."
+  },
+  "low-poly-fantasy-sword-single-object-20260522-140606": {
+    "showcase_rank": 6,
     "quality_label": "Usable baseline",
     "reviewer_note": "Simple recognizable silhouette; useful as a low-cost benchmark asset."
   },
   "stylized-potion-bottle-single-object-20260522-141325": {
-    "showcase_rank": 7,
+    "showcase_rank": 10,
     "quality_label": "Mixed",
     "reviewer_note": "Completed under the low-VRAM path, but the shape is more bulb-like than a polished bottle."
   },
   "low-poly-wooden-barrel-single-object-simple-cylinder-shape-flat-20260522-150828": {
-    "showcase_rank": 5,
+    "showcase_rank": 8,
     "quality_label": "Mixed",
     "reviewer_note": "Technically successful and compact, but the silhouette reads more like an irregular cylinder than a polished barrel."
   },
   "low-poly-wooden-sign-post-single-object-blocky-rectangular-sign-20260522-150413": {
-    "showcase_rank": 6,
+    "showcase_rank": 9,
     "quality_label": "Mixed",
     "reviewer_note": "Technically successful and lightweight, but the silhouette is not yet a clean sign-post asset."
   },
   "bbox-low-poly-medieval-round-shield-with-simple-raised-rim-20260522-142905": {
-    "showcase_rank": 8,
+    "showcase_rank": 11,
     "quality_label": "Failure case",
     "reviewer_note": "Useful negative example: the benchmark succeeded technically, but the mesh did not produce a good shield."
+  },
+  "lowpoly-paper-craft-victorian-rabbit-single-character-figurine-s-20260522-172926": {
+    "showcase_rank": 12,
+    "quality_label": "Failure case",
+    "reviewer_note": "Technically successful but semantically messy; kept as evidence for why CubeLite needs candidate search and curation."
   }
 }

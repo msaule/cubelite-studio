@@ -1,0 +1,67 @@
+{
+  "prompt": "a purple crystal blade fantasy sword with green gem accents, single object, ornate hilt, sharp blade, game asset",
+  "timestamp": "2026-05-22T17:22:31.942338+00:00",
+  "profile": "6GB Quality",
+  "dry_run": false,
+  "cubelite_studio_version": "0.1.0",
+  "cube_3d_repo_path_used": "...\\official_cube\\cube",
+  "model_weights_path_used": "...\\cube\\model_weights",
+  "gpu_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "total_vram_gb": 6.0,
+  "peak_vram_gb": 4.053,
+  "generation_time_seconds": 375.86891149997246,
+  "original_mesh_stats": {
+    "success": true,
+    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\a-purple-crystal-blade-fantasy-sword-with-green-gem-accents-sing-20260522-171613\\output.obj",
+    "file_size_mb": 0.058,
+    "vertex_count": 946,
+    "face_count": 1880,
+    "triangle_count": 1880,
+    "bounding_box_dimensions": [
+      0.3471,
+      1.8723,
+      0.2071
+    ],
+    "center_point": [
+      -0.0177,
+      -0.0942,
+      -0.0164
+    ],
+    "approximate_scale": 1.8723,
+    "has_normals": false,
+    "has_materials": false,
+    "watertight": true,
+    "object_count": 1,
+    "warnings": [],
+    "error_message": ""
+  },
+  "optimized_mesh_stats": {
+    "success": true,
+    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\a-purple-crystal-blade-fantasy-sword-with-green-gem-accents-sing-20260522-171613\\optimized.obj",
+    "file_size_mb": 0.165,
+    "vertex_count": 946,
+    "face_count": 1880,
+    "triangle_count": 1880,
+    "bounding_box_dimensions": [
+      0.3471,
+      1.8723,
+      0.2071
+    ],
+    "center_point": [
+      -0.0177,
+      -0.0942,
+      -0.0164
+    ],
+    "approximate_scale": 1.8723,
+    "has_normals": true,
+    "has_materials": false,
+    "watertight": true,
+    "object_count": 1,
+    "warnings": [],
+    "error_message": ""
+  },
+  "readiness_score": 100,
+  "readiness_status": "Ready to test",
+  "warnings": [],
+  "license_note": "This asset was generated using a workflow around Roblox Cube 3D. Users are responsible for following the original Cube 3D license and Roblox platform rules."
+}

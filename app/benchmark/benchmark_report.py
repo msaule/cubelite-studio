@@ -59,7 +59,7 @@ def generate_technical_report(
     profile_lines = [
         f"- {profile.name}: target {profile.target_vram_gb} GB, resolution base {profile.resolution_base}, "
         f"fp16={profile.use_fp16}, cpu_offload={profile.enable_cpu_offload}, fast_inference={profile.fast_inference}, "
-        f"guidance_scale={profile.guidance_scale}, kv_cache={profile.use_kv_cache}, decoder_chunk_size={profile.decoder_chunk_size}"
+        f"guidance_scale={profile.guidance_scale}, top_p={profile.top_p}, kv_cache={profile.use_kv_cache}, decoder_chunk_size={profile.decoder_chunk_size}"
         for profile in profiles
     ]
     prompt_lines = [f"- {prompt}" for prompt in prompts]

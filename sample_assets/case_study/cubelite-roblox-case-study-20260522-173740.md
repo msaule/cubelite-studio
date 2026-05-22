@@ -1,6 +1,6 @@
 # CubeLite Studio: Roblox Cube 3D Consumer-GPU Case Study
 
-![Real CubeLite outputs](cubelite-real-results-contact-sheet-20260522-155355.png)
+![Real CubeLite outputs](cubelite-real-results-contact-sheet-20260522-173740.png)
 
 ## Executive Summary
 
@@ -17,12 +17,12 @@ The technical result is practical: on an RTX 4050 Laptop GPU with 6GB VRAM, the 
 
 ## Real Local Evidence
 
-- Real generated assets discovered: 8
-- Assets with mesh/readiness data: 8
-- Average generation time: 237.79 seconds
+- Real generated assets discovered: 11
+- Assets with mesh/readiness data: 11
+- Average generation time: 279.96 seconds
 - Peak observed low-VRAM run: 4.17 GB
-- Average triangle count: 2577.00
-- Average readiness score: 94.00/100
+- Average triangle count: 4046.91
+- Average readiness score: 95.64/100
 
 Readiness is a Roblox-import heuristic, not a semantic quality score. The quality column separates showcase outputs from mixed or failed shapes.
 
@@ -31,11 +31,14 @@ Readiness is a Roblox-import heuristic, not a semantic quality score. The qualit
 | low poly closed wooden treasure chest, single object, blocky game asset, simple geometry, flat lid, metal bands 6gb quality simplified | 6GB Quality + Simplified 12k | 379.5 | 4.17 | 12000 | 100 | Showcase | Ready to test |
 | low poly closed wooden treasure chest, single object, blocky game asset, simple geometry, flat lid, metal bands | Low VRAM | 210.6 | 3.93 | 1812 | 92 | Showcase | Ready to test |
 | simple wooden crate, game asset | Benchmark Safe | 218.4 | 3.93 | 2856 | 92 | Showcase | Ready to test |
+| a purple crystal blade fantasy sword with green gem accents, single object, ornate hilt, sharp blade, game asset | 6GB Quality | 375.9 | 4.05 | 1880 | 100 | Showcase | Ready to test |
+| a stylized low poly wooden row boat, single object, curved hull, simple game asset, clean silhouette | 6GB Quality | 379.0 | 4.05 | 9220 | 100 | Usable baseline | Ready to test |
 | low poly fantasy sword, single object | Benchmark Safe | 217.1 | 3.93 | 156 | 92 | Usable baseline | Ready to test |
 | low poly wooden barrel, single object, simple cylinder shape, flat top and bottom, game prop, clean silhouette | Low VRAM | 209.7 | 4.05 | 1672 | 92 | Mixed | Ready to test |
 | low poly wooden sign post, single object, blocky rectangular sign board, simple game prop, clean silhouette | Low VRAM | 209.9 | 4.05 | 680 | 92 | Mixed | Ready to test |
 | stylized potion bottle, single object | Benchmark Safe | 219.2 | 3.93 | 968 | 92 | Mixed | Ready to test |
 | bbox low poly medieval round shield with simple raised rim | Low VRAM BBox Test |  |  | 472 | 100 | Failure case | Ready to test |
+| lowpoly paper craft victorian rabbit, single character figurine, stylized toy, long ears, seated pose, clean silhouette | 6GB Quality | 380.2 | 4.05 | 12800 | 100 | Failure case | Ready to test |
 
 ## Low-VRAM Engineering Approach
 

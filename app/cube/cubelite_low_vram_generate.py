@@ -237,10 +237,11 @@ def main() -> None:
     bbox = tuple(args.bounding_box_xyz) if args.bounding_box_xyz else None
     if bbox is not None:
         bbox = tuple(normalize_bbox(bbox))
+    top_p = args.top_p if args.top_p and args.top_p > 0 else None
 
-    print(f"CubeLite low-VRAM generator using device={device}, dtype={dtype}, guidance_scale={args.guidance_scale}, kv_cache={args.use_kv_cache}")
+    print(f"CubeLite low-VRAM generator using device={device}, dtype={dtype}, guidance_scale={args.guidance_scale}, top_p={top_p}, kv_cache={args.use_kv_cache}")
     engine = LowVRAMCubeEngine(args.config_path, args.gpt_ckpt_path, args.shape_ckpt_path, device, dtype)
-    output_ids = engine.generate_tokens(args.prompt, args.guidance_scale, args.use_kv_cache, args.top_p, bbox)
+    output_ids = engine.generate_tokens(args.prompt, args.guidance_scale, args.use_kv_cache, top_p, bbox)
     output_ids_cpu = output_ids.detach().cpu()
     engine.unload_gpt()
     mesh_v_f = engine.decode_shape(output_ids_cpu.to(device), args.resolution_base, args.chunk_size)
