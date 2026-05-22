@@ -18,4 +18,12 @@ Benchmark summary:
 - peak observed VRAM: about 3.93GB
 - readiness scores: 92/100 for each benchmark output
 
+Additional quality pass:
+
+- `low-poly-closed-wooden-treasure-chest-single-object-blocky-game-20260522-143807`
+- generation time: about 211 seconds
+- peak observed VRAM: about 3.93GB
+- triangle count: 1,812
+- readiness score: 92/100
+
 These outputs are examples, not official Roblox validation. Users remain responsible for following the original Cube 3D license and Roblox platform rules.

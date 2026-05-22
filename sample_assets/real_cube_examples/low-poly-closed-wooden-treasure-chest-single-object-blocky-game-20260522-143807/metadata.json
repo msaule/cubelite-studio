@@ -1,0 +1,69 @@
+{
+  "prompt": "low poly closed wooden treasure chest, single object, blocky game asset, simple geometry, flat lid, metal bands",
+  "timestamp": "2026-05-22T14:38:07.221746+00:00",
+  "profile": "Low VRAM",
+  "dry_run": false,
+  "cubelite_studio_version": "0.1.0",
+  "cube_3d_repo_path_used": "...\\official_cube\\cube",
+  "model_weights_path_used": "...\\cube\\model_weights",
+  "gpu_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "total_vram_gb": 6.0,
+  "peak_vram_gb": 3.932,
+  "generation_time_seconds": 210.60744779999368,
+  "original_mesh_stats": {
+    "success": true,
+    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-closed-wooden-treasure-chest-single-object-blocky-game-20260522-143434\\output.obj",
+    "file_size_mb": 0.055,
+    "vertex_count": 908,
+    "face_count": 1812,
+    "triangle_count": 1812,
+    "bounding_box_dimensions": [
+      1.8529,
+      1.3588,
+      1.3588
+    ],
+    "center_point": [
+      -0.0614,
+      -0.1084,
+      -0.0804
+    ],
+    "approximate_scale": 1.8529,
+    "has_normals": false,
+    "has_materials": false,
+    "watertight": true,
+    "object_count": 1,
+    "warnings": [],
+    "error_message": ""
+  },
+  "optimized_mesh_stats": {
+    "success": true,
+    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-closed-wooden-treasure-chest-single-object-blocky-game-20260522-143434\\optimized.obj",
+    "file_size_mb": 0.055,
+    "vertex_count": 908,
+    "face_count": 1812,
+    "triangle_count": 1812,
+    "bounding_box_dimensions": [
+      1.8529,
+      1.3588,
+      1.3588
+    ],
+    "center_point": [
+      -0.0614,
+      -0.1084,
+      -0.0804
+    ],
+    "approximate_scale": 1.8529,
+    "has_normals": false,
+    "has_materials": false,
+    "watertight": true,
+    "object_count": 1,
+    "warnings": [],
+    "error_message": ""
+  },
+  "readiness_score": 92,
+  "readiness_status": "Ready to test",
+  "warnings": [
+    "Simplification was requested but did not complete."
+  ],
+  "license_note": "This asset was generated using a workflow around Roblox Cube 3D. Users are responsible for following the original Cube 3D license and Roblox platform rules."
+}

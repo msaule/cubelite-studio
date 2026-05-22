@@ -15,6 +15,7 @@ from app.config import (
     load_settings,
     save_settings,
 )
+from app.cube.cube_command_builder import write_cubelite_low_vram_template
 from app.cube.low_vram_profiles import PROFILES, get_profile
 from app.cube.model_manager import validate_cube_install
 from app.cube.prompt_presets import PROMPT_GUIDANCE, PROMPT_PRESETS
@@ -179,8 +180,17 @@ def results_tab(st) -> None:
     st.subheader("Recent Exports")
     for path in list_recent_files(EXPORTS_DIR, ("metadata.json",), limit=8):
         with st.expander(str(path.parent)):
+            preview = path.parent / "preview.png"
+            if preview.exists():
+                st.image(str(preview), caption=path.parent.name)
             try:
-                st.json(json.loads(path.read_text(encoding="utf-8")))
+                metadata = json.loads(path.read_text(encoding="utf-8"))
+                cols = st.columns(4)
+                cols[0].metric("Profile", metadata.get("profile", "n/a"))
+                cols[1].metric("Readiness", metadata.get("readiness_score", "n/a"))
+                cols[2].metric("Peak VRAM", metadata.get("peak_vram_gb", "n/a"))
+                cols[3].metric("Seconds", metadata.get("generation_time_seconds", "n/a"))
+                st.json(metadata)
             except Exception:
                 st.write(str(path))
     st.subheader("Recent Benchmark Reports")
@@ -228,13 +238,24 @@ def settings_tab(st, settings: AppSettings) -> AppSettings:
     st.write(f"Command template found: {status.command_template_exists}")
     for message in status.messages:
         st.info(message)
+    if status.repo_exists:
+        overwrite = st.checkbox("Overwrite existing CubeLite command template", value=False)
+        if st.button("Write CubeLite low-VRAM command template"):
+            try:
+                template_path = write_cubelite_low_vram_template(
+                    updated.cube_repo_path,
+                    overwrite=overwrite,
+                )
+                st.success(f"Command template written: {template_path}")
+            except Exception as exc:
+                st.error(str(exc))
     with st.expander("Real generation command template"):
         st.markdown(
-            """Create `cubelite_cube_command.json` in your local Cube 3D repo when you are ready to connect a specific Cube release:
+            """CubeLite can write `cubelite_cube_command.json` into your local Cube 3D repo. The generated template calls CubeLite's staged low-VRAM runner:
 
 ```json
 {
-  "command": ["{python}", "generate.py", "--prompt", "{prompt}", "--weights", "{weights_path}", "--output_dir", "{output_dir}"]
+  "command": ["<cube-python>", "<cubelite>/app/cube/cubelite_low_vram_generate.py", "--prompt", "{prompt}", "--output-dir", "{output_dir}"]
 }
 ```
 

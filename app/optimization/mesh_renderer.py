@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from textwrap import wrap
 
 
 @dataclass
@@ -65,7 +66,8 @@ def render_mesh_preview(input_obj: Path, output_png: Path, title: str = "CubeLit
         ax.view_init(elev=28, azim=38)
         ax.set_box_aspect((1, 1, 1))
         ax.set_axis_off()
-        ax.set_title(title[:80], fontsize=10, pad=8)
+        wrapped_title = "\n".join(wrap(title, width=48, max_lines=2, placeholder="..."))
+        ax.set_title(wrapped_title, fontsize=9, pad=8)
         fig.patch.set_facecolor("#f7f8fa")
         ax.set_facecolor("#f7f8fa")
         plt.tight_layout(pad=0.2)

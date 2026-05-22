@@ -93,6 +93,8 @@ CubeLite does not guess unstable Cube CLI flags. For real generation, add a `cub
 
 Only placeholders present in that template are passed to Cube 3D. Profile settings that are not supported by your Cube install remain CubeLite workflow notes or post-processing settings.
 
+For the tested Roblox Cube 3D v0.5 setup, the Settings tab can write a CubeLite low-VRAM command template automatically. That template calls `app/cube/cubelite_low_vram_generate.py`, uses the Cube Python environment when it can detect one, and points at the official local weights selected in Settings.
+
 ## Model Weights Note
 
 CubeLite Studio does not download, bundle, host, or redistribute Cube 3D model weights. Download model files only from official sources and follow the original Cube 3D license.
