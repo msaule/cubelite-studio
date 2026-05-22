@@ -20,6 +20,7 @@ class GenerationProfile:
     use_kv_cache: bool
     decoder_chunk_size: int
     inference_dtype: str
+    random_seed: int | None
     notes: str
 
     def to_dict(self) -> dict[str, object]:
@@ -43,6 +44,7 @@ PROFILES: dict[str, GenerationProfile] = {
         use_kv_cache=False,
         decoder_chunk_size=20000,
         inference_dtype="bfloat16",
+        random_seed=0,
         notes="Auto is resolved before generation and does not imply unsupported Cube 3D flags.",
     ),
     "Low VRAM": GenerationProfile(
@@ -61,6 +63,7 @@ PROFILES: dict[str, GenerationProfile] = {
         use_kv_cache=False,
         decoder_chunk_size=20000,
         inference_dtype="bfloat16",
+        random_seed=0,
         notes="Prioritizes completing generations over detail. Preview generation is disabled by default.",
     ),
     "6GB Quality": GenerationProfile(
@@ -79,6 +82,7 @@ PROFILES: dict[str, GenerationProfile] = {
         use_kv_cache=False,
         decoder_chunk_size=60000,
         inference_dtype="bfloat16",
+        random_seed=0,
         notes="Experimental quality push for 6GB cards. It may OOM on busy systems; close GPU-heavy apps before running.",
     ),
     "Balanced": GenerationProfile(
@@ -97,6 +101,7 @@ PROFILES: dict[str, GenerationProfile] = {
         use_kv_cache=False,
         decoder_chunk_size=30000,
         inference_dtype="bfloat16",
+        random_seed=0,
         notes="Designed for practical creator iteration with moderate mesh complexity.",
     ),
     "High Quality": GenerationProfile(
@@ -115,6 +120,7 @@ PROFILES: dict[str, GenerationProfile] = {
         use_kv_cache=True,
         decoder_chunk_size=100000,
         inference_dtype="bfloat16",
+        random_seed=0,
         notes="Fast inference may require more VRAM and depends on the detected Cube 3D installation.",
     ),
     "Benchmark Safe": GenerationProfile(
@@ -133,6 +139,7 @@ PROFILES: dict[str, GenerationProfile] = {
         use_kv_cache=False,
         decoder_chunk_size=20000,
         inference_dtype="bfloat16",
+        random_seed=0,
         notes="Useful for measuring the lowest workable path before trying heavier settings.",
     ),
 }

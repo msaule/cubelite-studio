@@ -14,7 +14,7 @@ from app.cube.cube_runner import generate_mesh
 from app.cube.low_vram_profiles import GenerationProfile, get_profile
 from app.optimization.export_packager import create_export_package
 from app.optimization.mesh_analyzer import analyze_mesh
-from app.optimization.mesh_renderer import render_mesh_preview
+from app.optimization.mesh_renderer import render_mesh_inspection_plate, render_mesh_preview
 from app.optimization.mesh_simplifier import simplify_mesh
 from app.optimization.roblox_checker import check_roblox_readiness
 from app.system.gpu_detector import detect_system
@@ -72,6 +72,7 @@ def run_single_pipeline(
     optimized_obj = None
     simplification_result = None
     render_result = None
+    inspection_result = None
     simplify_requested = profile.simplify_after_generation if simplify is None else simplify
     if obj_path and stats and stats.success and simplify_requested:
         optimized_obj = Path(generation.output_dir) / "optimized.obj"
@@ -86,6 +87,12 @@ def run_single_pipeline(
         render_result = render_mesh_preview(render_source, preview_path, title=prompt)
         if not render_result.success:
             preview_path = None
+        inspection_plate_path = Path(generation.output_dir) / "inspection_plate.png"
+        inspection_result = render_mesh_inspection_plate(render_source, inspection_plate_path, title=prompt)
+        if not inspection_result.success:
+            inspection_plate_path = None
+    else:
+        inspection_plate_path = None
 
     readiness = check_roblox_readiness(
         optimized_stats if optimized_stats and optimized_stats.success else (stats or analyze_mesh(Path("__missing__.obj"))),
@@ -104,6 +111,7 @@ def run_single_pipeline(
             optimized_obj=optimized_obj if optimized_obj and optimized_obj.exists() else None,
             optimized_stats=optimized_stats,
             preview_path=preview_path,
+            inspection_plate_path=inspection_plate_path,
             dry_run=dry_run,
             cube_repo_path=cube_repo_path,
             model_weights_path=model_weights_path,
@@ -131,6 +139,7 @@ def run_single_pipeline(
         "optimized_mesh_stats": optimized_stats.to_dict() if optimized_stats else None,
         "simplification": simplification_result.to_dict() if simplification_result else None,
         "render": render_result.to_dict() if render_result else None,
+        "inspection_render": inspection_result.to_dict() if inspection_result else None,
         "readiness": readiness.to_dict(),
         "export": export_result.__dict__ if export_result else None,
     }

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import gc
 import os
+import random
 import sys
 from pathlib import Path
 from typing import Optional, Tuple
@@ -224,12 +225,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--use-kv-cache", action="store_true")
     parser.add_argument("--force-cpu", action="store_true")
     parser.add_argument("--dtype", choices=["bfloat16", "float16", "float32"], default="bfloat16")
+    parser.add_argument("--seed", type=int, default=0)
     return parser.parse_args()
 
 
 def main() -> None:
     os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
     args = parse_args()
+    if args.seed is not None:
+        random.seed(args.seed)
+        torch.manual_seed(args.seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(args.seed)
     device = select_device(force_cpu=args.force_cpu)
     dtype = {"bfloat16": torch.bfloat16, "float16": torch.float16, "float32": torch.float32}[args.dtype]
     if device.type == "cpu":
@@ -239,7 +246,7 @@ def main() -> None:
         bbox = tuple(normalize_bbox(bbox))
     top_p = args.top_p if args.top_p and args.top_p > 0 else None
 
-    print(f"CubeLite low-VRAM generator using device={device}, dtype={dtype}, guidance_scale={args.guidance_scale}, top_p={top_p}, kv_cache={args.use_kv_cache}")
+    print(f"CubeLite low-VRAM generator using device={device}, dtype={dtype}, guidance_scale={args.guidance_scale}, top_p={top_p}, kv_cache={args.use_kv_cache}, seed={args.seed}")
     engine = LowVRAMCubeEngine(args.config_path, args.gpt_ckpt_path, args.shape_ckpt_path, device, dtype)
     output_ids = engine.generate_tokens(args.prompt, args.guidance_scale, args.use_kv_cache, top_p, bbox)
     output_ids_cpu = output_ids.detach().cpu()

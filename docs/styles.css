@@ -172,6 +172,11 @@ main {
   margin-bottom: 28px;
 }
 
+.section-heading p:not(.eyebrow) {
+  margin: 12px 0 0;
+  color: var(--muted);
+}
+
 .section h2 {
   margin: 0;
   font-size: clamp(30px, 4vw, 46px);
@@ -212,6 +217,10 @@ figcaption {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
+}
+
+.asset-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .asset-card {
@@ -307,6 +316,7 @@ footer {
   .hero,
   .split,
   .asset-grid,
+  .asset-grid.two,
   .workflow-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -329,6 +339,7 @@ footer {
   .hero,
   .split,
   .asset-grid,
+  .asset-grid.two,
   .workflow-grid,
   .hero-metrics,
   .metric-grid {

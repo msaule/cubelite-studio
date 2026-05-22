@@ -1,0 +1,19 @@
+CubeLite Studio Roblox Import Notes
+
+This is a heuristic readiness check, not an official Roblox validation.
+Score: 100/100
+Status: Ready to test
+
+The mesh looks reasonable for a first Roblox Studio import test.
+
+Warnings:
+- None
+
+Recommended actions:
+- Ready to test in Roblox Studio.
+
+Prompt improvement tips:
+- Try adding 'low poly'.
+- Generate a single object, not a full scene.
+- Avoid 'ultra detailed' for low-VRAM workflows.
+- Check scale inside Roblox Studio after import.

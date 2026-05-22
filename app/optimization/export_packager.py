@@ -35,6 +35,7 @@ def create_export_package(
     optimized_obj: Path | None = None,
     optimized_stats: MeshStats | None = None,
     preview_path: Path | None = None,
+    inspection_plate_path: Path | None = None,
     benchmark_summary: dict[str, object] | None = None,
     dry_run: bool = False,
     cube_repo_path: Path | str | None = None,
@@ -54,6 +55,7 @@ def create_export_package(
         copied_original = copy_if_exists(original_obj, export_dir / "original.obj")
         copied_optimized = copy_if_exists(optimized_obj, export_dir / "optimized.obj") if optimized_obj else None
         copy_if_exists(preview_path, export_dir / (preview_path.name if preview_path else "preview.png"))
+        copied_plate = copy_if_exists(inspection_plate_path, export_dir / "inspection_plate.png") if inspection_plate_path else None
 
         original_stats = original_stats or analyze_mesh(original_obj)
         if copied_optimized and optimized_stats is None:
@@ -73,6 +75,7 @@ def create_export_package(
             "generation_time_seconds": generation_time_seconds,
             "original_mesh_stats": original_stats.to_dict(),
             "optimized_mesh_stats": optimized_stats.to_dict() if optimized_stats else None,
+            "inspection_plate": str(copied_plate.name) if copied_plate else None,
             "readiness_score": readiness.score,
             "readiness_status": readiness.status,
             "warnings": readiness.warnings,

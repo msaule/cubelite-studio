@@ -122,10 +122,15 @@ def generate_tab(st, settings: AppSettings) -> None:
             st.warning(warning)
         export = details.get("export") or {}
         render = details.get("render") or {}
+        inspection_render = details.get("inspection_render") or {}
         if render.get("success") and render.get("output_path"):
             st.image(render["output_path"], caption="Local mesh preview")
         elif render.get("error_message"):
             st.info(render["error_message"])
+        if inspection_render.get("success") and inspection_render.get("output_path"):
+            st.image(inspection_render["output_path"], caption="Multi-angle geometry inspection")
+        elif inspection_render.get("error_message"):
+            st.info(inspection_render["error_message"])
         if export.get("export_dir"):
             st.success(f"Export folder: {export['export_dir']}")
         with st.expander("Logs"):

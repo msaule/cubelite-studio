@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CubeLite Studio Case Study</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; color: #172033; background: #f6f7f9; }
+    main { max-width: 1120px; margin: 0 auto; padding: 40px 24px; }
+    h1 { font-size: 38px; margin-bottom: 8px; }
+    h2 { margin-top: 34px; }
+    .lead { font-size: 18px; line-height: 1.5; max-width: 860px; }
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0; }
+    .metric, .card { background: white; border: 1px solid #dde1e7; border-radius: 8px; padding: 16px; }
+    .metric strong { display: block; font-size: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .card img { width: 100%; border-radius: 6px; border: 1px solid #e1e5eb; background: #f7f8fa; }
+    .contact { width: 100%; border-radius: 8px; border: 1px solid #dde1e7; background: white; }
+    .muted { color: #596579; }
+    code { background: #eceff3; padding: 2px 5px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="muted">Independent technical case study. Not affiliated with Roblox Corporation.</p>
+  <h1>CubeLite Studio</h1>
+  <p class="lead">Low-VRAM Cube 3D workflow and benchmarking toolkit for Roblox creators. Real Cube 3D v0.5 generations completed on a 6GB RTX 4050 Laptop GPU after the official high-memory path hit CUDA out-of-memory.</p>
+  <section class="metrics">
+    <div class="metric"><span>Real assets</span><strong>13</strong></div>
+    <div class="metric"><span>Peak VRAM</span><strong>4.17 GB</strong></div>
+    <div class="metric"><span>Avg seconds</span><strong>297.80</strong></div>
+    <div class="metric"><span>Avg readiness</span><strong>96.31/100</strong></div>
+  </section>
+  <img class="contact" src="cubelite-real-results-contact-sheet-20260522-184646.png" alt="CubeLite real output contact sheet">
+  <h2>Generated Evidence</h2>
+  <section class="grid"><article class="card">
+  <img src="../sample_assets/real_cube_examples/low-poly-stylized-wooden-treasure-chest-game-prop-closed-lid-chu-20260522-183017/preview.png" alt="low poly stylized wooden treasure chest game prop, closed lid, chunky silhouette, simple metal bands, single object">
+  <h3>low poly stylized wooden treasure chest game prop, closed lid, chunky si</h3>
+  <p class="muted">6GB Quality · Ready to test</p>
+  <p>Current best candidate · 387.31 sec · 4.16 GB VRAM · 14000 tris · 100/100</p>
+  <p class="muted">Seeded 6GB Quality candidate search result. Cleaner from multiple angles than the earlier chest, simplified to 14,000 triangles, 4.16GB peak VRAM, readiness 100/100.</p>
+</article>
+<article class="card">
+  <img src="../sample_assets/real_cube_examples/low-poly-wooden-crate-game-prop-square-box-shape-beveled-corners-20260522-184528/preview.png" alt="low poly wooden crate game prop, square box shape, beveled corners, simple plank grooves, single object">
+  <h3>low poly wooden crate game prop, square box shape, beveled corners, simp</h3>
+  <p class="muted">6GB Quality · Ready to test</p>
+  <p>Current best candidate · 386.73 sec · 4.16 GB VRAM · 12000 tris · 100/100</p>
+  <p class="muted">Seeded 6GB Quality candidate search result. Clear cube prop with readable panel grooves from several angles, simplified to 12,000 triangles, 4.16GB peak VRAM, readiness 100/100.</p>
+</article>
+<article class="card">
+  <img src="../sample_assets/real_cube_examples/low-poly-closed-wooden-treasure-chest-single-object-blocky-game-6gb-quality-simplified-20260522-155153/preview.png" alt="low poly closed wooden treasure chest, single object, blocky game asset, simple geometry, flat lid, metal bands 6gb quality simplified">
+  <h3>low poly closed wooden treasure chest, single object, blocky game asset,</h3>
+  <p class="muted">6GB Quality + Simplified 12k · Ready to test</p>
+  <p>Previous best candidate · 379.54 sec · 4.17 GB VRAM · 12000 tris · 100/100</p>
+  <p class="muted">Earlier 6GB Quality result: generated a denser chest, then pymeshlab reduced it from 32,036 to 12,000 triangles with readiness 100/100.</p>
+</article>
+<article class="card">
+  <img src="../sample_assets/real_cube_examples/low-poly-closed-wooden-treasure-chest-single-object-blocky-game-20260522-143807/preview.png" alt="low poly closed wooden treasure chest, single object, blocky game asset, simple geometry, flat lid, metal bands">
+  <h3>low poly closed wooden treasure chest, single object, blocky game asset,</h3>
+  <p class="muted">Low VRAM · Ready to test</p>
+  <p>Usable baseline · 210.61 sec · 3.93 GB VRAM · 1812 tris · 92/100</p>
+  <p class="muted">Best current proof point: recognizable blocky Roblox-style prop, 1,812 triangles, 3.93GB peak VRAM.</p>
+</article>
+<article class="card">
+  <img src="../sample_assets/real_cube_examples/simple-wooden-crate-game-asset-20260522-140945/preview.png" alt="simple wooden crate, game asset">
+  <h3>simple wooden crate, game asset</h3>
+  <p class="muted">Benchmark Safe · Ready to test</p>
+  <p>Previous baseline · 218.43 sec · 3.93 GB VRAM · 2856 tris · 92/100</p>
+  <p class="muted">Older low-poly cube prop with practical triangle count, now replaced by a stronger seeded crate candidate.</p>
+</article>
+<article class="card">
+  <img src="../sample_assets/real_cube_examples/a-purple-crystal-blade-fantasy-sword-with-green-gem-accents-sing-20260522-172231/preview.png" alt="a purple crystal blade fantasy sword with green gem accents, single object, ornate hilt, sharp blade, game asset">
+  <h3>a purple crystal blade fantasy sword with green gem accents, single obje</h3>
+  <p class="muted">6GB Quality · Ready to test</p>
+  <p>Promising candidate · 375.87 sec · 4.05 GB VRAM · 1880 tris · 100/100</p>
+  <p class="muted">Best prompt-adherence result so far: readable fantasy sword silhouette with ornate hilt, 1,880 triangles, readiness 100/100.</p>
+</article>
+<article class="card">
+  <img src="../sample_assets/real_cube_examples/a-stylized-low-poly-wooden-row-boat-single-object-curved-hull-si-20260522-173614/preview.png" alt="a stylized low poly wooden row boat, single object, curved hull, simple game asset, clean silhouette">
+  <h3>a stylized low poly wooden row boat, single object, curved hull, simple </h3>
+  <p class="muted">6GB Quality · Ready to test</p>
+  <p>Usable baseline · 378.98 sec · 4.05 GB VRAM · 9220 tris · 100/100</p>
+  <p class="muted">Readable curved hull and good Roblox-readiness metrics, though it needs better presentation angles and likely manual cleanup.</p>
+</article>
+<article class="card">
+  <img src="../sample_assets/real_cube_examples/low-poly-fantasy-sword-single-object-20260522-140606/preview.png" alt="low poly fantasy sword, single object">
+  <h3>low poly fantasy sword, single object</h3>
+  <p class="muted">Benchmark Safe · Ready to test</p>
+  <p>Usable baseline · 217.08 sec · 3.93 GB VRAM · 156 tris · 92/100</p>
+  <p class="muted">Simple recognizable silhouette; useful as a low-cost benchmark asset.</p>
+</article>
+<article class="card">
+  <img src="../sample_assets/real_cube_examples/low-poly-wooden-barrel-single-object-simple-cylinder-shape-flat-20260522-150828/preview.png" alt="low poly wooden barrel, single object, simple cylinder shape, flat top and bottom, game prop, clean silhouette">
+  <h3>low poly wooden barrel, single object, simple cylinder shape, flat top a</h3>
+  <p class="muted">Low VRAM · Ready to test</p>
+  <p>Mixed · 209.73 sec · 4.05 GB VRAM · 1672 tris · 92/100</p>
+  <p class="muted">Technically successful and compact, but the silhouette reads more like an irregular cylinder than a polished barrel.</p>
+</article>
+<article class="card">
+  <img src="../sample_assets/real_cube_examples/low-poly-wooden-sign-post-single-object-blocky-rectangular-sign-20260522-150413/preview.png" alt="low poly wooden sign post, single object, blocky rectangular sign board, simple game prop, clean silhouette">
+  <h3>low poly wooden sign post, single object, blocky rectangular sign board,</h3>
+  <p class="muted">Low VRAM · Ready to test</p>
+  <p>Mixed · 209.89 sec · 4.05 GB VRAM · 680 tris · 92/100</p>
+  <p class="muted">Technically successful and lightweight, but the silhouette is not yet a clean sign-post asset.</p>
+</article>
+<article class="card">
+  <img src="../sample_assets/real_cube_examples/stylized-potion-bottle-single-object-20260522-141325/preview.png" alt="stylized potion bottle, single object">
+  <h3>stylized potion bottle, single object</h3>
+  <p class="muted">Benchmark Safe · Ready to test</p>
+  <p>Mixed · 219.25 sec · 3.93 GB VRAM · 968 tris · 92/100</p>
+  <p class="muted">Completed under the low-VRAM path, but the shape is more bulb-like than a polished bottle.</p>
+</article>
+<article class="card">
+  <img src="../sample_assets/real_cube_examples/bbox-low-poly-medieval-round-shield-with-simple-raised-rim-20260522-142905/preview.png" alt="bbox low poly medieval round shield with simple raised rim">
+  <h3>bbox low poly medieval round shield with simple raised rim</h3>
+  <p class="muted">Low VRAM BBox Test · Ready to test</p>
+  <p>Failure case · n/a · n/a · 472 tris · 100/100</p>
+  <p class="muted">Useful negative example: the benchmark succeeded technically, but the mesh did not produce a good shield.</p>
+</article>
+<article class="card">
+  <img src="../sample_assets/real_cube_examples/lowpoly-paper-craft-victorian-rabbit-single-character-figurine-s-20260522-172926/preview.png" alt="lowpoly paper craft victorian rabbit, single character figurine, stylized toy, long ears, seated pose, clean silhouette">
+  <h3>lowpoly paper craft victorian rabbit, single character figurine, stylize</h3>
+  <p class="muted">6GB Quality · Ready to test</p>
+  <p>Failure case · 380.18 sec · 4.05 GB VRAM · 12800 tris · 100/100</p>
+  <p class="muted">Technically successful but semantically messy; kept as evidence for why CubeLite needs candidate search and curation.</p>
+</article></section>
+  <h2>Low-VRAM Method</h2>
+  <p>CubeLite stages CLIP, GPT, and shape decoding separately; keeps CLIP on CPU; disables guidance for the lowest profile; avoids KV cache; unloads GPT before decoding; and decodes with <code>bfloat16</code> plus smaller chunks.</p>
+  <h2>Honest Limitations</h2>
+  <p>This is not official Roblox validation. The outputs are geometry-first, prompt-sensitive, and should be tested inside Roblox Studio. CubeLite does not redistribute Cube 3D weights.</p>
+</main>
+</body>
+</html>

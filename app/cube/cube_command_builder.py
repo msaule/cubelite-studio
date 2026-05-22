@@ -65,6 +65,8 @@ def build_cubelite_low_vram_template(repo_path: Path, python_executable: str | N
         "{top_p}",
         "--dtype",
         "{inference_dtype}",
+        "--seed",
+        "{random_seed}",
     ]
 
 
@@ -125,6 +127,7 @@ def build_cube_command(
         "{use_kv_cache}": "true" if profile.use_kv_cache else "false",
         "{decoder_chunk_size}": str(profile.decoder_chunk_size),
         "{inference_dtype}": profile.inference_dtype,
+        "{random_seed}": "0" if profile.random_seed is None else str(profile.random_seed),
     }
     command: list[str] = []
     for part in template:

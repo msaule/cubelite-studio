@@ -11,169 +11,156 @@
   <header class="site-header">
     <a class="brand" href="#top">CubeLite Studio</a>
     <nav>
-      <a href="#results">Results</a>
-      <a href="#workflow">Workflow</a>
-      <a href="#limits">Limits</a>
-      <a href="#contact">Contact</a>
+      <a href="#status">Status</a>
+      <a href="#renders">Renders</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#next">Next</a>
     </nav>
   </header>
 
   <main id="top">
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">Independent technical case study</p>
-        <h1>Low-VRAM Cube 3D workflow for Roblox creators.</h1>
+        <p class="eyebrow">Independent Cube 3D workflow study</p>
+        <h1>Making Cube 3D usable on a 6GB laptop GPU.</h1>
         <p class="lede">
-          CubeLite Studio is a local toolkit built around Roblox's open-source Cube 3D model. It focuses on
-          consumer-GPU inference, repeatable benchmarking, mesh analysis, and Roblox-oriented export packages.
+          CubeLite Studio is a local test harness for Roblox's open-source Cube 3D model. The project focuses on
+          low-VRAM inference, repeatable benchmarks, mesh inspection, and Roblox-oriented export folders.
         </p>
         <div class="actions">
-          <a class="button primary" href="https://github.com/msaule/cubelite-studio">GitHub repo</a>
-          <a class="button" href="#results">View measured results</a>
+          <a class="button primary" href="https://github.com/msaule/cubelite-studio">Private GitHub repo</a>
+          <a class="button" href="#renders">Inspect current meshes</a>
         </div>
       </div>
-      <aside class="hero-metrics" aria-label="Key results">
+      <aside class="hero-metrics" aria-label="Measured results">
         <div>
           <span>Test GPU</span>
           <strong>RTX 4050 Laptop</strong>
         </div>
         <div>
-          <span>Available VRAM</span>
+          <span>VRAM</span>
           <strong>6GB</strong>
         </div>
         <div>
-          <span>Observed peak</span>
-          <strong>4.17GB</strong>
+          <span>Best real run</span>
+          <strong>4.17GB peak</strong>
         </div>
         <div>
-          <span>Real outputs</span>
-          <strong>11</strong>
+          <span>Current state</span>
+          <strong>Not final</strong>
         </div>
       </aside>
     </section>
 
     <section class="note">
       <p>
-        CubeLite Studio is not affiliated with, sponsored by, or endorsed by Roblox Corporation. It does not
-        include or redistribute Cube 3D model weights. Users must obtain Cube 3D files from official sources
-        and follow the original license.
+        This page is a working case study, not a launch page. CubeLite Studio is independent, is not affiliated
+        with Roblox Corporation, and does not include or redistribute Cube 3D model weights.
       </p>
     </section>
 
-    <section id="results" class="section">
+    <section id="status" class="section">
       <div class="section-heading">
-        <p class="eyebrow">Measured local runs</p>
-        <h2>What changed after building the low-VRAM path</h2>
+        <p class="eyebrow">Current status</p>
+        <h2>The low-VRAM path works. The asset quality still needs curation.</h2>
       </div>
       <div class="split">
         <div>
           <p>
-            The official high-memory path ran out of CUDA memory on this 6GB laptop GPU, peaking near
-            5.98GB. CubeLite's staged runner completed real Cube 3D v0.5 generations by loading CLIP,
-            GPT, and shape decoding separately.
+            The original high-memory path hit CUDA out-of-memory on this machine at roughly 5.98GB peak VRAM.
+            CubeLite's staged runner completed real Cube 3D v0.5 generations by loading CLIP, GPT, and shape
+            decoding as separate stages.
           </p>
           <p>
-            The strongest result so far is a two-step 6GB Quality workflow: generate a denser mesh, then
-            simplify it into a Roblox-testable export. The showcase chest started at 32,036 triangles and
-            was reduced to 12,000 triangles with a 100/100 heuristic readiness score.
+            That is the useful engineering result so far. The generated meshes are not all good. Some are readable
+            Roblox-style props, some are mixed, and some are failures. The next step is stricter candidate search
+            and better cleanup before this should be sent outside.
           </p>
         </div>
         <div class="metric-grid">
           <div class="metric"><span>OOM baseline</span><strong>~5.98GB</strong></div>
-          <div class="metric"><span>Low-VRAM peak</span><strong>3.93GB</strong></div>
-          <div class="metric"><span>6GB Quality peak</span><strong>4.17GB</strong></div>
-          <div class="metric"><span>Best readiness</span><strong>100/100</strong></div>
+          <div class="metric"><span>Stable low-VRAM run</span><strong>3.93GB</strong></div>
+          <div class="metric"><span>6GB Quality run</span><strong>4.17GB</strong></div>
+          <div class="metric"><span>Best simplified mesh</span><strong>14k tris</strong></div>
         </div>
       </div>
-      <figure class="wide-image">
-        <img src="assets/real-results-contact-sheet.png" alt="Contact sheet of CubeLite Studio generated mesh previews">
-        <figcaption>Selected real Cube 3D outputs generated locally through CubeLite Studio.</figcaption>
-      </figure>
     </section>
 
-    <section class="section">
+    <section id="renders" class="section">
       <div class="section-heading">
-        <p class="eyebrow">Generated examples</p>
-        <h2>Current best assets</h2>
+        <p class="eyebrow">Mesh inspection</p>
+        <h2>Current candidates from multiple angles</h2>
+        <p>
+          These render plates are intentionally plain. They show the geometry from front, side, back, top, and
+          a 3/4 view so weak shapes cannot hide behind a single preview angle.
+        </p>
       </div>
-      <div class="asset-grid">
+      <div class="asset-grid two">
         <article class="asset-card">
-          <img src="assets/chest-quality.png" alt="Generated low-poly treasure chest mesh preview">
-          <h3>Treasure chest, 6GB Quality</h3>
-          <p>Generated as a denser mesh, then simplified from 32,036 to 12,000 triangles. Readiness: 100/100.</p>
+          <img src="assets/chest-quality-plate.png" alt="Multi-angle render plate of a generated low-poly treasure chest">
+          <h3>Treasure chest candidate</h3>
+          <p>Best current mesh from a seeded quality-search pass. Simplified to 14,000 triangles at 4.16GB peak VRAM.</p>
         </article>
         <article class="asset-card">
-          <img src="assets/crate.png" alt="Generated wooden crate mesh preview">
-          <h3>Wooden crate</h3>
-          <p>Simple, readable prop. 2,856 triangles, 3.93GB peak VRAM, readiness 92/100.</p>
+          <img src="assets/crate-plate.png" alt="Multi-angle render plate of a generated wooden crate">
+          <h3>Wooden crate candidate</h3>
+          <p>Second seeded quality-search result. Clearer panel geometry than the earlier crate, simplified to 12,000 triangles.</p>
         </article>
         <article class="asset-card">
-          <img src="assets/fantasy-sword.png" alt="Generated fantasy sword mesh preview">
-          <h3>Fantasy sword</h3>
-          <p>Best prompt-adherence result so far. 1,880 triangles, 4.05GB peak VRAM, readiness 100/100.</p>
+          <img src="assets/fantasy-sword-plate.png" alt="Multi-angle render plate of a generated fantasy sword">
+          <h3>Fantasy sword candidate</h3>
+          <p>Good prompt adherence for silhouette. Needs manual review for surface cleanup and scale.</p>
         </article>
         <article class="asset-card">
-          <img src="assets/row-boat.png" alt="Generated row boat mesh preview">
-          <h3>Row boat</h3>
-          <p>Readable hull candidate. 9,220 triangles, 4.05GB peak VRAM, readiness 100/100.</p>
+          <img src="assets/row-boat-plate.png" alt="Multi-angle render plate of a generated row boat">
+          <h3>Row boat baseline</h3>
+          <p>Readable from some angles, rough from others. Kept here because it shows why multi-angle review matters.</p>
         </article>
       </div>
     </section>
 
-    <section id="workflow" class="section band">
+    <section id="pipeline" class="section band">
       <div class="section-heading">
-        <p class="eyebrow">Engineering approach</p>
-        <h2>A local workflow, not just a wrapper</h2>
+        <p class="eyebrow">What CubeLite adds</p>
+        <h2>A measured local workflow around the model</h2>
       </div>
       <div class="workflow-grid">
         <div>
-          <h3>1. Stage inference</h3>
-          <p>Keep CLIP text encoding on CPU, run GPT token generation on GPU, unload it, then load the shape decoder.</p>
+          <h3>Staged inference</h3>
+          <p>CLIP runs on CPU, GPT runs on GPU for token generation, then the shape decoder loads after GPT is unloaded.</p>
         </div>
         <div>
-          <h3>2. Measure every run</h3>
-          <p>Record generation time, peak VRAM, file size, triangle count, warnings, and failure reason.</p>
+          <h3>Candidate search</h3>
+          <p>Run seeded variations and record which prompt, seed, sampling setting, and profile produced each mesh.</p>
         </div>
         <div>
-          <h3>3. Optimize for Roblox</h3>
-          <p>Analyze OBJ files, simplify when available, write import notes, and package exports with metadata.</p>
+          <h3>Mesh inspection</h3>
+          <p>Generate single previews and multi-angle plates, then score mesh size, triangle count, and import risk.</p>
         </div>
         <div>
-          <h3>4. Curate candidates</h3>
-          <p>Separate showcase outputs from mixed or failed generations instead of treating every mesh as a win.</p>
+          <h3>Export package</h3>
+          <p>Bundle OBJ files, metadata, benchmark summary, render plate, and Roblox import notes in one folder.</p>
         </div>
       </div>
     </section>
 
-    <section id="limits" class="section">
+    <section id="next" class="section">
       <div class="section-heading">
-        <p class="eyebrow">Honest limitations</p>
-        <h2>What this does not claim</h2>
+        <p class="eyebrow">Before sharing externally</p>
+        <h2>What still has to improve</h2>
       </div>
       <ul class="limits-list">
-        <li>CubeLite does not own Cube 3D or redistribute Cube 3D weights.</li>
-        <li>Cube 3D currently generates geometry; texture generation is listed by Roblox as an upcoming feature.</li>
-        <li>The readiness score is a practical heuristic, not official Roblox validation.</li>
-        <li>Prompt quality matters. Some technically successful generations are not visually good enough.</li>
-        <li>The current benchmark data is from one consumer laptop GPU and should be expanded.</li>
+        <li>Run a larger seeded candidate search for a small set of Roblox props instead of showing first-pass generations.</li>
+        <li>Replace weak examples with only the best meshes, plus one honest failure section in the technical report.</li>
+        <li>Import the best candidates into Roblox Studio and document scale, collision, normals, and cleanup needs.</li>
+        <li>Add a stricter visual review field so a 100/100 readiness score does not imply the model looks good.</li>
+        <li>Keep the texture story honest: Cube 3D is geometry-first today; texture generation should not be implied.</li>
       </ul>
-    </section>
-
-    <section id="contact" class="section contact">
-      <div>
-        <p class="eyebrow">Summary</p>
-        <h2>Why this project matters</h2>
-        <p>
-          CubeLite Studio lowers the barrier for local Cube 3D experimentation, gives creators clearer hardware
-          expectations, and turns raw mesh generation into a measured Roblox import workflow.
-        </p>
-      </div>
-      <a class="button primary" href="mailto:?subject=CubeLite%20Studio%20-%20low-VRAM%20Cube%203D%20case%20study">Draft an email</a>
     </section>
   </main>
 
   <footer>
-    <p>CubeLite Studio. Independent project. Built for local experimentation, benchmarking, and creator workflow support.</p>
+    <p>CubeLite Studio is an independent local experiment around Cube 3D. Not affiliated with Roblox Corporation.</p>
   </footer>
 </body>
 </html>

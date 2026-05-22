@@ -82,6 +82,85 @@ def render_mesh_preview(input_obj: Path, output_png: Path, title: str = "CubeLit
         return RenderResult(False, None, f"Preview rendering failed: {exc}")
 
 
+def render_mesh_inspection_plate(input_obj: Path, output_png: Path, title: str = "CubeLite Mesh Inspection") -> RenderResult:
+    """Render a multi-angle inspection plate for a generated OBJ.
+
+    A single attractive angle can hide weak geometry. The inspection plate is
+    meant for case studies and curation: it shows whether the asset reads from
+    front, side, back, top, and a basic 3/4 view.
+    """
+    if not input_obj.exists():
+        return RenderResult(False, None, "Input OBJ does not exist.")
+
+    try:
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        import numpy as np
+        from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+    except Exception as exc:
+        return RenderResult(
+            False,
+            None,
+            f"Inspection rendering dependencies are unavailable: {exc}. Install matplotlib to enable render plates.",
+        )
+
+    try:
+        vertices, faces = _load_vertices_and_faces(input_obj, np)
+        if len(vertices) == 0 or len(faces) == 0:
+            return RenderResult(False, None, "Mesh has no vertices or faces to render.")
+
+        output_png.parent.mkdir(parents=True, exist_ok=True)
+        triangles = vertices[faces]
+        mins = vertices.min(axis=0)
+        maxs = vertices.max(axis=0)
+        center = (mins + maxs) / 2
+        radius = max(float((maxs - mins).max()) / 2, 0.5)
+
+        views = [
+            ("Front", 0, -90),
+            ("Right", 0, 0),
+            ("Back", 0, 90),
+            ("Left", 0, 180),
+            ("Top", 90, -90),
+            ("3/4", 28, 38),
+        ]
+        fig = plt.figure(figsize=(12, 8), dpi=150)
+        fig.patch.set_facecolor("#f7f8fa")
+        wrapped_title = "\n".join(wrap(title, width=84, max_lines=2, placeholder="..."))
+        fig.suptitle(wrapped_title, fontsize=13, fontweight="bold", y=0.98)
+
+        for index, (label, elev, azim) in enumerate(views, start=1):
+            ax = fig.add_subplot(2, 3, index, projection="3d")
+            collection = Poly3DCollection(
+                triangles,
+                facecolor=(0.42, 0.62, 0.82, 0.94),
+                edgecolor=(0.08, 0.12, 0.18, 0.28),
+                linewidth=0.25,
+            )
+            ax.add_collection3d(collection)
+            ax.set_xlim(center[0] - radius, center[0] + radius)
+            ax.set_ylim(center[1] - radius, center[1] + radius)
+            ax.set_zlim(center[2] - radius, center[2] + radius)
+            ax.view_init(elev=elev, azim=azim)
+            ax.set_box_aspect((1, 1, 1))
+            ax.set_axis_off()
+            ax.set_title(label, fontsize=9, pad=2)
+            ax.set_facecolor("#f7f8fa")
+
+        plt.tight_layout(rect=(0, 0, 1, 0.95), pad=0.4)
+        fig.savefig(output_png, bbox_inches="tight", pad_inches=0.12)
+        plt.close(fig)
+        return RenderResult(True, str(output_png))
+    except Exception as exc:
+        try:
+            plt.close("all")
+        except Exception:
+            pass
+        return RenderResult(False, None, f"Inspection rendering failed: {exc}")
+
+
 def _load_vertices_and_faces(input_obj: Path, np):
     try:
         import trimesh
