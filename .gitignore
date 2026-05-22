@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Environments and local config
+.venv/
+venv/
+env/
+.env
+.cubelite_settings.json
+
+# Local generated artifacts. Keep directory placeholders.
+outputs/*
+!outputs/.gitkeep
+exports/*
+!exports/.gitkeep
+reports/*
+!reports/.gitkeep
+benchmarks/*
+!benchmarks/.gitkeep
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
