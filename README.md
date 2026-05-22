@@ -99,10 +99,10 @@ CubeLite Studio does not download, bundle, host, or redistribute Cube 3D model w
 
 ## Low-VRAM Modes
 
-- `Benchmark Safe`: most conservative path for minimum viable testing.
-- `Low VRAM`: targets 6GB to 8GB VRAM workflows with preview off and simplification on.
-- `Balanced`: targets 8GB to 12GB VRAM workflows.
-- `High Quality`: intended for 16GB+ GPUs; fast inference may require more VRAM.
+- `Benchmark Safe`: most conservative path for minimum viable testing, using a low Cube `resolution-base`.
+- `Low VRAM`: targets 6GB to 8GB VRAM workflows with preview off, simplification on, and Cube `resolution-base` set low.
+- `Balanced`: targets 8GB to 12GB VRAM workflows with a midrange Cube `resolution-base`.
+- `High Quality`: intended for 16GB+ GPUs; fast inference may require more VRAM and uses a higher Cube `resolution-base`.
 - `Auto`: chooses a profile from detected VRAM.
 
 These profiles are experimental workflow presets, not a guarantee that every Cube 3D release exposes every setting as a CLI flag.

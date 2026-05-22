@@ -9,7 +9,7 @@ class GenerationProfile:
     description: str
     target_vram_gb: str
     fast_inference: bool
-    resolution_base: int
+    resolution_base: float
     use_fp16: bool
     enable_cpu_offload: bool
     generate_preview: bool
@@ -27,7 +27,7 @@ PROFILES: dict[str, GenerationProfile] = {
         description="Selects a conservative profile based on detected VRAM.",
         target_vram_gb="Detected",
         fast_inference=False,
-        resolution_base=192,
+        resolution_base=4.0,
         use_fp16=True,
         enable_cpu_offload=True,
         generate_preview=False,
@@ -40,7 +40,7 @@ PROFILES: dict[str, GenerationProfile] = {
         description="Experimental low-VRAM workflow for 6GB to 8GB GPUs.",
         target_vram_gb="6-8",
         fast_inference=False,
-        resolution_base=160,
+        resolution_base=4.0,
         use_fp16=True,
         enable_cpu_offload=True,
         generate_preview=False,
@@ -53,7 +53,7 @@ PROFILES: dict[str, GenerationProfile] = {
         description="Middle-ground profile for 8GB to 12GB GPUs.",
         target_vram_gb="8-12",
         fast_inference=False,
-        resolution_base=224,
+        resolution_base=6.0,
         use_fp16=True,
         enable_cpu_offload=False,
         generate_preview=True,
@@ -66,7 +66,7 @@ PROFILES: dict[str, GenerationProfile] = {
         description="Higher-detail profile for 16GB+ GPUs.",
         target_vram_gb="16+",
         fast_inference=True,
-        resolution_base=320,
+        resolution_base=8.0,
         use_fp16=True,
         enable_cpu_offload=False,
         generate_preview=True,
@@ -79,7 +79,7 @@ PROFILES: dict[str, GenerationProfile] = {
         description="Very conservative profile intended to complete on modest hardware.",
         target_vram_gb="Minimum practical",
         fast_inference=False,
-        resolution_base=128,
+        resolution_base=4.0,
         use_fp16=True,
         enable_cpu_offload=True,
         generate_preview=False,

@@ -28,7 +28,7 @@ class GenerationResult:
     detected_gpu: str
     detected_total_vram_gb: float | None
     peak_vram_gb: float | None
-    resolution_base_used: int
+    resolution_base_used: float
     fast_inference_used: bool
     dry_run: bool
 

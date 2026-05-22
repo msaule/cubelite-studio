@@ -110,16 +110,26 @@ def analyze_mesh(obj_path: Path) -> MeshStats:
                 file_size_mb=round(obj_path.stat().st_size / (1024 * 1024), 3),
                 error_message="Mesh loaded but contains no usable geometry.",
             )
+        try:
+            combined.merge_vertices()
+        except Exception:
+            pass
         bounds = combined.bounds
         dims = tuple(round(float(value), 4) for value in combined.extents)
         center = tuple(round(float(value), 4) for value in combined.centroid)
-        normals = "vn " in obj_path.read_text(encoding="utf-8", errors="ignore")
-        materials = any(token in obj_path.read_text(encoding="utf-8", errors="ignore") for token in ("mtllib ", "usemtl "))
+        obj_text = obj_path.read_text(encoding="utf-8", errors="ignore")
+        raw_vertices = {
+            tuple(line.split()[1:4])
+            for line in obj_text.splitlines()
+            if line.startswith("v ") and len(line.split()) >= 4
+        }
+        normals = "vn " in obj_text
+        materials = any(token in obj_text for token in ("mtllib ", "usemtl "))
         return MeshStats(
             success=True,
             path=str(obj_path),
             file_size_mb=round(obj_path.stat().st_size / (1024 * 1024), 3),
-            vertex_count=int(len(combined.vertices)),
+            vertex_count=int(len(raw_vertices) or len(combined.vertices)),
             face_count=int(len(combined.faces)),
             triangle_count=int(len(combined.triangles)),
             bounding_box_dimensions=dims,

@@ -51,12 +51,19 @@ def build_cube_command(
         "{prompt}": prompt,
         "{output_dir}": str(output_dir),
         "{weights_path}": str(model_weights_path),
+        "{gpt_ckpt_path}": str(model_weights_path / "shape_gpt.safetensors"),
+        "{shape_ckpt_path}": str(model_weights_path / "shape_tokenizer.safetensors"),
         "{resolution_base}": str(profile.resolution_base),
         "{fast_inference}": "true" if profile.fast_inference else "false",
         "{fp16}": "true" if profile.use_fp16 else "false",
         "{cpu_offload}": "true" if profile.enable_cpu_offload else "false",
     }
-    command = [replacements.get(part, part.format(**{k.strip("{}"): v for k, v in replacements.items()})) for part in template]
+    command: list[str] = []
+    for part in template:
+        resolved = part
+        for placeholder, value in replacements.items():
+            resolved = resolved.replace(placeholder, value)
+        command.append(resolved)
 
     unsupported = [
         "generate_preview",
