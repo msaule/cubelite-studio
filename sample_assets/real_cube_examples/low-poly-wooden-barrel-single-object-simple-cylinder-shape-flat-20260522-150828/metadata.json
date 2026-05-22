@@ -12,7 +12,7 @@
   "generation_time_seconds": 209.73314979998395,
   "original_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-wooden-barrel-single-object-simple-cylinder-shape-flat-20260522-150456\\output.obj",
+    "path": "outputs\\low-poly-wooden-barrel-single-object-simple-cylinder-shape-flat-20260522-150456\\output.obj",
     "file_size_mb": 0.051,
     "vertex_count": 838,
     "face_count": 1672,
@@ -37,7 +37,7 @@
   },
   "optimized_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-wooden-barrel-single-object-simple-cylinder-shape-flat-20260522-150456\\optimized.obj",
+    "path": "outputs\\low-poly-wooden-barrel-single-object-simple-cylinder-shape-flat-20260522-150456\\optimized.obj",
     "file_size_mb": 0.051,
     "vertex_count": 838,
     "face_count": 1672,

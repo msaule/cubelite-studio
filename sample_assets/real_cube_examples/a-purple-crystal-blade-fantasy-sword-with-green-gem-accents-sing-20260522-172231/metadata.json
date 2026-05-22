@@ -12,7 +12,7 @@
   "generation_time_seconds": 375.86891149997246,
   "original_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\a-purple-crystal-blade-fantasy-sword-with-green-gem-accents-sing-20260522-171613\\output.obj",
+    "path": "outputs\\a-purple-crystal-blade-fantasy-sword-with-green-gem-accents-sing-20260522-171613\\output.obj",
     "file_size_mb": 0.058,
     "vertex_count": 946,
     "face_count": 1880,
@@ -37,7 +37,7 @@
   },
   "optimized_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\a-purple-crystal-blade-fantasy-sword-with-green-gem-accents-sing-20260522-171613\\optimized.obj",
+    "path": "outputs\\a-purple-crystal-blade-fantasy-sword-with-green-gem-accents-sing-20260522-171613\\optimized.obj",
     "file_size_mb": 0.165,
     "vertex_count": 946,
     "face_count": 1880,

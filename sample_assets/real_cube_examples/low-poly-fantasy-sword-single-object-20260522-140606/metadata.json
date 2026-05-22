@@ -12,7 +12,7 @@
   "generation_time_seconds": 217.07901029998902,
   "original_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-fantasy-sword-single-object-20260522-140227\\output.obj",
+    "path": "outputs\\low-poly-fantasy-sword-single-object-20260522-140227\\output.obj",
     "file_size_mb": 0.004,
     "vertex_count": 80,
     "face_count": 156,
@@ -37,7 +37,7 @@
   },
   "optimized_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-fantasy-sword-single-object-20260522-140227\\optimized.obj",
+    "path": "outputs\\low-poly-fantasy-sword-single-object-20260522-140227\\optimized.obj",
     "file_size_mb": 0.004,
     "vertex_count": 80,
     "face_count": 156,

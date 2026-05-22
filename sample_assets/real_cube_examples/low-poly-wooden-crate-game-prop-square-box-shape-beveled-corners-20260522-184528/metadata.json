@@ -12,7 +12,7 @@
   "generation_time_seconds": 386.73257540003397,
   "original_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-wooden-crate-game-prop-square-box-shape-beveled-corners-20260522-183857\\output.obj",
+    "path": "outputs\\low-poly-wooden-crate-game-prop-square-box-shape-beveled-corners-20260522-183857\\output.obj",
     "file_size_mb": 1.877,
     "vertex_count": 26602,
     "face_count": 53188,
@@ -37,7 +37,7 @@
   },
   "optimized_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-wooden-crate-game-prop-square-box-shape-beveled-corners-20260522-183857\\optimized.obj",
+    "path": "outputs\\low-poly-wooden-crate-game-prop-square-box-shape-beveled-corners-20260522-183857\\optimized.obj",
     "file_size_mb": 1.11,
     "vertex_count": 6008,
     "face_count": 12000,

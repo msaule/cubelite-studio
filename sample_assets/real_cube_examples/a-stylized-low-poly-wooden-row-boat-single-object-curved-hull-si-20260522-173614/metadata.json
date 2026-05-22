@@ -12,7 +12,7 @@
   "generation_time_seconds": 378.97520560002886,
   "original_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\a-stylized-low-poly-wooden-row-boat-single-object-curved-hull-si-20260522-172953\\output.obj",
+    "path": "outputs\\a-stylized-low-poly-wooden-row-boat-single-object-curved-hull-si-20260522-172953\\output.obj",
     "file_size_mb": 0.301,
     "vertex_count": 4534,
     "face_count": 9220,
@@ -37,7 +37,7 @@
   },
   "optimized_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\a-stylized-low-poly-wooden-row-boat-single-object-curved-hull-si-20260522-172953\\optimized.obj",
+    "path": "outputs\\a-stylized-low-poly-wooden-row-boat-single-object-curved-hull-si-20260522-172953\\optimized.obj",
     "file_size_mb": 0.841,
     "vertex_count": 4534,
     "face_count": 9220,

@@ -12,7 +12,7 @@
   "generation_time_seconds": 380.1787969999714,
   "original_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\lowpoly-paper-craft-victorian-rabbit-single-character-figurine-s-20260522-172304\\output.obj",
+    "path": "outputs\\lowpoly-paper-craft-victorian-rabbit-single-character-figurine-s-20260522-172304\\output.obj",
     "file_size_mb": 0.424,
     "vertex_count": 6402,
     "face_count": 12800,
@@ -37,7 +37,7 @@
   },
   "optimized_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\lowpoly-paper-craft-victorian-rabbit-single-character-figurine-s-20260522-172304\\optimized.obj",
+    "path": "outputs\\lowpoly-paper-craft-victorian-rabbit-single-character-figurine-s-20260522-172304\\optimized.obj",
     "file_size_mb": 1.184,
     "vertex_count": 6402,
     "face_count": 12800,

@@ -12,7 +12,7 @@
   "generation_time_seconds": 218.43368420004845,
   "original_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\simple-wooden-crate-game-asset-20260522-140606\\output.obj",
+    "path": "outputs\\simple-wooden-crate-game-asset-20260522-140606\\output.obj",
     "file_size_mb": 0.09,
     "vertex_count": 1422,
     "face_count": 2856,
@@ -37,7 +37,7 @@
   },
   "optimized_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\simple-wooden-crate-game-asset-20260522-140606\\optimized.obj",
+    "path": "outputs\\simple-wooden-crate-game-asset-20260522-140606\\optimized.obj",
     "file_size_mb": 0.09,
     "vertex_count": 1422,
     "face_count": 2856,

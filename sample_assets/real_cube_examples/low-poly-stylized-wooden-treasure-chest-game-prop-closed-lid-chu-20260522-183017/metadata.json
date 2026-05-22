@@ -12,7 +12,7 @@
   "generation_time_seconds": 387.3088073999388,
   "original_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-stylized-wooden-treasure-chest-game-prop-closed-lid-chu-20260522-182345\\output.obj",
+    "path": "outputs\\low-poly-stylized-wooden-treasure-chest-game-prop-closed-lid-chu-20260522-182345\\output.obj",
     "file_size_mb": 1.088,
     "vertex_count": 15786,
     "face_count": 31568,
@@ -37,7 +37,7 @@
   },
   "optimized_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-stylized-wooden-treasure-chest-game-prop-closed-lid-chu-20260522-182345\\optimized.obj",
+    "path": "outputs\\low-poly-stylized-wooden-treasure-chest-game-prop-closed-lid-chu-20260522-182345\\optimized.obj",
     "file_size_mb": 1.296,
     "vertex_count": 7002,
     "face_count": 14000,

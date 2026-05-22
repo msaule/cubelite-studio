@@ -12,7 +12,7 @@
   "generation_time_seconds": 219.2462798000779,
   "original_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\stylized-potion-bottle-single-object-20260522-140945\\output.obj",
+    "path": "outputs\\stylized-potion-bottle-single-object-20260522-140945\\output.obj",
     "file_size_mb": 0.029,
     "vertex_count": 486,
     "face_count": 968,
@@ -37,7 +37,7 @@
   },
   "optimized_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\stylized-potion-bottle-single-object-20260522-140945\\optimized.obj",
+    "path": "outputs\\stylized-potion-bottle-single-object-20260522-140945\\optimized.obj",
     "file_size_mb": 0.029,
     "vertex_count": 486,
     "face_count": 968,

@@ -12,7 +12,7 @@
   "generation_time_seconds": 379.53762620000634,
   "original_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-closed-wooden-treasure-chest-single-object-blocky-game-20260522-154424\\output.obj",
+    "path": "outputs\\low-poly-closed-wooden-treasure-chest-single-object-blocky-game-20260522-154424\\output.obj",
     "file_size_mb": 1.106,
     "vertex_count": 16020,
     "face_count": 32036,
@@ -37,7 +37,7 @@
   },
   "optimized_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-closed-wooden-treasure-chest-single-object-blocky-game-20260522-154424\\optimized-12000.obj",
+    "path": "outputs\\low-poly-closed-wooden-treasure-chest-single-object-blocky-game-20260522-154424\\optimized-12000.obj",
     "file_size_mb": 1.108,
     "vertex_count": 6002,
     "face_count": 12000,

@@ -12,7 +12,7 @@
   "generation_time_seconds": 209.89198389998637,
   "original_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-wooden-sign-post-single-object-blocky-rectangular-sign-20260522-150041\\output.obj",
+    "path": "outputs\\low-poly-wooden-sign-post-single-object-blocky-rectangular-sign-20260522-150041\\output.obj",
     "file_size_mb": 0.02,
     "vertex_count": 342,
     "face_count": 680,
@@ -37,7 +37,7 @@
   },
   "optimized_mesh_stats": {
     "success": true,
-    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-wooden-sign-post-single-object-blocky-rectangular-sign-20260522-150041\\optimized.obj",
+    "path": "outputs\\low-poly-wooden-sign-post-single-object-blocky-rectangular-sign-20260522-150041\\optimized.obj",
     "file_size_mb": 0.02,
     "vertex_count": 342,
     "face_count": 680,
