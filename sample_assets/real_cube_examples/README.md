@@ -26,4 +26,11 @@ Additional quality pass:
 - triangle count: 1,812
 - readiness score: 92/100
 
+Follow-up prompt sensitivity examples:
+
+- `low-poly-wooden-sign-post-single-object-blocky-rectangular-sign-20260522-150413`: completed at about 210 seconds, 4.05GB peak VRAM, 680 triangles, but the silhouette is mixed.
+- `low-poly-wooden-barrel-single-object-simple-cylinder-shape-flat-20260522-150828`: completed at about 210 seconds, 4.05GB peak VRAM, 1,672 triangles, but the silhouette is mixed.
+
+`curation.json` separates showcase outputs from mixed and failed semantic results. The readiness score is an import-workflow heuristic, not a semantic quality score.
+
 These outputs are examples, not official Roblox validation. Users remain responsible for following the original Cube 3D license and Roblox platform rules.

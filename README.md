@@ -25,6 +25,7 @@ The goal is not to claim ownership of Cube 3D, retrain a foundation model, or pr
 - Optional mesh simplification through `pymeshlab`.
 - Export packages containing OBJ files, metadata, import notes, and benchmark summaries.
 - Benchmark CSV, JSON, and technical Markdown report generation.
+- Roblox-reviewable case study pack with real-output contact sheet, HTML summary, and email-ready technical framing.
 
 ## Quick Start
 
@@ -152,6 +153,8 @@ Benchmark runs can generate a Markdown report in `reports/` titled:
 `CubeLite Studio: Low-VRAM Cube 3D Workflow Benchmark`
 
 The report includes machine specs, setup notes, tested profiles, prompt set, results table, VRAM comparison notes, mesh complexity notes, limitations, and next steps.
+
+The Case Study tab can also generate a portfolio-style Markdown and HTML pack from real local Cube 3D outputs in `sample_assets/real_cube_examples/`. This is meant for sharing the technical story: consumer-GPU bottleneck, low-VRAM staging approach, measured results, showcase outputs, mixed outputs, and honest limitations.
 
 ## Known Limitations
 

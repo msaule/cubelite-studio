@@ -19,6 +19,7 @@ from app.cube.cube_command_builder import write_cubelite_low_vram_template
 from app.cube.low_vram_profiles import PROFILES, get_profile
 from app.cube.model_manager import validate_cube_install
 from app.cube.prompt_presets import PROMPT_GUIDANCE, PROMPT_PRESETS
+from app.reporting.case_study import discover_case_study_assets, generate_case_study_pack, summarize_case_study_assets
 from app.system.dependency_checker import check_dependencies
 from app.system.gpu_detector import detect_system
 from app.ui.components import list_recent_files
@@ -201,6 +202,44 @@ def results_tab(st) -> None:
         st.write(str(path))
 
 
+def case_study_tab(st, settings: AppSettings) -> None:
+    assets = discover_case_study_assets()
+    summary = summarize_case_study_assets(assets)
+    st.caption("Portfolio-ready evidence generated from local real Cube 3D outputs.")
+    cols = st.columns(5)
+    cols[0].metric("Real assets", summary.asset_count)
+    cols[1].metric("With stats", summary.successful_asset_count)
+    cols[2].metric("Peak VRAM", f"{summary.max_peak_vram_gb:.2f} GB" if summary.max_peak_vram_gb is not None else "n/a")
+    cols[3].metric("Avg seconds", f"{summary.average_generation_seconds:.1f}" if summary.average_generation_seconds is not None else "n/a")
+    cols[4].metric("Avg readiness", f"{summary.average_readiness_score:.1f}/100" if summary.average_readiness_score is not None else "n/a")
+
+    st.markdown(
+        "**Case-study thesis:** CubeLite Studio turns Cube 3D from a high-VRAM research/demo setup into a measurable local creator workflow with real VRAM telemetry, mesh statistics, Roblox-readiness notes, and export packages."
+    )
+    st.info("Honest framing: this is independent, not official Roblox validation, and it does not redistribute Cube 3D model weights.")
+
+    if st.button("Generate Roblox-reviewable case study pack", type="primary"):
+        markdown_path, contact_sheet_path, html_path = generate_case_study_pack(Path(settings.reports_dir))
+        st.success(f"Markdown case study: {markdown_path}")
+        st.success(f"HTML case study: {html_path}")
+        if contact_sheet_path:
+            st.image(str(contact_sheet_path), caption="Real CubeLite output contact sheet")
+
+    for asset in assets:
+        with st.expander(asset.prompt or asset.name):
+            if asset.preview_path:
+                st.image(asset.preview_path, caption=asset.name)
+            asset_cols = st.columns(4)
+            asset_cols[0].metric("Profile", asset.profile)
+            asset_cols[1].metric("Triangles", asset.triangle_count if asset.triangle_count is not None else "n/a")
+            asset_cols[2].metric("Peak VRAM", f"{asset.peak_vram_gb:.2f} GB" if asset.peak_vram_gb is not None else "n/a")
+            asset_cols[3].metric("Readiness", asset.readiness_score if asset.readiness_score is not None else "n/a")
+            st.write(f"Quality: **{asset.quality_label}**")
+            if asset.reviewer_note:
+                st.write(asset.reviewer_note)
+            st.write(f"OBJ: {asset.original_obj_path or 'n/a'}")
+
+
 def system_tab(st) -> None:
     diagnostics = detect_system()
     cols = st.columns(4)
@@ -287,7 +326,7 @@ def run_streamlit_app() -> None:
     )
 
     settings = load_settings()
-    tabs = st.tabs(["Generate", "Benchmark", "Results", "System Check", "Settings", "About"])
+    tabs = st.tabs(["Generate", "Benchmark", "Results", "System Check", "Settings", "Case Study", "About"])
     with tabs[0]:
         generate_tab(st, settings)
     with tabs[1]:
@@ -299,6 +338,8 @@ def run_streamlit_app() -> None:
     with tabs[4]:
         settings_tab(st, settings)
     with tabs[5]:
+        case_study_tab(st, settings)
+    with tabs[6]:
         about_tab(st)
 
 

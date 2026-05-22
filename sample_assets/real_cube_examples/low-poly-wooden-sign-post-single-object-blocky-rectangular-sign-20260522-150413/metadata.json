@@ -1,0 +1,69 @@
+{
+  "prompt": "low poly wooden sign post, single object, blocky rectangular sign board, simple game prop, clean silhouette",
+  "timestamp": "2026-05-22T15:04:13.652559+00:00",
+  "profile": "Low VRAM",
+  "dry_run": false,
+  "cubelite_studio_version": "0.1.0",
+  "cube_3d_repo_path_used": "...\\official_cube\\cube",
+  "model_weights_path_used": "...\\cube\\model_weights",
+  "gpu_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "total_vram_gb": 6.0,
+  "peak_vram_gb": 4.051,
+  "generation_time_seconds": 209.89198389998637,
+  "original_mesh_stats": {
+    "success": true,
+    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-wooden-sign-post-single-object-blocky-rectangular-sign-20260522-150041\\output.obj",
+    "file_size_mb": 0.02,
+    "vertex_count": 342,
+    "face_count": 680,
+    "triangle_count": 680,
+    "bounding_box_dimensions": [
+      1.8344,
+      1.8529,
+      0.8647
+    ],
+    "center_point": [
+      -0.0592,
+      0.3908,
+      -0.0625
+    ],
+    "approximate_scale": 1.8529,
+    "has_normals": false,
+    "has_materials": false,
+    "watertight": true,
+    "object_count": 1,
+    "warnings": [],
+    "error_message": ""
+  },
+  "optimized_mesh_stats": {
+    "success": true,
+    "path": "C:\\Users\\saule\\Desktop\\cubelite\\cubelite-studio\\outputs\\low-poly-wooden-sign-post-single-object-blocky-rectangular-sign-20260522-150041\\optimized.obj",
+    "file_size_mb": 0.02,
+    "vertex_count": 342,
+    "face_count": 680,
+    "triangle_count": 680,
+    "bounding_box_dimensions": [
+      1.8344,
+      1.8529,
+      0.8647
+    ],
+    "center_point": [
+      -0.0592,
+      0.3908,
+      -0.0625
+    ],
+    "approximate_scale": 1.8529,
+    "has_normals": false,
+    "has_materials": false,
+    "watertight": true,
+    "object_count": 1,
+    "warnings": [],
+    "error_message": ""
+  },
+  "readiness_score": 92,
+  "readiness_status": "Ready to test",
+  "warnings": [
+    "Simplification was requested but did not complete."
+  ],
+  "license_note": "This asset was generated using a workflow around Roblox Cube 3D. Users are responsible for following the original Cube 3D license and Roblox platform rules."
+}
