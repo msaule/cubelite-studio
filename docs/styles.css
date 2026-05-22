@@ -179,7 +179,8 @@ dd {
 }
 
 .feature-list,
-.note-grid {
+.note-grid,
+.run-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   border: 1px solid var(--line);
@@ -187,22 +188,39 @@ dd {
 }
 
 .feature-list article,
-.note-grid div {
+.note-grid div,
+.run-grid div {
   min-height: 190px;
   padding: 20px;
   border-right: 1px solid var(--line);
 }
 
 .feature-list article:last-child,
-.note-grid div:last-child {
+.note-grid div:last-child,
+.run-grid div:last-child {
   border-right: 0;
 }
 
 .feature-list p,
 .note-grid p,
+.run-grid p,
 .mesh-card p {
   margin-bottom: 0;
   font-size: 15px;
+}
+
+pre {
+  margin: 12px 0;
+  padding: 12px;
+  overflow-x: auto;
+  background: #111;
+  color: #f5f5f5;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 .results {
@@ -263,7 +281,8 @@ tr:last-child td {
   padding-bottom: 72px;
 }
 
-.note-grid {
+.note-grid,
+.run-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -338,19 +357,22 @@ footer span:first-child {
   }
 
   .feature-list,
-  .note-grid {
+  .note-grid,
+  .run-grid {
     grid-template-columns: 1fr;
   }
 
   .feature-list article,
-  .note-grid div {
+  .note-grid div,
+  .run-grid div {
     min-height: auto;
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
 
   .feature-list article:last-child,
-  .note-grid div:last-child {
+  .note-grid div:last-child,
+  .run-grid div:last-child {
     border-bottom: 0;
   }
 

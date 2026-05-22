@@ -17,7 +17,7 @@
       <a href="#build">Build</a>
       <a href="#results">Results</a>
       <a href="#meshes">Meshes</a>
-      <a href="#notes">Notes</a>
+      <a href="#run">Run</a>
     </nav>
   </header>
 
@@ -166,23 +166,31 @@
       </div>
     </section>
 
-    <section id="notes" class="section notes">
+    <section id="run" class="section notes">
       <div class="section-title">
-        <h2>What still needs work</h2>
-        <p>The rough parts should stay visible until they are actually fixed.</p>
+        <h2>Run it locally</h2>
+        <p>The app works in dry-run mode without Cube 3D weights. Real generation needs the official Cube 3D repo and model files.</p>
       </div>
-      <div class="note-grid">
+      <div class="run-grid">
         <div>
-          <h3>More candidate search</h3>
-          <p>The better outputs came from running several seeds and keeping the best one. First result usually is not enough.</p>
+          <h3>Start the app</h3>
+          <pre><code>python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python run_app.py</code></pre>
         </div>
         <div>
-          <h3>Roblox Studio import pass</h3>
-          <p>Next I need to check scale, normals, collisions, and how much cleanup is needed after import.</p>
+          <h3>Dry benchmark</h3>
+          <pre><code>python run_benchmark.py --dry-run</code></pre>
+          <p>Good for checking the UI, reports, mesh analysis, and export folders before setting up Cube 3D.</p>
         </div>
         <div>
-          <h3>Textures</h3>
-          <p>Cube 3D is geometry-only right now. I should not make the page look like it generates textured assets.</p>
+          <h3>Real Cube run</h3>
+          <pre><code>python run_quality_search.py ^
+  --prompt "low poly wooden crate game prop" ^
+  --profile "6GB Quality" ^
+  --seeds 303 404</code></pre>
+          <p>Outputs go into <code>outputs/</code>, export packages into <code>exports/</code>, and reports into <code>reports/</code>.</p>
         </div>
       </div>
     </section>
