@@ -107,6 +107,8 @@ CubeLite Studio does not download, bundle, host, or redistribute Cube 3D model w
 
 These profiles are experimental workflow presets, not a guarantee that every Cube 3D release exposes every setting as a CLI flag.
 
+CubeLite also includes `app/cube/cubelite_low_vram_generate.py`, a real low-VRAM Cube runner that can be used from a command template. It reduces VRAM pressure by keeping CLIP on CPU, disabling classifier-free guidance for the lowest profiles, avoiding KV cache, unloading GPT before shape decoding, and using a smaller decoder chunk size.
+
 ## Benchmarking
 
 The benchmark runner tests a standard prompt set across selected profiles and records:
@@ -139,7 +141,7 @@ The readiness report is a heuristic helper, not official Roblox validation.
 
 ## Example Outputs
 
-Use dry-run mode to create an example export package immediately. Real Cube 3D outputs require a configured Cube repo and model weights.
+Use dry-run mode to create an example export package immediately. This repo also includes a private example gallery in `sample_assets/real_cube_examples/` with real Cube 3D v0.5 outputs generated on an RTX 4050 Laptop GPU through CubeLite's low-VRAM path.
 
 ## Technical Report Generation
 

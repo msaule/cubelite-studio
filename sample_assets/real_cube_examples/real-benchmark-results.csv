@@ -1,0 +1,4 @@
+prompt,profile,success,generation_time_seconds,peak_vram_gb,output_file_size_mb,triangle_count,readiness_score,error_message,output_path
+"low poly fantasy sword, single object",Benchmark Safe,True,217.07901029998902,3.932,0.004,156,92,,C:\Users\saule\Desktop\cubelite\cubelite-studio\exports\low-poly-fantasy-sword-single-object-20260522-140606
+"simple wooden crate, game asset",Benchmark Safe,True,218.43368420004845,3.932,0.09,2856,92,,C:\Users\saule\Desktop\cubelite\cubelite-studio\exports\simple-wooden-crate-game-asset-20260522-140945
+"stylized potion bottle, single object",Benchmark Safe,True,219.2462798000779,3.932,0.029,968,92,,C:\Users\saule\Desktop\cubelite\cubelite-studio\exports\stylized-potion-bottle-single-object-20260522-141325

@@ -21,7 +21,7 @@ Document the Cube 3D source, local setup, and whether this was dry-run or real g
 
 ## 4. Profiles Tested
 
-List profile settings and whether each setting mapped to a supported Cube 3D option or CubeLite post-processing behavior.
+List profile settings and whether each setting mapped to a supported Cube 3D option or CubeLite post-processing behavior. For low-VRAM tests, include guidance scale, KV cache status, decoder chunk size, dtype, and whether CLIP/GPT/shape decoder were staged separately.
 
 ## 5. Benchmark Prompt Set
 

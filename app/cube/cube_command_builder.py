@@ -57,6 +57,10 @@ def build_cube_command(
         "{fast_inference}": "true" if profile.fast_inference else "false",
         "{fp16}": "true" if profile.use_fp16 else "false",
         "{cpu_offload}": "true" if profile.enable_cpu_offload else "false",
+        "{guidance_scale}": str(profile.guidance_scale),
+        "{use_kv_cache}": "true" if profile.use_kv_cache else "false",
+        "{decoder_chunk_size}": str(profile.decoder_chunk_size),
+        "{inference_dtype}": profile.inference_dtype,
     }
     command: list[str] = []
     for part in template:
@@ -69,6 +73,7 @@ def build_cube_command(
         "generate_preview",
         "simplify_after_generation",
         "target_face_count",
+        "bounding_box_xyz",
     ]
     notes = [
         "Profile settings are passed only when the command template includes their placeholders.",

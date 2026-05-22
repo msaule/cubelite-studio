@@ -15,6 +15,10 @@ class GenerationProfile:
     generate_preview: bool
     simplify_after_generation: bool
     target_face_count: int
+    guidance_scale: float
+    use_kv_cache: bool
+    decoder_chunk_size: int
+    inference_dtype: str
     notes: str
 
     def to_dict(self) -> dict[str, object]:
@@ -33,6 +37,10 @@ PROFILES: dict[str, GenerationProfile] = {
         generate_preview=False,
         simplify_after_generation=True,
         target_face_count=10000,
+        guidance_scale=0.0,
+        use_kv_cache=False,
+        decoder_chunk_size=20000,
+        inference_dtype="bfloat16",
         notes="Auto is resolved before generation and does not imply unsupported Cube 3D flags.",
     ),
     "Low VRAM": GenerationProfile(
@@ -46,6 +54,10 @@ PROFILES: dict[str, GenerationProfile] = {
         generate_preview=False,
         simplify_after_generation=True,
         target_face_count=10000,
+        guidance_scale=0.0,
+        use_kv_cache=False,
+        decoder_chunk_size=20000,
+        inference_dtype="bfloat16",
         notes="Prioritizes completing generations over detail. Preview generation is disabled by default.",
     ),
     "Balanced": GenerationProfile(
@@ -59,6 +71,10 @@ PROFILES: dict[str, GenerationProfile] = {
         generate_preview=True,
         simplify_after_generation=True,
         target_face_count=18000,
+        guidance_scale=1.0,
+        use_kv_cache=False,
+        decoder_chunk_size=30000,
+        inference_dtype="bfloat16",
         notes="Designed for practical creator iteration with moderate mesh complexity.",
     ),
     "High Quality": GenerationProfile(
@@ -72,6 +88,10 @@ PROFILES: dict[str, GenerationProfile] = {
         generate_preview=True,
         simplify_after_generation=False,
         target_face_count=30000,
+        guidance_scale=3.0,
+        use_kv_cache=True,
+        decoder_chunk_size=100000,
+        inference_dtype="bfloat16",
         notes="Fast inference may require more VRAM and depends on the detected Cube 3D installation.",
     ),
     "Benchmark Safe": GenerationProfile(
@@ -85,6 +105,10 @@ PROFILES: dict[str, GenerationProfile] = {
         generate_preview=False,
         simplify_after_generation=True,
         target_face_count=8000,
+        guidance_scale=0.0,
+        use_kv_cache=False,
+        decoder_chunk_size=20000,
+        inference_dtype="bfloat16",
         notes="Useful for measuring the lowest workable path before trying heavier settings.",
     ),
 }
