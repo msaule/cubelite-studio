@@ -8,5 +8,5 @@ pynvml>=11.5
 plotly>=5.18
 matplotlib>=3.8
 
-# Optional for mesh simplification. It can be heavy on some systems, so install manually if needed:
+# Recommended for polished mesh simplification. It can be heavy on some systems, so install manually if needed:
 # pymeshlab>=2023.12

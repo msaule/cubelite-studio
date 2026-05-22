@@ -134,7 +134,7 @@ def generate_tab(st, settings: AppSettings) -> None:
 
 def benchmark_tab(st, settings: AppSettings) -> None:
     prompt_count = st.slider("Max prompts", min_value=1, max_value=len(BENCHMARK_PROMPTS), value=3)
-    profiles = st.multiselect("Profiles to test", ["Low VRAM", "Balanced", "High Quality", "Benchmark Safe"], default=["Low VRAM", "Balanced"])
+    profiles = st.multiselect("Profiles to test", ["Low VRAM", "6GB Quality", "Balanced", "High Quality", "Benchmark Safe"], default=["Low VRAM", "6GB Quality"])
     dry_run = st.toggle("Dry run benchmark", value=True)
     create_report = st.toggle("Generate technical report", value=True)
     if st.button("Start benchmark", type="primary"):

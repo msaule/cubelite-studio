@@ -18,6 +18,7 @@ def test_case_study_discovers_assets_and_summarizes(tmp_path: Path) -> None:
                 "peak_vram_gb": 3.932,
                 "generation_time_seconds": 210.0,
                 "original_mesh_stats": {"triangle_count": 128},
+                "optimized_mesh_stats": {"triangle_count": 64},
             }
         ),
         encoding="utf-8",
@@ -29,6 +30,7 @@ def test_case_study_discovers_assets_and_summarizes(tmp_path: Path) -> None:
     assert len(assets) == 1
     assert assets[0].prompt == "low poly test crate"
     assert summary.asset_count == 1
+    assert assets[0].triangle_count == 64
     assert summary.max_peak_vram_gb == 3.932
     assert summary.average_readiness_score == 92
 

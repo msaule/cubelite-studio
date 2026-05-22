@@ -58,6 +58,7 @@ def discover_case_study_assets(examples_dir: Path = REAL_EXAMPLES_DIR) -> list[C
         except (OSError, json.JSONDecodeError):
             continue
         original_stats = metadata.get("original_mesh_stats") or {}
+        final_stats = metadata.get("optimized_mesh_stats") or original_stats
         preview = metadata_path.parent / "preview.png"
         original = metadata_path.parent / "original.obj"
         curated = curation.get(metadata_path.parent.name, {})
@@ -69,7 +70,7 @@ def discover_case_study_assets(examples_dir: Path = REAL_EXAMPLES_DIR) -> list[C
                 preview_path=str(preview) if preview.exists() else None,
                 original_obj_path=str(original) if original.exists() else None,
                 readiness_score=_optional_int(metadata.get("readiness_score")),
-                triangle_count=_optional_int(original_stats.get("triangle_count")),
+                triangle_count=_optional_int(final_stats.get("triangle_count")),
                 peak_vram_gb=_optional_float(metadata.get("peak_vram_gb")),
                 generation_time_seconds=_optional_float(metadata.get("generation_time_seconds")),
                 status=str(metadata.get("readiness_status", "n/a")),

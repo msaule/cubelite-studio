@@ -1,12 +1,12 @@
 # CubeLite Studio: Roblox Cube 3D Consumer-GPU Case Study
 
-![Real CubeLite outputs](cubelite-real-results-contact-sheet-20260522-150949.png)
+![Real CubeLite outputs](cubelite-real-results-contact-sheet-20260522-155355.png)
 
 ## Executive Summary
 
 CubeLite Studio is an independent local toolkit around Roblox Cube 3D. The project does not claim ownership of Cube 3D, does not redistribute model weights, and is not affiliated with Roblox Corporation.
 
-The technical result is practical: on an RTX 4050 Laptop GPU with 6GB VRAM, the official high-memory path failed with CUDA out-of-memory near 5.98GB peak VRAM, while CubeLite's staged low-VRAM runner completed real Cube 3D v0.5 generations at about 4.05GB peak observed VRAM.
+The technical result is practical: on an RTX 4050 Laptop GPU with 6GB VRAM, the official high-memory path failed with CUDA out-of-memory near 5.98GB peak VRAM, while CubeLite's staged low-VRAM runner completed real Cube 3D v0.5 generations at about 4.17GB peak observed VRAM.
 
 ## Why This Is Interesting
 
@@ -17,17 +17,18 @@ The technical result is practical: on an RTX 4050 Laptop GPU with 6GB VRAM, the 
 
 ## Real Local Evidence
 
-- Real generated assets discovered: 7
-- Assets with mesh/readiness data: 7
-- Average generation time: 214.17 seconds
-- Peak observed low-VRAM run: 4.05 GB
-- Average triangle count: 1230.86
-- Average readiness score: 93.14/100
+- Real generated assets discovered: 8
+- Assets with mesh/readiness data: 8
+- Average generation time: 237.79 seconds
+- Peak observed low-VRAM run: 4.17 GB
+- Average triangle count: 2577.00
+- Average readiness score: 94.00/100
 
 Readiness is a Roblox-import heuristic, not a semantic quality score. The quality column separates showcase outputs from mixed or failed shapes.
 
 | Prompt | Profile | Seconds | Peak VRAM GB | Triangles | Readiness | Quality | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| low poly closed wooden treasure chest, single object, blocky game asset, simple geometry, flat lid, metal bands 6gb quality simplified | 6GB Quality + Simplified 12k | 379.5 | 4.17 | 12000 | 100 | Showcase | Ready to test |
 | low poly closed wooden treasure chest, single object, blocky game asset, simple geometry, flat lid, metal bands | Low VRAM | 210.6 | 3.93 | 1812 | 92 | Showcase | Ready to test |
 | simple wooden crate, game asset | Benchmark Safe | 218.4 | 3.93 | 2856 | 92 | Showcase | Ready to test |
 | low poly fantasy sword, single object | Benchmark Safe | 217.1 | 3.93 | 156 | 92 | Usable baseline | Ready to test |
@@ -61,6 +62,6 @@ CubeLite Studio adds a creator-facing Streamlit app with Generate, Benchmark, Re
 
 ## Email-Ready Note
 
-I built CubeLite Studio as an independent low-VRAM workflow and benchmarking layer around Roblox Cube 3D. The case study shows that on a 6GB RTX 4050 Laptop GPU, the official path hit CUDA OOM, while a staged CubeLite runner completed real Cube 3D v0.5 generations at about 4.05GB peak VRAM. The project includes a local creator app, benchmark runner, mesh/readiness analysis, export packaging, and a technical report generator designed around Roblox creator workflows.
+I built CubeLite Studio as an independent low-VRAM workflow and benchmarking layer around Roblox Cube 3D. The case study shows that on a 6GB RTX 4050 Laptop GPU, the official path hit CUDA OOM, while a staged CubeLite runner completed real Cube 3D v0.5 generations at about 4.17GB peak VRAM. The project includes a local creator app, benchmark runner, mesh/readiness analysis, export packaging, and a technical report generator designed around Roblox creator workflows.
 
 CubeLite Studio version: 0.1.0

@@ -33,4 +33,13 @@ Follow-up prompt sensitivity examples:
 
 `curation.json` separates showcase outputs from mixed and failed semantic results. The readiness score is an import-workflow heuristic, not a semantic quality score.
 
+6GB Quality push:
+
+- `low-poly-closed-wooden-treasure-chest-single-object-blocky-game-6gb-quality-simplified-20260522-155153`
+- used `6GB Quality` with guidance enabled, higher resolution, and a larger decoder chunk
+- completed at about 380 seconds with 4.17GB observed peak VRAM
+- original mesh: 32,036 triangles
+- optimized mesh: 12,000 triangles after `pymeshlab` simplification
+- optimized readiness score: 100/100
+
 These outputs are examples, not official Roblox validation. Users remain responsible for following the original Cube 3D license and Roblox platform rules.
