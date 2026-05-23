@@ -66,6 +66,9 @@ def create_export_package(
         copied_semantic_obj = _copy_finished_file(finished_asset, "semantic_obj_path", export_dir / "semantic_material.obj")
         copied_semantic_mtl = _copy_finished_file(finished_asset, "semantic_material_path", export_dir / "semantic_material.mtl")
         copied_material_preview = _copy_finished_file(finished_asset, "material_preview_path", export_dir / "semantic_material_preview.png")
+        copied_repair_obj = _copy_finished_file(finished_asset, "repair_obj_path", export_dir / "repair_proxy.obj")
+        copied_repair_mtl = _copy_finished_file(finished_asset, "repair_material_path", export_dir / "repair_proxy.mtl")
+        copied_repair_preview = _copy_finished_file(finished_asset, "repair_preview_path", export_dir / "repair_proxy_preview.png")
         copied_finish_report = _copy_finished_file(finished_asset, "report_path", export_dir / "finish_report.json")
 
         original_stats = original_stats or analyze_mesh(original_obj)
@@ -96,9 +99,13 @@ def create_export_package(
             "semantic_material_obj": str(copied_semantic_obj.name) if copied_semantic_obj else None,
             "semantic_material_file": str(copied_semantic_mtl.name) if copied_semantic_mtl else None,
             "semantic_material_preview": str(copied_material_preview.name) if copied_material_preview else None,
+            "repair_proxy_obj": str(copied_repair_obj.name) if copied_repair_obj else None,
+            "repair_proxy_material_file": str(copied_repair_mtl.name) if copied_repair_mtl else None,
+            "repair_proxy_preview": str(copied_repair_preview.name) if copied_repair_preview else None,
             "finish_report": str(copied_finish_report.name) if copied_finish_report else None,
             "texture_quality": (finished_asset or {}).get("texture_stats") if finished_asset else None,
             "semantic_material": (finished_asset or {}).get("semantic_material") if finished_asset else None,
+            "repair": (finished_asset or {}).get("repair") if finished_asset else None,
             "readiness_score": readiness.score,
             "readiness_status": readiness.status,
             "warnings": readiness.warnings,

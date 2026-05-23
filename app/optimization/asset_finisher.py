@@ -9,6 +9,7 @@ from app.optimization.texture_generator import generate_material_pack
 from app.optimization.uv_unwrapper import unwrap_obj_with_xatlas
 from app.optimization.semantic_materializer import materialize_obj_semantically
 from app.optimization.textured_renderer import render_material_inspection_plate
+from app.optimization.prop_rebuilder import rebuild_prompt_proxy
 from app.utils.time_utils import utc_iso
 
 
@@ -28,6 +29,10 @@ class AssetFinishResult:
     semantic_material_path: str | None = None
     material_preview_path: str | None = None
     semantic_material: dict[str, object] | None = None
+    repair_obj_path: str | None = None
+    repair_material_path: str | None = None
+    repair_preview_path: str | None = None
+    repair: dict[str, object] | None = None
     texture_stats: dict[str, object] | None = None
     error_message: str = ""
 
@@ -116,6 +121,17 @@ def finish_asset_for_roblox(
         )
         material_preview_path = preview.output_path if preview.success else None
 
+    repair = rebuild_prompt_proxy(prompt, output_dir / "repair_proxy.obj")
+    repair_preview_path = None
+    if repair.success and repair.output_obj_path:
+        repair_preview = render_material_inspection_plate(
+            Path(repair.output_obj_path),
+            output_dir / "repair_proxy_preview.png",
+            "Procedural repair proxy",
+            show_edges=True,
+        )
+        repair_preview_path = repair_preview.output_path if repair_preview.success else None
+
     return _write_finish_report(
         output_dir,
         AssetFinishResult(
@@ -130,6 +146,10 @@ def finish_asset_for_roblox(
             semantic_material_path=semantic.output_mtl_path,
             material_preview_path=material_preview_path,
             semantic_material=semantic.to_dict(),
+            repair_obj_path=repair.output_obj_path,
+            repair_material_path=repair.output_mtl_path,
+            repair_preview_path=repair_preview_path,
+            repair=repair.to_dict(),
             report_path=None,
             uv_unwrap=uv.to_dict(),
             texture=texture.to_dict(),

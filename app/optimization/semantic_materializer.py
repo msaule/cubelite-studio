@@ -17,6 +17,13 @@ class SemanticMaterializeResult:
         return asdict(self)
 
 
+@dataclass(frozen=True)
+class MaterialContext:
+    bounds: tuple[tuple[float, float, float], tuple[float, float, float]]
+    longest_axis: int
+    sword_blade_sign: int = 1
+
+
 MATERIAL_COLORS: dict[str, tuple[float, float, float]] = {
     "wood_main": (0.70, 0.41, 0.18),
     "wood_dark": (0.43, 0.24, 0.10),
@@ -43,12 +50,12 @@ def materialize_obj_semantically(input_obj: Path, output_obj: Path, prompt: str)
             return SemanticMaterializeResult(False, None, None, error_message="Input OBJ has no usable vertices/faces.")
         output_obj.parent.mkdir(parents=True, exist_ok=True)
         output_mtl = output_obj.with_suffix(".mtl")
-        bounds = _bounds(vertices)
+        context = _build_material_context(prompt, vertices)
         assignments: list[str] = []
         material_colors: dict[str, tuple[float, float, float]] = {}
         for face in faces:
-            material_key = _assign_material(prompt, vertices, face)
-            color = _procedural_face_color(material_key, prompt, vertices, face, bounds)
+            material_key = _assign_material(prompt, vertices, face, context)
+            color = _procedural_face_color(material_key, prompt, vertices, face, context.bounds)
             material_name = _material_name(material_key, color)
             assignments.append(material_name)
             material_colors[material_name] = color
@@ -78,21 +85,29 @@ def _parse_obj(path: Path) -> tuple[list[tuple[float, float, float]], list[tuple
     return vertices, faces
 
 
-def _assign_material(prompt: str, vertices: list[tuple[float, float, float]], face: tuple[int, int, int]) -> str:
+def _build_material_context(prompt: str, vertices: list[tuple[float, float, float]]) -> MaterialContext:
+    bounds = _bounds(vertices)
+    longest_axis = _longest_axis(bounds)
+    sword_blade_sign = _infer_sword_blade_sign(prompt, vertices, bounds, longest_axis)
+    return MaterialContext(bounds=bounds, longest_axis=longest_axis, sword_blade_sign=sword_blade_sign)
+
+
+def _assign_material(prompt: str, vertices: list[tuple[float, float, float]], face: tuple[int, int, int], context: MaterialContext) -> str:
     lower = prompt.lower()
     centroid = tuple(sum(vertices[index][axis] for index in face) / 3 for axis in range(3))
-    bounds = _bounds(vertices)
-    normalized = _normalize_point(centroid, bounds)
+    normalized = _normalize_point(centroid, context.bounds)
     normal = _face_normal(vertices, face)
     if "sword" in lower:
-        longest_axis = _longest_axis(bounds)
-        t = normalized[longest_axis]
-        if abs(t) > 0.42:
+        t = normalized[context.longest_axis] * context.sword_blade_sign
+        radius = _orthogonal_radius(normalized, context.longest_axis)
+        if t > 0.16:
             return "crystal" if any(word in lower for word in ("crystal", "gem", "magic")) else "metal_light"
-        if abs(t) < 0.10 and any(word in lower for word in ("green", "emerald", "gem")):
+        if -0.28 <= t <= 0.16 and radius > 0.36:
+            return "metal_gold" if any(word in lower for word in ("fantasy", "gold", "medieval", "magic")) else "metal_light"
+        if -0.22 <= t <= 0.08 and any(word in lower for word in ("green", "emerald", "gem")) and radius < 0.32:
             return "crystal_green"
-        if abs(t) < 0.18:
-            return "metal_gold" if any(word in lower for word in ("fantasy", "gold", "medieval")) else "metal_dark"
+        if t < -0.70 and radius > 0.26:
+            return "metal_gold" if any(word in lower for word in ("fantasy", "gold", "medieval", "magic")) else "metal_dark"
         return "metal_dark"
     if any(word in lower for word in ("sci-fi", "scifi", "supply")):
         if int(abs(normalized[0] * 7) + abs(normalized[1] * 5) + abs(normalized[2] * 3)) % 7 == 0:
@@ -141,6 +156,33 @@ def _face_normal(vertices: list[tuple[float, float, float]], face: tuple[int, in
     nz = ux * vy - uy * vx
     length = max((nx * nx + ny * ny + nz * nz) ** 0.5, 1e-8)
     return nx / length, ny / length, nz / length
+
+
+def _infer_sword_blade_sign(
+    prompt: str,
+    vertices: list[tuple[float, float, float]],
+    bounds: tuple[tuple[float, float, float], tuple[float, float, float]],
+    longest_axis: int,
+) -> int:
+    if "sword" not in prompt.lower():
+        return 1
+    negative: list[float] = []
+    positive: list[float] = []
+    for vertex in vertices:
+        normalized = _normalize_point(vertex, bounds)
+        t = normalized[longest_axis]
+        radius = _orthogonal_radius(normalized, longest_axis)
+        if t < -0.25:
+            negative.append(radius)
+        elif t > 0.25:
+            positive.append(radius)
+    negative_radius = sum(negative) / len(negative) if negative else 1.0
+    positive_radius = sum(positive) / len(positive) if positive else 1.0
+    return 1 if positive_radius <= negative_radius else -1
+
+
+def _orthogonal_radius(normalized: tuple[float, float, float], axis: int) -> float:
+    return math.sqrt(sum(normalized[other] * normalized[other] for other in range(3) if other != axis))
 
 
 def _procedural_face_color(

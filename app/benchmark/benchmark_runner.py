@@ -15,6 +15,7 @@ from app.cube.low_vram_profiles import GenerationProfile, get_profile
 from app.optimization.asset_finisher import finish_asset_for_roblox
 from app.optimization.export_packager import create_export_package
 from app.optimization.mesh_analyzer import analyze_mesh
+from app.optimization.mesh_cleaner import remove_small_components
 from app.optimization.mesh_renderer import render_mesh_inspection_plate, render_mesh_preview
 from app.optimization.mesh_simplifier import simplify_mesh
 from app.optimization.roblox_checker import check_roblox_readiness
@@ -76,18 +77,31 @@ def run_single_pipeline(
 
     optimized_stats = None
     optimized_obj = None
+    cleanup_result = None
+    cleaned_obj = None
     simplification_result = None
     render_result = None
     inspection_result = None
     finish_result = None
+    work_obj = obj_path
+    if obj_path and stats and stats.success:
+        cleaned_obj = Path(generation.output_dir) / "cleaned.obj"
+        cleanup_result = remove_small_components(obj_path, cleaned_obj)
+        if cleanup_result.success and cleanup_result.output_path:
+            work_obj = Path(cleanup_result.output_path)
+            stats = analyze_mesh(work_obj)
+
     simplify_requested = profile.simplify_after_generation if simplify is None else simplify
-    if obj_path and stats and stats.success and simplify_requested:
+    if work_obj and stats and stats.success and simplify_requested:
         optimized_obj = Path(generation.output_dir) / "optimized.obj"
-        simplification_result = simplify_mesh(obj_path, optimized_obj, profile.target_face_count)
+        simplification_result = simplify_mesh(work_obj, optimized_obj, profile.target_face_count)
         if simplification_result.output_path:
             optimized_stats = analyze_mesh(Path(simplification_result.output_path))
+    elif cleaned_obj and cleanup_result and cleanup_result.removed_components > 0:
+        optimized_obj = cleaned_obj
+        optimized_stats = stats
 
-    render_source = optimized_obj if optimized_obj and optimized_obj.exists() else obj_path
+    render_source = optimized_obj if optimized_obj and optimized_obj.exists() else work_obj
     preview_path = None
     if render_source and stats and stats.success:
         preview_path = Path(generation.output_dir) / "preview.png"
@@ -158,6 +172,7 @@ def run_single_pipeline(
         "generation": generation.to_dict(),
         "mesh_stats": stats.to_dict() if stats else None,
         "optimized_mesh_stats": optimized_stats.to_dict() if optimized_stats else None,
+        "cleanup": cleanup_result.to_dict() if cleanup_result else None,
         "simplification": simplification_result.to_dict() if simplification_result else None,
         "render": render_result.to_dict() if render_result else None,
         "inspection_render": inspection_result.to_dict() if inspection_result else None,
