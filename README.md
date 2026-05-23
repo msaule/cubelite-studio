@@ -21,9 +21,11 @@ The goal is not to claim ownership of Cube 3D, retrain a foundation model, or pr
 - VRAM monitoring through PyNVML or PyTorch when available.
 - OBJ mesh analysis with vertex count, triangle count, file size, scale, normals, materials, and warnings.
 - Local PNG preview rendering for generated OBJ meshes.
+- Multi-angle mesh inspection plates.
 - Heuristic Roblox-readiness report.
 - Optional mesh simplification through `pymeshlab`.
-- Export packages containing OBJ files, metadata, import notes, and benchmark summaries.
+- UV unwrapping through `xatlas` plus generated OBJ/MTL/PNG texture-atlas output.
+- Export packages containing OBJ files, textured OBJ files, metadata, import notes, and benchmark summaries.
 - Benchmark CSV, JSON, and technical Markdown report generation.
 - Roblox-reviewable case study pack with real-output contact sheet, HTML summary, and email-ready technical framing.
 
@@ -70,6 +72,7 @@ Dry run mode uses a small valid sample OBJ mesh and does not call Cube 3D. This 
 - prompt entry
 - profile selection
 - mesh analysis
+- UV unwrap and texture-atlas finishing
 - Roblox-readiness scoring
 - export package creation
 - benchmark CSV/JSON generation
@@ -136,7 +139,10 @@ Export packages are written to `exports/sanitized-prompt-timestamp/` and include
 
 - `original.obj`
 - `optimized.obj` when simplification succeeds or a fallback copy exists
+- `textured.obj`, `textured.mtl`, and `albedo.png` when UV/texturing finishing succeeds
 - `preview.png` when local rendering dependencies are available
+- `inspection_plate.png` when multi-angle rendering succeeds
+- `finish_report.json` with UV unwrap and texture generation details
 - `metadata.json`
 - `roblox_import_notes.txt`
 - `benchmark_summary.json`
@@ -163,6 +169,7 @@ The Case Study tab can also generate a portfolio-style Markdown and HTML pack fr
 - Command-line integration depends on a user-provided command template for the specific Cube release.
 - VRAM telemetry depends on PyNVML or PyTorch CUDA support.
 - Mesh simplification requires optional `pymeshlab`.
+- UV unwrapping uses `xatlas`; the generated texture atlas is procedural, not a neural texture model.
 - Roblox readiness is heuristic and cannot guarantee import success.
 - Dry run mode validates the pipeline but does not benchmark Cube 3D itself.
 

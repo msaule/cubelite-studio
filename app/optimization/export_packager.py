@@ -36,6 +36,7 @@ def create_export_package(
     optimized_stats: MeshStats | None = None,
     preview_path: Path | None = None,
     inspection_plate_path: Path | None = None,
+    finished_asset: dict[str, object] | None = None,
     benchmark_summary: dict[str, object] | None = None,
     dry_run: bool = False,
     cube_repo_path: Path | str | None = None,
@@ -56,6 +57,10 @@ def create_export_package(
         copied_optimized = copy_if_exists(optimized_obj, export_dir / "optimized.obj") if optimized_obj else None
         copy_if_exists(preview_path, export_dir / (preview_path.name if preview_path else "preview.png"))
         copied_plate = copy_if_exists(inspection_plate_path, export_dir / "inspection_plate.png") if inspection_plate_path else None
+        copied_textured_obj = _copy_finished_file(finished_asset, "textured_obj_path", export_dir / "textured.obj")
+        copied_material = _copy_finished_file(finished_asset, "material_path", export_dir / "textured.mtl")
+        copied_texture = _copy_finished_file(finished_asset, "texture_path", export_dir / "albedo.png")
+        copied_finish_report = _copy_finished_file(finished_asset, "report_path", export_dir / "finish_report.json")
 
         original_stats = original_stats or analyze_mesh(original_obj)
         if copied_optimized and optimized_stats is None:
@@ -73,9 +78,13 @@ def create_export_package(
             "total_vram_gb": total_vram_gb,
             "peak_vram_gb": peak_vram_gb,
             "generation_time_seconds": generation_time_seconds,
-            "original_mesh_stats": original_stats.to_dict(),
-            "optimized_mesh_stats": optimized_stats.to_dict() if optimized_stats else None,
+            "original_mesh_stats": _stats_for_metadata(original_stats, include_private_paths),
+            "optimized_mesh_stats": _stats_for_metadata(optimized_stats, include_private_paths) if optimized_stats else None,
             "inspection_plate": str(copied_plate.name) if copied_plate else None,
+            "textured_obj": str(copied_textured_obj.name) if copied_textured_obj else None,
+            "material_file": str(copied_material.name) if copied_material else None,
+            "texture_file": str(copied_texture.name) if copied_texture else None,
+            "finish_report": str(copied_finish_report.name) if copied_finish_report else None,
             "readiness_score": readiness.score,
             "readiness_status": readiness.status,
             "warnings": readiness.warnings,
@@ -92,3 +101,19 @@ def create_export_package(
         return ExportPackageResult(True, str(export_dir), str(metadata_path), str(notes_path))
     except Exception as exc:
         return ExportPackageResult(False, None, None, None, f"Export failed: {exc}")
+
+
+def _copy_finished_file(finished_asset: dict[str, object] | None, key: str, destination: Path) -> Path | None:
+    if not finished_asset:
+        return None
+    value = finished_asset.get(key)
+    if not value:
+        return None
+    return copy_if_exists(Path(str(value)), destination)
+
+
+def _stats_for_metadata(stats: MeshStats, include_private_paths: bool) -> dict[str, object]:
+    data = stats.to_dict()
+    if not include_private_paths and data.get("path"):
+        data["path"] = Path(str(data["path"])).name
+    return data

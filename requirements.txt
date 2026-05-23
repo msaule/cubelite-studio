@@ -7,6 +7,11 @@ pytest>=8.0
 pynvml>=11.5
 plotly>=5.18
 matplotlib>=3.8
+Pillow>=10.0
+xatlas>=0.0.11
 
 # Recommended for polished mesh simplification. It can be heavy on some systems, so install manually if needed:
 # pymeshlab>=2023.12
+
+# Optional future neural texturing providers can plug into app/optimization/texture_generator.py.
+# Keep model weights out of this repository.

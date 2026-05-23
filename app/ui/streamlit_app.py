@@ -123,6 +123,7 @@ def generate_tab(st, settings: AppSettings) -> None:
         export = details.get("export") or {}
         render = details.get("render") or {}
         inspection_render = details.get("inspection_render") or {}
+        finished_asset = details.get("finished_asset") or {}
         if render.get("success") and render.get("output_path"):
             st.image(render["output_path"], caption="Local mesh preview")
         elif render.get("error_message"):
@@ -131,6 +132,12 @@ def generate_tab(st, settings: AppSettings) -> None:
             st.image(inspection_render["output_path"], caption="Multi-angle geometry inspection")
         elif inspection_render.get("error_message"):
             st.info(inspection_render["error_message"])
+        if finished_asset.get("success"):
+            st.success(f"Textured OBJ: {finished_asset.get('textured_obj_path')}")
+            if finished_asset.get("texture_path"):
+                st.image(finished_asset["texture_path"], caption="Generated texture atlas")
+        elif finished_asset.get("error_message"):
+            st.info(f"Finishing skipped: {finished_asset['error_message']}")
         if export.get("export_dir"):
             st.success(f"Export folder: {export['export_dir']}")
         with st.expander("Logs"):

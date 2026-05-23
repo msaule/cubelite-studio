@@ -12,6 +12,7 @@ from app.benchmark.benchmark_report import generate_technical_report
 from app.config import BENCHMARKS_DIR, EXPORTS_DIR, OUTPUTS_DIR, REPORTS_DIR
 from app.cube.cube_runner import generate_mesh
 from app.cube.low_vram_profiles import GenerationProfile, get_profile
+from app.optimization.asset_finisher import finish_asset_for_roblox
 from app.optimization.export_packager import create_export_package
 from app.optimization.mesh_analyzer import analyze_mesh
 from app.optimization.mesh_renderer import render_mesh_inspection_plate, render_mesh_preview
@@ -73,6 +74,7 @@ def run_single_pipeline(
     simplification_result = None
     render_result = None
     inspection_result = None
+    finish_result = None
     simplify_requested = profile.simplify_after_generation if simplify is None else simplify
     if obj_path and stats and stats.success and simplify_requested:
         optimized_obj = Path(generation.output_dir) / "optimized.obj"
@@ -94,6 +96,10 @@ def run_single_pipeline(
     else:
         inspection_plate_path = None
 
+    if render_source and stats and stats.success:
+        finish_dir = Path(generation.output_dir) / "finished_asset"
+        finish_result = finish_asset_for_roblox(render_source, finish_dir, prompt=prompt)
+
     readiness = check_roblox_readiness(
         optimized_stats if optimized_stats and optimized_stats.success else (stats or analyze_mesh(Path("__missing__.obj"))),
         simplification_failed=bool(simplification_result and not simplification_result.success),
@@ -112,6 +118,7 @@ def run_single_pipeline(
             optimized_stats=optimized_stats,
             preview_path=preview_path,
             inspection_plate_path=inspection_plate_path,
+            finished_asset=finish_result.to_dict() if finish_result else None,
             dry_run=dry_run,
             cube_repo_path=cube_repo_path,
             model_weights_path=model_weights_path,
@@ -140,6 +147,7 @@ def run_single_pipeline(
         "simplification": simplification_result.to_dict() if simplification_result else None,
         "render": render_result.to_dict() if render_result else None,
         "inspection_render": inspection_result.to_dict() if inspection_result else None,
+        "finished_asset": finish_result.to_dict() if finish_result else None,
         "readiness": readiness.to_dict(),
         "export": export_result.__dict__ if export_result else None,
     }
