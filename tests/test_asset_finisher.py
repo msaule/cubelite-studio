@@ -64,6 +64,9 @@ def test_asset_finisher_creates_obj_mtl_texture_and_report(tmp_path: Path) -> No
     assert result.normal_path and Path(result.normal_path).exists()
     assert result.roughness_path and Path(result.roughness_path).exists()
     assert result.metallic_path and Path(result.metallic_path).exists()
+    assert result.semantic_obj_path and Path(result.semantic_obj_path).exists()
+    assert result.semantic_material_path and Path(result.semantic_material_path).exists()
+    assert result.material_preview_path and Path(result.material_preview_path).exists()
     assert result.report_path and Path(result.report_path).exists()
     assert result.texture_stats
     assert result.texture_stats["production_score"] is not None

@@ -178,6 +178,10 @@ def generate_tab(st, settings: AppSettings) -> None:
             st.success(f"Textured OBJ: {finished_asset.get('textured_obj_path')}")
             if finished_asset.get("texture_path"):
                 st.image(finished_asset["texture_path"], caption="Generated texture atlas")
+            if finished_asset.get("material_preview_path"):
+                st.image(finished_asset["material_preview_path"], caption="Semantic material inspection")
+            if finished_asset.get("semantic_obj_path"):
+                st.success(f"Semantic material OBJ: {finished_asset.get('semantic_obj_path')}")
             map_cols = st.columns(3)
             if finished_asset.get("normal_path"):
                 map_cols[0].image(finished_asset["normal_path"], caption="Normal map")

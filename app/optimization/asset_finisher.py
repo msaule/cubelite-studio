@@ -7,6 +7,8 @@ from pathlib import Path
 from app.optimization.texture_analyzer import analyze_texture
 from app.optimization.texture_generator import generate_material_pack
 from app.optimization.uv_unwrapper import unwrap_obj_with_xatlas
+from app.optimization.semantic_materializer import materialize_obj_semantically
+from app.optimization.textured_renderer import render_material_inspection_plate
 from app.utils.time_utils import utc_iso
 
 
@@ -22,6 +24,10 @@ class AssetFinishResult:
     normal_path: str | None = None
     roughness_path: str | None = None
     metallic_path: str | None = None
+    semantic_obj_path: str | None = None
+    semantic_material_path: str | None = None
+    material_preview_path: str | None = None
+    semantic_material: dict[str, object] | None = None
     texture_stats: dict[str, object] | None = None
     error_message: str = ""
 
@@ -99,6 +105,17 @@ def finish_asset_for_roblox(
             ),
         )
 
+    semantic = materialize_obj_semantically(input_obj, output_dir / "semantic_material.obj", prompt)
+    material_preview_path = None
+    if semantic.success and semantic.output_obj_path:
+        preview = render_material_inspection_plate(
+            Path(semantic.output_obj_path),
+            output_dir / "semantic_material_preview.png",
+            "Semantic material inspection",
+            show_edges=False,
+        )
+        material_preview_path = preview.output_path if preview.success else None
+
     return _write_finish_report(
         output_dir,
         AssetFinishResult(
@@ -109,6 +126,10 @@ def finish_asset_for_roblox(
             normal_path=str(normal_path) if normal_path else None,
             roughness_path=str(roughness_path) if roughness_path else None,
             metallic_path=str(metallic_path) if metallic_path else None,
+            semantic_obj_path=semantic.output_obj_path,
+            semantic_material_path=semantic.output_mtl_path,
+            material_preview_path=material_preview_path,
+            semantic_material=semantic.to_dict(),
             report_path=None,
             uv_unwrap=uv.to_dict(),
             texture=texture.to_dict(),

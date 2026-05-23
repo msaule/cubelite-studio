@@ -63,6 +63,9 @@ def create_export_package(
         copied_normal = _copy_finished_file(finished_asset, "normal_path", export_dir / "normal.png")
         copied_roughness = _copy_finished_file(finished_asset, "roughness_path", export_dir / "roughness.png")
         copied_metallic = _copy_finished_file(finished_asset, "metallic_path", export_dir / "metallic.png")
+        copied_semantic_obj = _copy_finished_file(finished_asset, "semantic_obj_path", export_dir / "semantic_material.obj")
+        copied_semantic_mtl = _copy_finished_file(finished_asset, "semantic_material_path", export_dir / "semantic_material.mtl")
+        copied_material_preview = _copy_finished_file(finished_asset, "material_preview_path", export_dir / "semantic_material_preview.png")
         copied_finish_report = _copy_finished_file(finished_asset, "report_path", export_dir / "finish_report.json")
 
         original_stats = original_stats or analyze_mesh(original_obj)
@@ -90,8 +93,12 @@ def create_export_package(
             "normal_file": str(copied_normal.name) if copied_normal else None,
             "roughness_file": str(copied_roughness.name) if copied_roughness else None,
             "metallic_file": str(copied_metallic.name) if copied_metallic else None,
+            "semantic_material_obj": str(copied_semantic_obj.name) if copied_semantic_obj else None,
+            "semantic_material_file": str(copied_semantic_mtl.name) if copied_semantic_mtl else None,
+            "semantic_material_preview": str(copied_material_preview.name) if copied_material_preview else None,
             "finish_report": str(copied_finish_report.name) if copied_finish_report else None,
             "texture_quality": (finished_asset or {}).get("texture_stats") if finished_asset else None,
+            "semantic_material": (finished_asset or {}).get("semantic_material") if finished_asset else None,
             "readiness_score": readiness.score,
             "readiness_status": readiness.status,
             "warnings": readiness.warnings,

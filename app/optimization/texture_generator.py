@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
+import math
 import random
 import time
 
@@ -131,16 +132,16 @@ def _generate_studio_texture(
     base, accent, line = _style_palette(material, style)
     image = Image.new("RGB", (size, size), base)
     draw = ImageDraw.Draw(image)
-    _draw_noise(draw, size, rng, base, accent)
+    _draw_noise(draw, size, rng, base, accent, density=2)
 
     if material == "wood":
-        _draw_wood(draw, size, rng, line, accent)
+        _draw_tileable_wood(draw, size, rng, line, accent)
     elif material == "metal":
-        _draw_metal(draw, size, line, accent)
+        _draw_tileable_metal(draw, size, rng, line, accent)
     elif material == "crystal":
-        _draw_crystal(draw, size, rng, line, accent)
+        _draw_tileable_crystal(draw, size, rng, line, accent)
     else:
-        _draw_clay_grid(draw, size, line)
+        _draw_tileable_clay(draw, size, rng, line)
     if style == "toybox":
         _draw_toybox_accents(draw, size, rng, line, accent)
     elif style == "sci_fi":
@@ -261,12 +262,12 @@ def build_texture_prompt(prompt: str) -> str:
 
 def infer_material(prompt: str) -> str:
     lower = prompt.lower()
+    if any(word in lower for word in ("crystal", "gem", "magic", "glowing")):
+        return "crystal"
     if any(word in lower for word in ("wood", "crate", "chest", "boat", "barrel", "plank")):
         return "wood"
     if any(word in lower for word in ("sword", "shield", "metal", "robot")):
         return "metal"
-    if any(word in lower for word in ("crystal", "gem", "magic", "glowing")):
-        return "crystal"
     return "clay"
 
 
@@ -307,13 +308,76 @@ def _style_palette(material: str, style: str) -> tuple[tuple[int, int, int], tup
     return palettes.get((style, material), palettes[("low_poly", "clay")])
 
 
-def _draw_noise(draw, size: int, rng: random.Random, base, accent) -> None:
-    for _ in range(size * 3):
+def _draw_noise(draw, size: int, rng: random.Random, base, accent, density: int = 3) -> None:
+    for _ in range(size * density):
         x = rng.randrange(size)
         y = rng.randrange(size)
         mix = rng.random()
         color = tuple(int(base[i] * (1 - mix) + accent[i] * mix) for i in range(3))
         draw.point((x, y), fill=color)
+
+
+def _draw_tileable_wood(draw, size: int, rng: random.Random, line, accent) -> None:
+    grain = _mix(accent, line, 0.22)
+    highlight = _mix(accent, (255, 230, 180), 0.12)
+    for y in range(0, size, max(18, size // 42)):
+        offset = rng.randrange(-8, 9)
+        points = []
+        for x in range(0, size + 24, 24):
+            wave = int(7 * math.sin((x / size) * math.tau * 2 + y * 0.013))
+            points.append((x, y + offset + wave))
+        draw.line(points, fill=grain, width=max(1, size // 520))
+    for _ in range(max(12, size // 36)):
+        x = rng.randrange(size)
+        y = rng.randrange(size)
+        rx = rng.randrange(max(5, size // 150), max(8, size // 82))
+        ry = max(3, rx // 2)
+        draw.ellipse((x - rx, y - ry, x + rx, y + ry), outline=_mix(line, accent, 0.35), width=1)
+    for x in range(0, size, max(96, size // 7)):
+        draw.line((x, 0, x, size), fill=_mix(line, accent, 0.38), width=max(1, size // 420))
+        draw.line((x + 2, 0, x + 2, size), fill=highlight, width=1)
+
+
+def _draw_tileable_metal(draw, size: int, rng: random.Random, line, accent) -> None:
+    panel = _mix(line, accent, 0.36)
+    for pos in range(0, size, max(96, size // 6)):
+        draw.line((pos, 0, pos, size), fill=panel, width=max(1, size // 420))
+        draw.line((0, pos, size, pos), fill=panel, width=max(1, size // 420))
+    for offset in range(-size, size * 2, max(68, size // 9)):
+        draw.line((offset, 0, offset - size // 2, size), fill=_mix(accent, (255, 255, 255), 0.1), width=1)
+    for _ in range(max(10, size // 80)):
+        x = rng.randrange(size)
+        y = rng.randrange(size)
+        w = rng.randrange(max(22, size // 40), max(40, size // 18))
+        h = max(4, size // 110)
+        draw.rectangle((x, y, min(size - 1, x + w), min(size - 1, y + h)), fill=_mix(accent, (180, 255, 250), 0.28), outline=line)
+
+
+def _draw_tileable_crystal(draw, size: int, rng: random.Random, line, accent) -> None:
+    for _ in range(max(20, size // 26)):
+        cx = rng.randrange(size)
+        cy = rng.randrange(size)
+        radius = rng.randrange(size // 22, size // 9)
+        color = _mix(accent, (120, 245, 245), rng.uniform(0.3, 0.62))
+        points = [
+            (cx, cy - radius),
+            (cx + radius // 2, cy),
+            (cx, cy + radius),
+            (cx - radius // 2, cy),
+        ]
+        draw.polygon(points, outline=line, fill=color)
+        draw.line((cx - radius // 3, cy, cx + radius // 3, cy), fill=_mix(color, (255, 255, 255), 0.35), width=1)
+
+
+def _draw_tileable_clay(draw, size: int, rng: random.Random, line) -> None:
+    step = max(72, size // 8)
+    for pos in range(0, size, step):
+        draw.line((pos, 0, pos, size), fill=line, width=1)
+        draw.line((0, pos, size, pos), fill=line, width=1)
+    for _ in range(size // 8):
+        x = rng.randrange(size)
+        y = rng.randrange(size)
+        draw.point((x, y), fill=_mix(line, (255, 255, 255), 0.18))
 
 
 def _draw_wood(draw, size: int, rng: random.Random, line, accent) -> None:
