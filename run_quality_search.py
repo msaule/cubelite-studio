@@ -39,11 +39,16 @@ def main() -> None:
         model_weights_path=Path(args.model_weights_path or settings.model_weights_path),
     )
     print(f"Quality search: {result.json_path}")
+    print(f"Curation report: {Path(result.json_path).with_suffix('.md')}")
     if result.best_candidate:
         print(f"Best score: {result.best_candidate.quality_score}")
-        print(f"Best output: {result.best_candidate.output_path}")
+        print(f"Geometry: {result.best_candidate.geometry_status} ({result.best_candidate.geometry_score})")
+        print(f"Best export: {result.best_candidate.export_path or result.best_candidate.output_path}")
+        if result.best_candidate.reject_reasons:
+            print("Warnings:")
+            for warning in result.best_candidate.reject_reasons:
+                print(f"- {warning}")
 
 
 if __name__ == "__main__":
     main()
-

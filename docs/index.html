@@ -75,8 +75,8 @@
           <p>Each mesh gets front, side, back, top, and 3/4 renders. One nice angle is not enough.</p>
         </article>
         <article>
-          <h3>Roblox test package</h3>
-          <p>The export folder includes OBJ files, a UV-mapped textured OBJ, MTL, albedo/normal/roughness/metallic maps, metadata, render plate, and quick import notes. The default material path is deterministic; Diffusers stays experimental.</p>
+          <h3>Candidate curation</h3>
+          <p>Quality search runs several seeds, scores geometry, caps weak candidates, and writes a curation report before anything is treated as a showcase output.</p>
         </article>
       </div>
     </section>
@@ -197,7 +197,7 @@ python run_app.py</code></pre>
   --prompt "low poly wooden crate game prop" ^
   --profile "6GB Quality" ^
   --seeds 303 404</code></pre>
-          <p>Exports now include <code>textured.obj</code>, <code>textured.mtl</code>, <code>albedo.png</code>, <code>normal.png</code>, <code>roughness.png</code>, <code>metallic.png</code>, and <code>finish_report.json</code>.</p>
+          <p>Writes JSON and Markdown curation reports with geometry status, reject reasons, render paths, and export folders.</p>
         </div>
         <div>
           <h3>Texture benchmark</h3>

@@ -20,6 +20,7 @@ from app.cube.low_vram_profiles import PROFILES, get_profile
 from app.cube.model_manager import validate_cube_install
 from app.cube.prompt_presets import PROMPT_GUIDANCE, PROMPT_PRESETS
 from app.optimization.texture_generator import DEFAULT_DIFFUSERS_MODEL, QUALITY_DIFFUSERS_MODEL
+from app.quality.candidate_search import CandidateSearchConfig, run_candidate_search
 from app.reporting.case_study import discover_case_study_assets, generate_case_study_pack, summarize_case_study_assets
 from app.system.dependency_checker import check_dependencies
 from app.system.gpu_detector import detect_system
@@ -239,6 +240,51 @@ def benchmark_tab(st, settings: AppSettings) -> None:
             st.write(f"Report: {last['report_path']}")
 
 
+def curation_tab(st, settings: AppSettings) -> None:
+    st.caption("Run multiple candidates and reject weak geometry before treating anything as portfolio-worthy.")
+    prompt = st.text_area("Prompt to curate", value="low poly wooden crate game prop, clean silhouette", height=80)
+    profile_name = st.selectbox("Search profile", ["6GB Quality", "Balanced", "Low VRAM", "Benchmark Safe"], index=0)
+    seeds_text = st.text_input("Seeds", value="101 202 303")
+    dry_run = st.toggle("Dry run curation", value=True)
+    target_faces = st.number_input("Target triangles", min_value=1000, max_value=60000, value=16000, step=1000)
+    if st.button("Run candidate curation", type="primary"):
+        seeds = tuple(int(seed) for seed in seeds_text.replace(",", " ").split() if seed.strip())
+        result = run_candidate_search(
+            CandidateSearchConfig(
+                prompt=prompt,
+                profile_name=profile_name,
+                seeds=seeds or (101, 202, 303),
+                target_face_count=int(target_faces),
+                dry_run=dry_run,
+            ),
+            cube_repo_path=settings.cube_repo_path,
+            model_weights_path=settings.model_weights_path,
+            outputs_dir=Path(settings.outputs_dir),
+            reports_dir=Path(settings.reports_dir),
+        )
+        st.session_state["last_curation"] = result.to_dict()
+        st.success(f"Curation JSON: {result.json_path}")
+        st.success(f"Curation report: {Path(result.json_path).with_suffix('.md')}")
+
+    last = st.session_state.get("last_curation")
+    if last:
+        best = last.get("best_candidate")
+        if best:
+            st.subheader("Best Candidate")
+            cols = st.columns(4)
+            cols[0].metric("Score", best.get("quality_score"))
+            cols[1].metric("Geometry", best.get("geometry_status"))
+            cols[2].metric("Triangles", best.get("triangle_count") or "n/a")
+            cols[3].metric("Seed", best.get("seed"))
+            for warning in best.get("reject_reasons") or []:
+                st.warning(warning)
+            if best.get("render_path"):
+                st.image(best["render_path"], caption="Best candidate inspection plate")
+            st.write(f"Export: {best.get('export_path') or best.get('output_path')}")
+        st.subheader("Candidates")
+        st.dataframe(last.get("candidates", []), use_container_width=True)
+
+
 def results_tab(st) -> None:
     st.subheader("Recent Outputs")
     for path in list_recent_files(OUTPUTS_DIR, ("*.obj",), limit=8):
@@ -391,20 +437,22 @@ def run_streamlit_app() -> None:
     )
 
     settings = load_settings()
-    tabs = st.tabs(["Generate", "Benchmark", "Results", "System Check", "Settings", "Case Study", "About"])
+    tabs = st.tabs(["Generate", "Benchmark", "Curation", "Results", "System Check", "Settings", "Case Study", "About"])
     with tabs[0]:
         generate_tab(st, settings)
     with tabs[1]:
         benchmark_tab(st, settings)
     with tabs[2]:
-        results_tab(st)
+        curation_tab(st, settings)
     with tabs[3]:
-        system_tab(st)
+        results_tab(st)
     with tabs[4]:
-        settings_tab(st, settings)
+        system_tab(st)
     with tabs[5]:
-        case_study_tab(st, settings)
+        settings_tab(st, settings)
     with tabs[6]:
+        case_study_tab(st, settings)
+    with tabs[7]:
         about_tab(st)
 
 

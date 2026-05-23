@@ -29,6 +29,7 @@ The goal is not to claim ownership of Cube 3D, retrain a foundation model, or pr
 - Optional Diffusers texture provider for local neural atlas experiments, kept behind an experimental path.
 - Export packages containing OBJ files, textured OBJ files, metadata, import notes, and benchmark summaries.
 - Benchmark CSV, JSON, and technical Markdown report generation.
+- Candidate curation that runs multiple seeds/settings, renders inspection plates, scores geometry, and rejects weak meshes before packaging.
 - Roblox-reviewable case study pack with real-output contact sheet, HTML summary, and technical framing.
 
 ## Quick Start
@@ -65,6 +66,12 @@ Run a dry-run benchmark:
 
 ```bash
 python run_benchmark.py --dry-run
+```
+
+Run a candidate curation pass:
+
+```bash
+python run_quality_search.py --prompt "low poly wooden crate game prop, clean silhouette" --profile "6GB Quality" --seeds 101 202 303
 ```
 
 Run a texture-provider benchmark:
@@ -143,6 +150,21 @@ The benchmark runner tests a standard prompt set across selected profiles and re
 - error message
 
 Outputs are written to `benchmarks/` as CSV and JSON.
+
+## Candidate Curation
+
+Raw generation is not enough. CubeLite's curation runner generates multiple candidates, renders multi-angle inspection plates, scores mesh geometry, and writes a JSON plus Markdown curation report in `reports/`.
+
+The curation score combines:
+
+- heuristic Roblox-readiness
+- triangle count and file size
+- bounding-box proportions
+- prompt-specific shape checks, such as box-like crates or elongated swords
+- simplification health
+- texture QA when material finishing succeeds
+
+Candidates are labeled `showcase_candidate`, `needs_review`, or `reject`. This is still not a semantic art judge, but it makes the workflow stricter: weak geometry should be rejected before it reaches a public example or Roblox import package.
 
 ## Roblox Export Workflow
 
