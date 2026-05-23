@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from pathlib import Path
 import random
+import time
 
 
 @dataclass
@@ -11,48 +12,172 @@ class TextureResult:
     output_path: str | None
     provider: str
     description: str
+    model_id: str | None = None
+    elapsed_seconds: float | None = None
+    device: str | None = None
+    seed: int | None = None
     error_message: str = ""
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
 
 
-def generate_texture_atlas(prompt: str, output_png: Path, size: int = 1024, provider: str = "procedural") -> TextureResult:
-    if provider != "procedural":
-        return TextureResult(
-            False,
-            None,
-            provider,
-            "",
-            "Only the procedural texture provider is implemented. A neural texture model can plug into this interface later.",
-        )
+DEFAULT_DIFFUSERS_MODEL = "hf-internal-testing/tiny-stable-diffusion-pipe"
+QUALITY_DIFFUSERS_MODEL = "stable-diffusion-v1-5/stable-diffusion-v1-5"
+SUPPORTED_TEXTURE_PROVIDERS = {"procedural", "diffusers", "neural"}
+MIN_TEXTURE_SIZE = 64
+MAX_TEXTURE_SIZE = 2048
+
+
+def generate_texture_atlas(
+    prompt: str,
+    output_png: Path,
+    size: int = 1024,
+    provider: str = "procedural",
+    model_id: str | None = None,
+    steps: int = 8,
+    seed: int = 0,
+) -> TextureResult:
+    provider = provider.strip().lower()
+    if provider not in SUPPORTED_TEXTURE_PROVIDERS:
+        return TextureResult(False, None, provider, "", error_message=f"Unknown texture provider: {provider}")
+    try:
+        normalized_size = normalize_texture_size(size)
+    except ValueError as exc:
+        return TextureResult(False, None, provider, "", error_message=str(exc))
+
+    if provider in {"diffusers", "neural"}:
+        return _generate_diffusers_texture(prompt, output_png, normalized_size, model_id or DEFAULT_DIFFUSERS_MODEL, steps, seed)
 
     try:
         from PIL import Image, ImageDraw, ImageFilter
     except Exception as exc:
-        return TextureResult(False, None, provider, "", f"Pillow is required for texture generation: {exc}")
+        return TextureResult(False, None, provider, "", error_message=f"Pillow is required for texture generation: {exc}")
 
+    started = time.perf_counter()
     output_png.parent.mkdir(parents=True, exist_ok=True)
     material = infer_material(prompt)
-    rng = random.Random(abs(hash(prompt)) % (2**32))
+    rng = random.Random(seed or stable_prompt_seed(prompt))
 
     base, accent, line = _palette(material)
-    image = Image.new("RGB", (size, size), base)
+    image = Image.new("RGB", (normalized_size, normalized_size), base)
     draw = ImageDraw.Draw(image)
-    _draw_noise(draw, size, rng, base, accent)
+    _draw_noise(draw, normalized_size, rng, base, accent)
 
     if material == "wood":
-        _draw_wood(draw, size, rng, line, accent)
+        _draw_wood(draw, normalized_size, rng, line, accent)
     elif material == "metal":
-        _draw_metal(draw, size, line, accent)
+        _draw_metal(draw, normalized_size, line, accent)
     elif material == "crystal":
-        _draw_crystal(draw, size, rng, line, accent)
+        _draw_crystal(draw, normalized_size, rng, line, accent)
     else:
-        _draw_clay_grid(draw, size, line)
+        _draw_clay_grid(draw, normalized_size, line)
 
     image = image.filter(ImageFilter.GaussianBlur(radius=0.25))
     image.save(output_png)
-    return TextureResult(True, str(output_png), provider, f"Procedural {material} atlas generated from prompt keywords.")
+    return TextureResult(
+        True,
+        str(output_png),
+        provider,
+        f"Procedural {material} atlas generated from prompt keywords.",
+        elapsed_seconds=round(time.perf_counter() - started, 3),
+        seed=seed,
+    )
+
+
+def normalize_texture_size(size: int) -> int:
+    size = int(size)
+    if size < MIN_TEXTURE_SIZE or size > MAX_TEXTURE_SIZE:
+        raise ValueError(f"Texture size must be between {MIN_TEXTURE_SIZE} and {MAX_TEXTURE_SIZE}px.")
+    if size % 8 != 0:
+        size = max(MIN_TEXTURE_SIZE, (size // 8) * 8)
+    return size
+
+
+def stable_prompt_seed(prompt: str) -> int:
+    value = 2166136261
+    for char in prompt:
+        value ^= ord(char)
+        value = (value * 16777619) % (2**32)
+    return value
+
+
+def _generate_diffusers_texture(
+    prompt: str,
+    output_png: Path,
+    size: int,
+    model_id: str,
+    steps: int,
+    seed: int,
+) -> TextureResult:
+    started = time.perf_counter()
+    try:
+        import torch
+        from diffusers import StableDiffusionPipeline
+    except Exception as exc:
+        return TextureResult(False, None, "diffusers", "", model_id=model_id, seed=seed, error_message=f"Diffusers is not installed or could not import: {exc}")
+
+    try:
+        output_png.parent.mkdir(parents=True, exist_ok=True)
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        dtype = torch.float16 if device == "cuda" else torch.float32
+        pipeline = StableDiffusionPipeline.from_pretrained(
+            model_id,
+            torch_dtype=dtype,
+            safety_checker=None,
+            requires_safety_checker=False,
+        )
+        if hasattr(pipeline, "enable_attention_slicing"):
+            pipeline.enable_attention_slicing()
+        if hasattr(pipeline, "enable_vae_slicing"):
+            pipeline.enable_vae_slicing()
+        if device == "cuda" and hasattr(pipeline, "enable_model_cpu_offload"):
+            pipeline.enable_model_cpu_offload()
+        else:
+            pipeline = pipeline.to(device)
+        generator = torch.Generator(device=device).manual_seed(seed)
+        texture_prompt = build_texture_prompt(prompt)
+        with torch.inference_mode():
+            image = pipeline(
+                texture_prompt,
+                negative_prompt="text, watermark, logo, blurry, photorealistic scene, character, background",
+                num_inference_steps=max(1, int(steps)),
+                guidance_scale=6.0,
+                width=int(size),
+                height=int(size),
+                generator=generator,
+            ).images[0]
+        image.save(output_png)
+        del pipeline
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        return TextureResult(
+            True,
+            str(output_png),
+            "diffusers",
+            "Neural texture atlas generated with Diffusers. This is a 2D atlas provider, not a 3D-aware texturing model.",
+            model_id=model_id,
+            elapsed_seconds=round(time.perf_counter() - started, 3),
+            device=device,
+            seed=seed,
+        )
+    except Exception as exc:
+        return TextureResult(
+            False,
+            None,
+            "diffusers",
+            "",
+            model_id=model_id,
+            elapsed_seconds=round(time.perf_counter() - started, 3),
+            seed=seed,
+            error_message=f"Diffusers texture generation failed: {exc}",
+        )
+
+
+def build_texture_prompt(prompt: str) -> str:
+    material = infer_material(prompt)
+    cleaned = " ".join(prompt.split())[:55]
+    return f"seamless stylized {material} game texture atlas, clean surface details, no text, {cleaned}"
 
 
 def infer_material(prompt: str) -> str:
@@ -124,4 +249,3 @@ def _draw_clay_grid(draw, size: int, line) -> None:
     for pos in range(0, size, step):
         draw.line((pos, 0, pos, size), fill=line, width=1)
         draw.line((0, pos, size, pos), fill=line, width=1)
-

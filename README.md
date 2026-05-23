@@ -25,9 +25,10 @@ The goal is not to claim ownership of Cube 3D, retrain a foundation model, or pr
 - Heuristic Roblox-readiness report.
 - Optional mesh simplification through `pymeshlab`.
 - UV unwrapping through `xatlas` plus generated OBJ/MTL/PNG texture-atlas output.
+- Optional Diffusers texture provider for local neural atlas experiments.
 - Export packages containing OBJ files, textured OBJ files, metadata, import notes, and benchmark summaries.
 - Benchmark CSV, JSON, and technical Markdown report generation.
-- Roblox-reviewable case study pack with real-output contact sheet, HTML summary, and email-ready technical framing.
+- Roblox-reviewable case study pack with real-output contact sheet, HTML summary, and technical framing.
 
 ## Quick Start
 
@@ -63,6 +64,14 @@ Run a dry-run benchmark:
 
 ```bash
 python run_benchmark.py --dry-run
+```
+
+Run a texture-provider benchmark:
+
+```bash
+python run_texture_benchmark.py --providers procedural
+python run_texture_benchmark.py --providers diffusers --size 128 --steps 2
+python run_texture_benchmark.py --providers diffusers --model-id stable-diffusion-v1-5/stable-diffusion-v1-5 --size 512 --steps 24
 ```
 
 ## Dry Run Mode
@@ -149,6 +158,17 @@ Export packages are written to `exports/sanitized-prompt-timestamp/` and include
 
 The readiness report is a heuristic helper, not official Roblox validation.
 
+## Texture Providers
+
+CubeLite has two texture providers:
+
+- `procedural`: fast local atlas generation based on prompt keywords. This is the default and requires no model download.
+- `diffusers`: optional neural atlas generation through a local Hugging Face Diffusers model.
+
+The default Diffusers model id is a tiny smoke-test model so automated tests can run quickly. For actual quality experiments, select a stronger local model such as `stable-diffusion-v1-5/stable-diffusion-v1-5` in the Settings tab or pass it to `run_texture_benchmark.py`.
+
+The Diffusers path is a 2D texture-atlas provider, not a true 3D-aware texture painting system. It is useful for experiments and benchmarks, but generated textures still need inspection before Roblox use. The benchmark records provider, model id, dimensions, file size, contrast, and color-variance stats so texture runs can be compared with repeatable metadata.
+
 ## Example Outputs
 
 Use dry-run mode to create an example export package immediately. This repo also includes a private example gallery in `sample_assets/real_cube_examples/` with real Cube 3D v0.5 outputs generated on an RTX 4050 Laptop GPU through CubeLite's low-VRAM path.
@@ -169,7 +189,7 @@ The Case Study tab can also generate a portfolio-style Markdown and HTML pack fr
 - Command-line integration depends on a user-provided command template for the specific Cube release.
 - VRAM telemetry depends on PyNVML or PyTorch CUDA support.
 - Mesh simplification requires optional `pymeshlab`.
-- UV unwrapping uses `xatlas`; the generated texture atlas is procedural, not a neural texture model.
+- UV unwrapping uses `xatlas`; neural texturing is optional and depends on the selected local Diffusers model.
 - Roblox readiness is heuristic and cannot guarantee import success.
 - Dry run mode validates the pipeline but does not benchmark Cube 3D itself.
 

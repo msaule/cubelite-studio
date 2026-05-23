@@ -57,6 +57,11 @@ def run_single_pipeline(
     dry_run: bool = True,
     package_export: bool = True,
     simplify: bool | None = None,
+    texture_provider: str = "procedural",
+    texture_model_id: str | None = None,
+    texture_steps: int = 8,
+    texture_size: int = 1024,
+    texture_seed: int = 0,
 ) -> tuple[BenchmarkRow, dict[str, object]]:
     generation = generate_mesh(
         prompt=prompt,
@@ -98,7 +103,16 @@ def run_single_pipeline(
 
     if render_source and stats and stats.success:
         finish_dir = Path(generation.output_dir) / "finished_asset"
-        finish_result = finish_asset_for_roblox(render_source, finish_dir, prompt=prompt)
+        finish_result = finish_asset_for_roblox(
+            render_source,
+            finish_dir,
+            prompt=prompt,
+            texture_provider=texture_provider,
+            texture_model_id=texture_model_id,
+            texture_steps=texture_steps,
+            texture_size=texture_size,
+            texture_seed=texture_seed,
+        )
 
     readiness = check_roblox_readiness(
         optimized_stats if optimized_stats and optimized_stats.success else (stats or analyze_mesh(Path("__missing__.obj"))),
@@ -166,6 +180,10 @@ def run_benchmark(
     exports_dir: Path = EXPORTS_DIR,
     reports_dir: Path = REPORTS_DIR,
     create_report: bool = True,
+    texture_provider: str = "procedural",
+    texture_model_id: str | None = None,
+    texture_steps: int = 8,
+    texture_size: int = 1024,
     on_row: ProgressCallback | None = None,
 ) -> BenchmarkResult:
     selected_prompts = list(prompts or BENCHMARK_PROMPTS)
@@ -186,6 +204,10 @@ def run_benchmark(
                     exports_dir=exports_dir,
                     dry_run=dry_run,
                     package_export=True,
+                    texture_provider=texture_provider,
+                    texture_model_id=texture_model_id,
+                    texture_steps=texture_steps,
+                    texture_size=texture_size,
                 )
             except Exception as exc:
                 row = BenchmarkRow(

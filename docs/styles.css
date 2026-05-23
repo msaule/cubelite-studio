@@ -281,8 +281,7 @@ tr:last-child td {
   padding-bottom: 72px;
 }
 
-.note-grid,
-.run-grid {
+.note-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 

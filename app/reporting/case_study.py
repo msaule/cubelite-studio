@@ -221,14 +221,14 @@ CubeLite Studio adds a creator-facing Streamlit app with Generate, Benchmark, Re
 ## Honest Limitations
 
 - This is not official Roblox validation.
-- Generated meshes are geometry-first; material and texture workflow still needs improvement.
+- Generated meshes are geometry-first; material and texture workflows still need inspection.
 - Prompt quality matters, and some outputs are mixed.
 - Real Cube 3D weights must come from official sources.
 - Benchmarks so far are from one consumer laptop GPU and should be expanded across more hardware.
 
-## Email-Ready Note
+## Practical Value
 
-I built CubeLite Studio as an independent low-VRAM workflow and benchmarking layer around Roblox Cube 3D. The case study shows that on a 6GB RTX 4050 Laptop GPU, the official path hit CUDA OOM, while a staged CubeLite runner completed real Cube 3D v0.5 generations at about {summary.max_peak_vram_gb or 0:.2f}GB peak VRAM. The project includes a local creator app, benchmark runner, mesh/readiness analysis, export packaging, and a technical report generator designed around Roblox creator workflows.
+CubeLite Studio is an independent low-VRAM workflow and benchmarking layer around Roblox Cube 3D. On this 6GB RTX 4050 Laptop GPU, the official high-memory path hit CUDA OOM, while a staged CubeLite runner completed real Cube 3D v0.5 generations at about {summary.max_peak_vram_gb or 0:.2f}GB peak VRAM. The project includes a local creator app, benchmark runner, mesh/readiness analysis, UV/texturing finishing, export packaging, and technical report generation for Roblox creator workflows.
 
 CubeLite Studio version: {version_string()}
 """

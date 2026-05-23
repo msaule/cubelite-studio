@@ -9,6 +9,10 @@ plotly>=5.18
 matplotlib>=3.8
 Pillow>=10.0
 xatlas>=0.0.11
+diffusers>=0.38
+accelerate>=1.0
+safetensors>=0.7
+transformers>=4.46
 
 # Recommended for polished mesh simplification. It can be heavy on some systems, so install manually if needed:
 # pymeshlab>=2023.12

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CubeLite Studio</title>
   <meta name="description" content="Local Cube 3D tests, VRAM notes, and Roblox OBJ export helpers.">
-  <link rel="stylesheet" href="styles.css?v=20260522-plain">
+  <link rel="stylesheet" href="styles.css?v=20260523-textures">
 </head>
 <body>
   <header class="topbar">
@@ -76,7 +76,7 @@
         </article>
         <article>
           <h3>Roblox test package</h3>
-          <p>The export folder includes OBJ files, a UV-mapped textured OBJ, MTL, PNG atlas, metadata, render plate, and quick import notes.</p>
+          <p>The export folder includes OBJ files, a UV-mapped textured OBJ, MTL, PNG atlas, metadata, render plate, and quick import notes. Textures can come from the fast procedural provider or the optional Diffusers provider.</p>
         </article>
       </div>
     </section>
@@ -150,6 +150,13 @@
           </div>
         </article>
         <article class="mesh-card">
+          <img src="assets/neural-crate-atlas.png" alt="Stable Diffusion texture atlas generated for a stylized wooden crate">
+          <div>
+            <h3>Neural texture atlas</h3>
+            <p>Generated locally with the Diffusers provider using Stable Diffusion 1.5. The benchmark records model id, size, time, contrast, and variance.</p>
+          </div>
+        </article>
+        <article class="mesh-card">
           <img src="assets/fantasy-sword-plate.png" alt="Multi-angle render plate of a Cube 3D fantasy sword candidate">
           <div>
             <h3>Fantasy sword</h3>
@@ -191,6 +198,15 @@ python run_app.py</code></pre>
   --profile "6GB Quality" ^
   --seeds 303 404</code></pre>
           <p>Exports now include <code>textured.obj</code>, <code>textured.mtl</code>, <code>albedo.png</code>, and <code>finish_report.json</code>.</p>
+        </div>
+        <div>
+          <h3>Texture benchmark</h3>
+          <pre><code>python run_texture_benchmark.py ^
+  --providers procedural diffusers ^
+  --model-id stable-diffusion-v1-5/stable-diffusion-v1-5 ^
+  --size 128 ^
+  --steps 2</code></pre>
+          <p>The Diffusers provider is optional. It downloads the selected model locally and records timing plus texture stats.</p>
         </div>
       </div>
     </section>

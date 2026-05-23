@@ -19,6 +19,7 @@ from app.cube.cube_command_builder import write_cubelite_low_vram_template
 from app.cube.low_vram_profiles import PROFILES, get_profile
 from app.cube.model_manager import validate_cube_install
 from app.cube.prompt_presets import PROMPT_GUIDANCE, PROMPT_PRESETS
+from app.optimization.texture_generator import DEFAULT_DIFFUSERS_MODEL, QUALITY_DIFFUSERS_MODEL
 from app.reporting.case_study import discover_case_study_assets, generate_case_study_pack, summarize_case_study_assets
 from app.system.dependency_checker import check_dependencies
 from app.system.gpu_detector import detect_system
@@ -41,6 +42,34 @@ def _settings_from_ui(st, current: AppSettings) -> AppSettings:
         index=list(PROFILES.keys()).index(current.default_profile) if current.default_profile in PROFILES else 0,
     )
     target_faces = st.number_input("Default target triangle count", min_value=1000, max_value=100000, value=current.default_target_face_count, step=1000)
+    texture_provider = st.selectbox(
+        "Texture provider",
+        ["procedural", "diffusers"],
+        index=["procedural", "diffusers"].index(current.texture_provider) if current.texture_provider in {"procedural", "diffusers"} else 0,
+    )
+    model_presets = {
+        "Tiny smoke-test model": DEFAULT_DIFFUSERS_MODEL,
+        "Stable Diffusion 1.5": QUALITY_DIFFUSERS_MODEL,
+        "Custom": current.texture_model_id,
+    }
+    if current.texture_model_id == DEFAULT_DIFFUSERS_MODEL:
+        model_index = 0
+    elif current.texture_model_id == QUALITY_DIFFUSERS_MODEL:
+        model_index = 1
+    else:
+        model_index = 2
+    selected_model = st.selectbox(
+        "Diffusers model preset",
+        list(model_presets.keys()),
+        index=model_index,
+    )
+    texture_model = st.text_input("Diffusers texture model", value=model_presets[selected_model])
+    texture_steps = st.number_input("Texture inference steps", min_value=1, max_value=80, value=current.texture_steps, step=1)
+    texture_size = st.selectbox(
+        "Texture atlas size",
+        [256, 512, 768, 1024],
+        index=[256, 512, 768, 1024].index(current.texture_size) if current.texture_size in {256, 512, 768, 1024} else 3,
+    )
     include_paths = st.checkbox("Include full private local paths in reports", value=current.include_private_paths_in_reports)
     return AppSettings(
         cube_repo_path=cube_repo,
@@ -51,6 +80,10 @@ def _settings_from_ui(st, current: AppSettings) -> AppSettings:
         benchmarks_dir=current.benchmarks_dir,
         default_profile=default_profile,
         default_target_face_count=int(target_faces),
+        texture_provider=texture_provider,
+        texture_model_id=texture_model,
+        texture_steps=int(texture_steps),
+        texture_size=int(texture_size),
         include_private_paths_in_reports=include_paths,
     )
 
@@ -101,6 +134,10 @@ def generate_tab(st, settings: AppSettings) -> None:
                 dry_run=dry_run,
                 package_export=package_export,
                 simplify=simplify,
+                texture_provider=settings.texture_provider,
+                texture_model_id=settings.texture_model_id,
+                texture_steps=settings.texture_steps,
+                texture_size=settings.texture_size,
             )
             status.update(label="Pipeline complete", state="complete")
         st.session_state["last_generation_details"] = details
@@ -169,6 +206,10 @@ def benchmark_tab(st, settings: AppSettings) -> None:
             exports_dir=Path(settings.exports_dir),
             reports_dir=Path(settings.reports_dir),
             create_report=create_report,
+            texture_provider=settings.texture_provider,
+            texture_model_id=settings.texture_model_id,
+            texture_steps=settings.texture_steps,
+            texture_size=settings.texture_size,
             on_row=on_row,
         )
         st.session_state["last_benchmark"] = result.__dict__ | {"rows": [row.to_dict() for row in result.rows]}

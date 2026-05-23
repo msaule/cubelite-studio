@@ -29,12 +29,24 @@ def finish_asset_for_roblox(
     output_dir: Path,
     prompt: str,
     texture_provider: str = "procedural",
+    texture_model_id: str | None = None,
+    texture_steps: int = 8,
+    texture_size: int = 1024,
+    texture_seed: int = 0,
 ) -> AssetFinishResult:
     output_dir.mkdir(parents=True, exist_ok=True)
     texture_path = output_dir / "albedo.png"
     textured_obj = output_dir / "textured.obj"
 
-    texture = generate_texture_atlas(prompt, texture_path, provider=texture_provider)
+    texture = generate_texture_atlas(
+        prompt,
+        texture_path,
+        size=texture_size,
+        provider=texture_provider,
+        model_id=texture_model_id,
+        steps=texture_steps,
+        seed=texture_seed,
+    )
     if not texture.success:
         return _write_finish_report(
             output_dir,
@@ -69,4 +81,3 @@ def _write_finish_report(output_dir: Path, result: AssetFinishResult) -> AssetFi
     report_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     result.report_path = str(report_path)
     return result
-

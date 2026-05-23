@@ -26,6 +26,10 @@ class AppSettings:
     benchmarks_dir: str = str(BENCHMARKS_DIR)
     default_profile: str = "Auto"
     default_target_face_count: int = 10000
+    texture_provider: str = "procedural"
+    texture_model_id: str = "hf-internal-testing/tiny-stable-diffusion-pipe"
+    texture_steps: int = 8
+    texture_size: int = 1024
     include_private_paths_in_reports: bool = False
 
 
