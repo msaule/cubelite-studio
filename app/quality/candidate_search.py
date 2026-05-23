@@ -84,7 +84,7 @@ def score_candidate(row_dict: dict[str, object], details: dict[str, object]) -> 
     mesh_stats = details.get("optimized_mesh_stats") or details.get("mesh_stats") or {}
     geometry = assess_geometry_quality(str(row_dict.get("prompt") or ""), mesh_stats if isinstance(mesh_stats, dict) else None)
     render = details.get("inspection_render") or {}
-    render_report = assess_render_quality(render.get("output_path") if isinstance(render, dict) else None)
+    render_report = assess_render_quality(render.get("output_path") if isinstance(render, dict) else None, str(row_dict.get("prompt") or ""))
     triangle_count = int(mesh_stats.get("triangle_count") or 0)
     file_size_mb = float(mesh_stats.get("file_size_mb") or 0)
     warnings = mesh_stats.get("warnings") or []
@@ -155,7 +155,7 @@ def run_candidate_search(
                 mesh_stats = details.get("optimized_mesh_stats") or details.get("mesh_stats") or {}
                 geometry = assess_geometry_quality(generation_prompt, mesh_stats if isinstance(mesh_stats, dict) else None)
                 render = details.get("inspection_render") or {}
-                render_report = assess_render_quality(render.get("output_path") if isinstance(render, dict) else None)
+                render_report = assess_render_quality(render.get("output_path") if isinstance(render, dict) else None, generation_prompt)
                 export = details.get("export") or {}
                 quality_score = score_candidate(row_dict, details)
                 if geometry.status == "reject":
@@ -189,7 +189,16 @@ def run_candidate_search(
                     )
                 )
 
-    best = max(candidates, key=lambda candidate: candidate.quality_score, default=None)
+    best = max(
+        candidates,
+        key=lambda candidate: (
+            candidate.quality_score,
+            candidate.geometry_score,
+            candidate.render_score or 0.0,
+            candidate.triangle_count or 0,
+        ),
+        default=None,
+    )
     reports_dir.mkdir(parents=True, exist_ok=True)
     json_path = reports_dir / f"quality-search-{utc_timestamp()}.json"
     result = CandidateSearchResult(

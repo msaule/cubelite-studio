@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 
+from app.cube.prompt_compiler import compile_asset_prompt
+
 
 @dataclass(frozen=True)
 class AssetStyle:
@@ -72,7 +74,7 @@ def get_style(name: str | None) -> AssetStyle:
 
 
 def strengthen_prompt(prompt: str, style_name: str | None = None) -> str:
-    base = " ".join(prompt.split())
+    base = compile_asset_prompt(prompt, style_name)
     style = get_style(style_name)
     lower = base.lower()
     additions = [term for term in style.prompt_terms if term.lower() not in lower]

@@ -14,7 +14,7 @@ class RenderQualityReport:
         return asdict(self)
 
 
-def assess_render_quality(render_path: str | Path | None) -> RenderQualityReport:
+def assess_render_quality(render_path: str | Path | None, prompt: str | None = None) -> RenderQualityReport:
     if not render_path:
         return RenderQualityReport(50.0, ["No render plate was available for visual scoring."], {})
     path = Path(render_path)
@@ -35,6 +35,7 @@ def assess_render_quality(render_path: str | Path | None) -> RenderQualityReport
             edge_stat = ImageStat.Stat(edges)
             edge_strength = float(edge_stat.mean[0]) / 255.0
             background_like = _background_like_ratio(gray)
+            elongated_asset = _is_elongated_asset(prompt)
             score = 70.0
             warnings: list[str] = []
             if stddev < 18:
@@ -50,9 +51,12 @@ def assess_render_quality(render_path: str | Path | None) -> RenderQualityReport
                 warnings.append("Render plate is visually noisy; inspect for fragmented geometry.")
             else:
                 score += 8
-            if background_like > 0.92:
+            if background_like > 0.92 and not elongated_asset:
                 score -= 15
                 warnings.append("Render plate appears mostly background; object may be tiny or missing.")
+            elif background_like > 0.965 and edge_strength < 0.02:
+                score -= 10
+                warnings.append("Elongated render plate is very sparse; inspect scale and framing.")
             if mean < 35 or mean > 235:
                 score -= 8
                 warnings.append("Render plate exposure is extreme; visual review may be unreliable.")
@@ -79,3 +83,8 @@ def _background_like_ratio(gray_image) -> float:
         if 232 <= value <= 252:
             count += 1
     return count / max(total, 1)
+
+
+def _is_elongated_asset(prompt: str | None) -> bool:
+    text = (prompt or "").lower()
+    return any(word in text for word in ("sword", "spear", "staff", "sign post", "wand"))

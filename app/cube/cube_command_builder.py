@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from app.cube.low_vram_profiles import GenerationProfile
+from app.cube.prompt_compiler import infer_asset_bbox
 
 
 @dataclass
@@ -140,10 +141,16 @@ def build_cube_command(
         "generate_preview",
         "simplify_after_generation",
         "target_face_count",
-        "bounding_box_xyz",
     ]
     notes = [
         "Profile settings are passed only when the command template includes their placeholders.",
         "Settings not understood by the detected Cube install are treated as CubeLite post-processing preferences.",
     ]
+    bbox = infer_asset_bbox(prompt)
+    if bbox and any("cubelite_low_vram_generate.py" in part for part in command) and "--bounding-box-xyz" not in command:
+        command.extend(["--bounding-box-xyz", *(f"{value:.4f}" for value in bbox)])
+        notes.append(f"Applied CubeLite asset bounding-box hint: {bbox}.")
+    elif bbox is None:
+        unsupported = [*unsupported, "bounding_box_xyz"]
+
     return CubeCommand(command=command, cwd=cube_repo_path, unsupported_settings=unsupported, notes=notes)

@@ -1,5 +1,5 @@
 BENCHMARK_PROMPTS = [
-    "low poly fantasy sword, single object",
+    "single centered fantasy sword game asset, faceted cyan crystal blade, gold crossguard, dark wrapped grip, green gem, low poly Roblox prop",
     "simple wooden crate, game asset",
     "stylized potion bottle, single object",
     "sci-fi supply box, low poly",

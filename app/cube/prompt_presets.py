@@ -1,5 +1,5 @@
 PROMPT_PRESETS = [
-    "a purple crystal blade fantasy sword with green gem accents, single object, ornate hilt, sharp blade, game asset",
+    "single centered fantasy sword game asset, vertical long thin silhouette, faceted cyan crystal blade, gold crossguard, dark wrapped grip, green gem in the guard, low poly Roblox prop",
     "a stylized low poly wooden row boat, single object, curved hull, simple game asset, clean silhouette",
     "lowpoly paper craft victorian rabbit, single character figurine, stylized toy, long ears, seated pose, clean silhouette",
     "low poly fantasy sword, single object",
