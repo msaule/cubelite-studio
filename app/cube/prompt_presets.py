@@ -23,6 +23,7 @@ PROMPT_GUIDANCE = {
     "good": "low poly wooden treasure chest, single object, simple geometry, game asset",
     "bad": "huge ultra detailed medieval city with thousands of buildings and tiny decorations",
     "notes": [
+        "Use a style preset before generation so prompt wording and material finishing stay consistent.",
         "Object-specific prompts from Cube's own examples can outperform generic Roblox checklist prompts.",
         "Single objects tend to work better than full scenes.",
         "Low-poly prompts are better aligned with Roblox import workflows.",

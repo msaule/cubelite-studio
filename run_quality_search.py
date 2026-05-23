@@ -15,6 +15,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--top-p", nargs="*", type=float, default=[0.9])
     parser.add_argument("--guidance", nargs="*", type=float, default=[1.0])
     parser.add_argument("--target-faces", type=int, default=16000)
+    parser.add_argument("--style", default="Roblox Low Poly")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--cube-repo-path", default="")
     parser.add_argument("--model-weights-path", default="")
@@ -34,6 +35,7 @@ def main() -> None:
             guidance_scales=tuple(args.guidance),
             target_face_count=args.target_faces,
             dry_run=args.dry_run,
+            style_name=args.style,
         ),
         cube_repo_path=Path(args.cube_repo_path or settings.cube_repo_path),
         model_weights_path=Path(args.model_weights_path or settings.model_weights_path),
@@ -43,6 +45,7 @@ def main() -> None:
     if result.best_candidate:
         print(f"Best score: {result.best_candidate.quality_score}")
         print(f"Geometry: {result.best_candidate.geometry_status} ({result.best_candidate.geometry_score})")
+        print(f"Render score: {result.best_candidate.render_score}")
         print(f"Best export: {result.best_candidate.export_path or result.best_candidate.output_path}")
         if result.best_candidate.reject_reasons:
             print("Warnings:")

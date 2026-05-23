@@ -2,7 +2,7 @@ from pathlib import Path
 
 from app.optimization.asset_finisher import finish_asset_for_roblox
 from app.optimization.texture_analyzer import analyze_texture
-from app.optimization.texture_generator import generate_texture_atlas, infer_material, normalize_texture_size
+from app.optimization.texture_generator import generate_texture_atlas, infer_material, infer_style, normalize_texture_size
 from app.optimization.uv_unwrapper import unwrap_obj_with_xatlas
 from app.benchmark.texture_benchmark import run_texture_benchmark
 
@@ -22,6 +22,12 @@ def test_texture_generator_infers_prompt_material(tmp_path: Path) -> None:
 
 def test_texture_size_normalization() -> None:
     assert normalize_texture_size(130) == 128
+
+
+def test_texture_generator_infers_style() -> None:
+    assert infer_style("cute toy robot prop") == "toybox"
+    assert infer_style("sci-fi supply box with panels") == "sci_fi"
+    assert infer_style("magic crystal cluster") == "fantasy"
 
 
 def test_uv_unwrapper_writes_textured_obj(tmp_path: Path) -> None:

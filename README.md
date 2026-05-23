@@ -30,6 +30,7 @@ The goal is not to claim ownership of Cube 3D, retrain a foundation model, or pr
 - Export packages containing OBJ files, textured OBJ files, metadata, import notes, and benchmark summaries.
 - Benchmark CSV, JSON, and technical Markdown report generation.
 - Candidate curation that runs multiple seeds/settings, renders inspection plates, scores geometry, and rejects weak meshes before packaging.
+- Style presets that strengthen prompts and change material output for low-poly, toybox, sci-fi, fantasy, medieval, and crystal props.
 - Roblox-reviewable case study pack with real-output contact sheet, HTML summary, and technical framing.
 
 ## Quick Start
@@ -71,7 +72,7 @@ python run_benchmark.py --dry-run
 Run a candidate curation pass:
 
 ```bash
-python run_quality_search.py --prompt "low poly wooden crate game prop, clean silhouette" --profile "6GB Quality" --seeds 101 202 303
+python run_quality_search.py --prompt "low poly wooden crate game prop, clean silhouette" --profile "6GB Quality" --style "Roblox Low Poly" --seeds 101 202 303
 ```
 
 Run a texture-provider benchmark:
@@ -163,8 +164,22 @@ The curation score combines:
 - prompt-specific shape checks, such as box-like crates or elongated swords
 - simplification health
 - texture QA when material finishing succeeds
+- render-plate visual checks for low-contrast, noisy, or mostly empty renders
 
 Candidates are labeled `showcase_candidate`, `needs_review`, or `reject`. This is still not a semantic art judge, but it makes the workflow stricter: weak geometry should be rejected before it reaches a public example or Roblox import package.
+
+## Style Presets
+
+Style presets are used before generation and during material finishing. They add targeted prompt terms and steer the deterministic material provider:
+
+- `Roblox Low Poly`: clean blocky props and restrained materials.
+- `Toybox`: brighter rounded toy-like surfaces.
+- `Hand Painted Fantasy`: warmer painted highlights and fantasy material cues.
+- `Sci-Fi Plastic`: hard-surface panels and simple emissive accents.
+- `Medieval Wood Metal`: wood grain, metal bands, and rivet-friendly materials.
+- `Crystal Magic`: faceted crystal shapes and glow-like color accents.
+
+The app shows the strengthened prompt before running so the rewrite is visible and editable.
 
 ## Roblox Export Workflow
 

@@ -15,6 +15,7 @@ from app.config import (
     load_settings,
     save_settings,
 )
+from app.cube.asset_styles import strengthen_prompt, style_names
 from app.cube.cube_command_builder import write_cubelite_low_vram_template
 from app.cube.low_vram_profiles import PROFILES, get_profile
 from app.cube.model_manager import validate_cube_install
@@ -109,6 +110,9 @@ def generate_tab(st, settings: AppSettings) -> None:
     preset = st.selectbox("Preset prompt", ["Custom"] + PROMPT_PRESETS)
     default_prompt = "" if preset == "Custom" else preset
     prompt = st.text_area("Prompt", value=default_prompt or PROMPT_GUIDANCE["good"], height=90)
+    style_name = st.selectbox("Asset style", style_names(), index=0)
+    with st.expander("Strengthened prompt"):
+        st.write(strengthen_prompt(prompt, style_name))
     profile_name = st.selectbox("Profile", list(PROFILES.keys()), index=list(PROFILES.keys()).index(settings.default_profile) if settings.default_profile in PROFILES else 0)
     col_a, col_b, col_c = st.columns(3)
     dry_run = col_a.toggle("Dry run", value=True)
@@ -126,7 +130,7 @@ def generate_tab(st, settings: AppSettings) -> None:
             return
         with st.status("Running CubeLite pipeline...", expanded=True) as status:
             row, details = run_single_pipeline(
-                prompt=prompt,
+                prompt=strengthen_prompt(prompt, style_name),
                 profile=get_profile(profile_name),
                 cube_repo_path=settings.cube_repo_path,
                 model_weights_path=settings.model_weights_path,
@@ -243,6 +247,9 @@ def benchmark_tab(st, settings: AppSettings) -> None:
 def curation_tab(st, settings: AppSettings) -> None:
     st.caption("Run multiple candidates and reject weak geometry before treating anything as portfolio-worthy.")
     prompt = st.text_area("Prompt to curate", value="low poly wooden crate game prop, clean silhouette", height=80)
+    style_name = st.selectbox("Curation style", style_names(), index=0)
+    with st.expander("Strengthened curation prompt"):
+        st.write(strengthen_prompt(prompt, style_name))
     profile_name = st.selectbox("Search profile", ["6GB Quality", "Balanced", "Low VRAM", "Benchmark Safe"], index=0)
     seeds_text = st.text_input("Seeds", value="101 202 303")
     dry_run = st.toggle("Dry run curation", value=True)
@@ -256,6 +263,7 @@ def curation_tab(st, settings: AppSettings) -> None:
                 seeds=seeds or (101, 202, 303),
                 target_face_count=int(target_faces),
                 dry_run=dry_run,
+                style_name=style_name,
             ),
             cube_repo_path=settings.cube_repo_path,
             model_weights_path=settings.model_weights_path,
@@ -276,6 +284,8 @@ def curation_tab(st, settings: AppSettings) -> None:
             cols[1].metric("Geometry", best.get("geometry_status"))
             cols[2].metric("Triangles", best.get("triangle_count") or "n/a")
             cols[3].metric("Seed", best.get("seed"))
+            if best.get("render_score") is not None:
+                st.metric("Render Plate Score", f"{best['render_score']}/100")
             for warning in best.get("reject_reasons") or []:
                 st.warning(warning)
             if best.get("render_path"):

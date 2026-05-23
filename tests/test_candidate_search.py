@@ -39,3 +39,6 @@ def test_candidate_search_dry_run_writes_json_and_markdown(tmp_path: Path) -> No
     assert Path(result.json_path).with_suffix(".md").exists()
     assert result.best_candidate is not None
     assert result.best_candidate.geometry_status in {"showcase_candidate", "needs_review", "reject"}
+    assert result.best_candidate.render_score is not None
+    assert result.style_name == "Roblox Low Poly"
+    assert "avoid:" in result.prompt

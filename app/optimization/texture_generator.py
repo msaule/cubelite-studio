@@ -125,9 +125,10 @@ def _generate_studio_texture(
     started = time.perf_counter()
     output_png.parent.mkdir(parents=True, exist_ok=True)
     material = infer_material(prompt)
+    style = infer_style(prompt)
     rng = random.Random(seed or stable_prompt_seed(prompt))
 
-    base, accent, line = _palette(material)
+    base, accent, line = _style_palette(material, style)
     image = Image.new("RGB", (size, size), base)
     draw = ImageDraw.Draw(image)
     _draw_noise(draw, size, rng, base, accent)
@@ -140,6 +141,12 @@ def _generate_studio_texture(
         _draw_crystal(draw, size, rng, line, accent)
     else:
         _draw_clay_grid(draw, size, line)
+    if style == "toybox":
+        _draw_toybox_accents(draw, size, rng, line, accent)
+    elif style == "sci_fi":
+        _draw_scifi_accents(draw, size, rng, line, accent)
+    elif style == "fantasy":
+        _draw_fantasy_accents(draw, size, rng, line, accent)
 
     image = _finish_game_texture(image, material, rng)
     image.save(output_png)
@@ -147,7 +154,7 @@ def _generate_studio_texture(
         True,
         str(output_png),
         provider,
-        f"Studio {material} material atlas generated from prompt keywords.",
+        f"Studio {style} {material} material atlas generated from prompt keywords.",
         elapsed_seconds=round(time.perf_counter() - started, 3),
         seed=seed,
         map_paths={"albedo": str(output_png)},
@@ -263,14 +270,41 @@ def infer_material(prompt: str) -> str:
     return "clay"
 
 
+def infer_style(prompt: str) -> str:
+    lower = prompt.lower()
+    if any(word in lower for word in ("toy", "toybox", "friendly", "cute")):
+        return "toybox"
+    if any(word in lower for word in ("sci-fi", "scifi", "supply box", "hard-surface", "emissive")):
+        return "sci_fi"
+    if any(word in lower for word in ("fantasy", "magic", "medieval", "potion", "crystal")):
+        return "fantasy"
+    return "low_poly"
+
+
 def _palette(material: str) -> tuple[tuple[int, int, int], tuple[int, int, int], tuple[int, int, int]]:
+    return _style_palette(material, "low_poly")
+
+
+def _style_palette(material: str, style: str) -> tuple[tuple[int, int, int], tuple[int, int, int], tuple[int, int, int]]:
     palettes = {
-        "wood": ((126, 82, 45), (179, 116, 58), (72, 46, 27)),
-        "metal": ((130, 134, 141), (190, 196, 205), (63, 67, 74)),
-        "crystal": ((97, 78, 166), (107, 204, 216), (38, 31, 83)),
-        "clay": ((137, 140, 130), (174, 177, 166), (82, 84, 78)),
+        ("low_poly", "wood"): ((126, 82, 45), (179, 116, 58), (72, 46, 27)),
+        ("low_poly", "metal"): ((130, 134, 141), (190, 196, 205), (63, 67, 74)),
+        ("low_poly", "crystal"): ((97, 78, 166), (107, 204, 216), (38, 31, 83)),
+        ("low_poly", "clay"): ((137, 140, 130), (174, 177, 166), (82, 84, 78)),
+        ("toybox", "wood"): ((209, 129, 65), (246, 175, 91), (111, 65, 40)),
+        ("toybox", "metal"): ((114, 171, 205), (181, 224, 238), (54, 92, 130)),
+        ("toybox", "crystal"): ((166, 92, 226), (110, 230, 228), (73, 40, 132)),
+        ("toybox", "clay"): ((217, 104, 112), (255, 184, 91), (112, 71, 144)),
+        ("sci_fi", "wood"): ((72, 83, 91), (126, 147, 156), (35, 43, 50)),
+        ("sci_fi", "metal"): ((78, 88, 101), (167, 190, 205), (25, 31, 41)),
+        ("sci_fi", "crystal"): ((35, 78, 115), (78, 231, 221), (11, 28, 46)),
+        ("sci_fi", "clay"): ((72, 83, 91), (131, 149, 164), (28, 35, 46)),
+        ("fantasy", "wood"): ((109, 68, 43), (194, 134, 69), (56, 34, 28)),
+        ("fantasy", "metal"): ((112, 111, 125), (214, 184, 109), (50, 48, 61)),
+        ("fantasy", "crystal"): ((81, 60, 156), (99, 225, 231), (32, 24, 90)),
+        ("fantasy", "clay"): ((118, 112, 91), (188, 166, 104), (68, 60, 47)),
     }
-    return palettes.get(material, palettes["clay"])
+    return palettes.get((style, material), palettes[("low_poly", "clay")])
 
 
 def _draw_noise(draw, size: int, rng: random.Random, base, accent) -> None:
@@ -347,6 +381,38 @@ def _draw_clay_grid(draw, size: int, line) -> None:
     for pos in range(0, size, step):
         draw.line((pos, 0, pos, size), fill=line, width=1)
         draw.line((0, pos, size, pos), fill=line, width=1)
+
+
+def _draw_toybox_accents(draw, size: int, rng: random.Random, line, accent) -> None:
+    for _ in range(18):
+        x = rng.randrange(size)
+        y = rng.randrange(size)
+        radius = rng.randrange(max(8, size // 90), max(16, size // 38))
+        color = _mix(accent, (255, 255, 255), rng.uniform(0.12, 0.34))
+        draw.rounded_rectangle((x - radius, y - radius // 2, x + radius, y + radius // 2), radius=radius // 2, fill=color, outline=_mix(line, color, 0.2), width=max(1, size // 420))
+
+
+def _draw_scifi_accents(draw, size: int, rng: random.Random, line, accent) -> None:
+    glow = _mix(accent, (80, 255, 235), 0.45)
+    for _ in range(10):
+        x = rng.randrange(20, max(21, size - 80))
+        y = rng.randrange(20, max(21, size - 60))
+        w = rng.randrange(max(44, size // 12), max(72, size // 5))
+        h = rng.randrange(max(10, size // 80), max(18, size // 40))
+        draw.rectangle((x, y, min(size - 1, x + w), min(size - 1, y + h)), fill=glow, outline=line, width=max(1, size // 360))
+    for x in range(0, size, max(128, size // 6)):
+        draw.line((x, 0, x + size // 3, size), fill=_mix(line, accent, 0.25), width=max(1, size // 360))
+
+
+def _draw_fantasy_accents(draw, size: int, rng: random.Random, line, accent) -> None:
+    gold = (216, 165, 77)
+    for _ in range(14):
+        x = rng.randrange(size)
+        y = rng.randrange(size)
+        r = rng.randrange(max(6, size // 120), max(13, size // 58))
+        draw.polygon([(x, y - r), (x + r, y), (x, y + r), (x - r, y)], fill=_mix(accent, gold, 0.35), outline=line)
+    for y in range(size // 8, size, max(128, size // 5)):
+        draw.line((0, y, size, y + rng.randrange(-20, 21)), fill=_mix(line, gold, 0.28), width=max(1, size // 300))
 
 
 def _finish_game_texture(image, material: str, rng: random.Random):
