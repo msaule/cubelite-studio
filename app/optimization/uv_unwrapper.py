@@ -24,6 +24,9 @@ def unwrap_obj_with_xatlas(
     output_obj: Path,
     texture_path: Path,
     material_name: str = "cubelite_material",
+    normal_path: Path | None = None,
+    roughness_path: Path | None = None,
+    metallic_path: Path | None = None,
 ) -> UVUnwrapResult:
     if not input_obj.exists():
         return UVUnwrapResult(False, None, None, None, error_message="Input OBJ does not exist.")
@@ -57,7 +60,14 @@ def unwrap_obj_with_xatlas(
         output_obj.parent.mkdir(parents=True, exist_ok=True)
         output_mtl = output_obj.with_suffix(".mtl")
         _write_textured_obj(output_obj, output_mtl.name, material_name, remapped_vertices, indices, uvs)
-        _write_mtl(output_mtl, material_name, texture_path.name)
+        _write_mtl(
+            output_mtl,
+            material_name,
+            texture_path.name,
+            normal_path.name if normal_path else None,
+            roughness_path.name if roughness_path else None,
+            metallic_path.name if metallic_path else None,
+        )
 
         return UVUnwrapResult(
             success=True,
@@ -93,20 +103,31 @@ def _write_textured_obj(
             handle.write(f"f {a}/{a} {b}/{b} {c}/{c}\n")
 
 
-def _write_mtl(output_mtl: Path, material_name: str, texture_name: str) -> None:
+def _write_mtl(
+    output_mtl: Path,
+    material_name: str,
+    texture_name: str,
+    normal_name: str | None = None,
+    roughness_name: str | None = None,
+    metallic_name: str | None = None,
+) -> None:
+    lines = [
+        "# CubeLite Studio material",
+        f"newmtl {material_name}",
+        "Ka 1.000 1.000 1.000",
+        "Kd 1.000 1.000 1.000",
+        "Ks 0.000 0.000 0.000",
+        "Ns 16.000",
+        f"map_Kd {texture_name}",
+    ]
+    if normal_name:
+        lines.append(f"map_Bump {normal_name}")
+    if roughness_name:
+        lines.append(f"# roughness_map {roughness_name}")
+    if metallic_name:
+        lines.append(f"# metallic_map {metallic_name}")
+    lines.append("")
     output_mtl.write_text(
-        "\n".join(
-            [
-                "# CubeLite Studio material",
-                f"newmtl {material_name}",
-                "Ka 1.000 1.000 1.000",
-                "Kd 1.000 1.000 1.000",
-                "Ks 0.000 0.000 0.000",
-                "Ns 16.000",
-                f"map_Kd {texture_name}",
-                "",
-            ]
-        ),
+        "\n".join(lines),
         encoding="utf-8",
     )
-

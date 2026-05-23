@@ -60,6 +60,9 @@ def create_export_package(
         copied_textured_obj = _copy_finished_file(finished_asset, "textured_obj_path", export_dir / "textured.obj")
         copied_material = _copy_finished_file(finished_asset, "material_path", export_dir / "textured.mtl")
         copied_texture = _copy_finished_file(finished_asset, "texture_path", export_dir / "albedo.png")
+        copied_normal = _copy_finished_file(finished_asset, "normal_path", export_dir / "normal.png")
+        copied_roughness = _copy_finished_file(finished_asset, "roughness_path", export_dir / "roughness.png")
+        copied_metallic = _copy_finished_file(finished_asset, "metallic_path", export_dir / "metallic.png")
         copied_finish_report = _copy_finished_file(finished_asset, "report_path", export_dir / "finish_report.json")
 
         original_stats = original_stats or analyze_mesh(original_obj)
@@ -84,7 +87,11 @@ def create_export_package(
             "textured_obj": str(copied_textured_obj.name) if copied_textured_obj else None,
             "material_file": str(copied_material.name) if copied_material else None,
             "texture_file": str(copied_texture.name) if copied_texture else None,
+            "normal_file": str(copied_normal.name) if copied_normal else None,
+            "roughness_file": str(copied_roughness.name) if copied_roughness else None,
+            "metallic_file": str(copied_metallic.name) if copied_metallic else None,
             "finish_report": str(copied_finish_report.name) if copied_finish_report else None,
+            "texture_quality": (finished_asset or {}).get("texture_stats") if finished_asset else None,
             "readiness_score": readiness.score,
             "readiness_status": readiness.status,
             "warnings": readiness.warnings,

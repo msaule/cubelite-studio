@@ -12,7 +12,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Benchmark CubeLite texture finishing providers.")
     parser.add_argument("--input-obj", default="sample_assets/sample_cube.obj")
     parser.add_argument("--prompt", default="low poly wooden crate game prop")
-    parser.add_argument("--providers", nargs="*", default=["procedural"])
+    parser.add_argument("--providers", nargs="*", default=["studio"])
     parser.add_argument("--model-id", default=DEFAULT_DIFFUSERS_MODEL)
     parser.add_argument("--size", type=int, default=512)
     parser.add_argument("--steps", type=int, default=4)
@@ -37,4 +37,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

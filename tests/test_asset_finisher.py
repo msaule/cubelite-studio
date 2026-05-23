@@ -41,6 +41,7 @@ def test_uv_unwrapper_writes_textured_obj(tmp_path: Path) -> None:
     assert "/" in obj_text
     assert result.output_mtl_path
     assert Path(result.output_mtl_path).exists()
+    assert "map_Kd albedo.png" in Path(result.output_mtl_path).read_text(encoding="utf-8")
 
 
 def test_asset_finisher_creates_obj_mtl_texture_and_report(tmp_path: Path) -> None:
@@ -54,7 +55,12 @@ def test_asset_finisher_creates_obj_mtl_texture_and_report(tmp_path: Path) -> No
     assert result.textured_obj_path and Path(result.textured_obj_path).exists()
     assert result.material_path and Path(result.material_path).exists()
     assert result.texture_path and Path(result.texture_path).exists()
+    assert result.normal_path and Path(result.normal_path).exists()
+    assert result.roughness_path and Path(result.roughness_path).exists()
+    assert result.metallic_path and Path(result.metallic_path).exists()
     assert result.report_path and Path(result.report_path).exists()
+    assert result.texture_stats
+    assert result.texture_stats["production_score"] is not None
 
 
 def test_texture_benchmark_records_provider_result(tmp_path: Path) -> None:
@@ -70,3 +76,4 @@ def test_texture_benchmark_records_provider_result(tmp_path: Path) -> None:
     text = result_path.read_text(encoding="utf-8")
     assert "procedural" in text
     assert "texture_contrast_score" in text
+    assert "texture_production_score" in text

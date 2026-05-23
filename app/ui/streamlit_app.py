@@ -44,8 +44,8 @@ def _settings_from_ui(st, current: AppSettings) -> AppSettings:
     target_faces = st.number_input("Default target triangle count", min_value=1000, max_value=100000, value=current.default_target_face_count, step=1000)
     texture_provider = st.selectbox(
         "Texture provider",
-        ["procedural", "diffusers"],
-        index=["procedural", "diffusers"].index(current.texture_provider) if current.texture_provider in {"procedural", "diffusers"} else 0,
+        ["studio", "procedural", "diffusers"],
+        index=["studio", "procedural", "diffusers"].index(current.texture_provider) if current.texture_provider in {"studio", "procedural", "diffusers"} else 0,
     )
     model_presets = {
         "Tiny smoke-test model": DEFAULT_DIFFUSERS_MODEL,
@@ -173,6 +173,18 @@ def generate_tab(st, settings: AppSettings) -> None:
             st.success(f"Textured OBJ: {finished_asset.get('textured_obj_path')}")
             if finished_asset.get("texture_path"):
                 st.image(finished_asset["texture_path"], caption="Generated texture atlas")
+            map_cols = st.columns(3)
+            if finished_asset.get("normal_path"):
+                map_cols[0].image(finished_asset["normal_path"], caption="Normal map")
+            if finished_asset.get("roughness_path"):
+                map_cols[1].image(finished_asset["roughness_path"], caption="Roughness map")
+            if finished_asset.get("metallic_path"):
+                map_cols[2].image(finished_asset["metallic_path"], caption="Metallic map")
+            texture_stats = finished_asset.get("texture_stats") or {}
+            if texture_stats.get("production_score") is not None:
+                st.metric("Texture QA", f"{texture_stats['production_score']}/100")
+            for warning in texture_stats.get("warnings") or []:
+                st.warning(warning)
         elif finished_asset.get("error_message"):
             st.info(f"Finishing skipped: {finished_asset['error_message']}")
         if export.get("export_dir"):

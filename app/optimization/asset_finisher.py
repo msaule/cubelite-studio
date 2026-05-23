@@ -4,8 +4,9 @@ import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from app.optimization.texture_generator import TextureResult, generate_texture_atlas
-from app.optimization.uv_unwrapper import UVUnwrapResult, unwrap_obj_with_xatlas
+from app.optimization.texture_analyzer import analyze_texture
+from app.optimization.texture_generator import generate_material_pack
+from app.optimization.uv_unwrapper import unwrap_obj_with_xatlas
 from app.utils.time_utils import utc_iso
 
 
@@ -18,6 +19,10 @@ class AssetFinishResult:
     report_path: str | None
     uv_unwrap: dict[str, object] | None
     texture: dict[str, object] | None
+    normal_path: str | None = None
+    roughness_path: str | None = None
+    metallic_path: str | None = None
+    texture_stats: dict[str, object] | None = None
     error_message: str = ""
 
     def to_dict(self) -> dict[str, object]:
@@ -38,9 +43,9 @@ def finish_asset_for_roblox(
     texture_path = output_dir / "albedo.png"
     textured_obj = output_dir / "textured.obj"
 
-    texture = generate_texture_atlas(
+    texture = generate_material_pack(
         prompt,
-        texture_path,
+        output_dir,
         size=texture_size,
         provider=texture_provider,
         model_id=texture_model_id,
@@ -50,14 +55,48 @@ def finish_asset_for_roblox(
     if not texture.success:
         return _write_finish_report(
             output_dir,
-            AssetFinishResult(False, None, None, None, None, None, texture.to_dict(), texture.error_message),
+            AssetFinishResult(
+                success=False,
+                textured_obj_path=None,
+                material_path=None,
+                texture_path=None,
+                report_path=None,
+                uv_unwrap=None,
+                texture=texture.to_dict(),
+                error_message=texture.error_message,
+            ),
         )
+    texture_path = Path(texture.map_paths.get("albedo", texture.output_path or texture_path))
+    normal_path = Path(texture.map_paths["normal"]) if texture.map_paths.get("normal") else None
+    roughness_path = Path(texture.map_paths["roughness"]) if texture.map_paths.get("roughness") else None
+    metallic_path = Path(texture.map_paths["metallic"]) if texture.map_paths.get("metallic") else None
 
-    uv = unwrap_obj_with_xatlas(input_obj, textured_obj, texture_path)
+    uv = unwrap_obj_with_xatlas(
+        input_obj,
+        textured_obj,
+        texture_path,
+        normal_path=normal_path,
+        roughness_path=roughness_path,
+        metallic_path=metallic_path,
+    )
+    texture_stats = analyze_texture(texture_path).to_dict()
     if not uv.success:
         return _write_finish_report(
             output_dir,
-            AssetFinishResult(False, None, None, texture.output_path, None, uv.to_dict(), texture.to_dict(), uv.error_message),
+            AssetFinishResult(
+                success=False,
+                textured_obj_path=None,
+                material_path=None,
+                texture_path=str(texture_path),
+                report_path=None,
+                uv_unwrap=uv.to_dict(),
+                texture=texture.to_dict(),
+                normal_path=str(normal_path) if normal_path else None,
+                roughness_path=str(roughness_path) if roughness_path else None,
+                metallic_path=str(metallic_path) if metallic_path else None,
+                texture_stats=texture_stats,
+                error_message=uv.error_message,
+            ),
         )
 
     return _write_finish_report(
@@ -66,18 +105,22 @@ def finish_asset_for_roblox(
             success=True,
             textured_obj_path=uv.output_obj_path,
             material_path=uv.output_mtl_path,
-            texture_path=texture.output_path,
+            texture_path=str(texture_path),
+            normal_path=str(normal_path) if normal_path else None,
+            roughness_path=str(roughness_path) if roughness_path else None,
+            metallic_path=str(metallic_path) if metallic_path else None,
             report_path=None,
             uv_unwrap=uv.to_dict(),
             texture=texture.to_dict(),
+            texture_stats=texture_stats,
         ),
     )
 
 
 def _write_finish_report(output_dir: Path, result: AssetFinishResult) -> AssetFinishResult:
     report_path = output_dir / "finish_report.json"
+    result.report_path = str(report_path)
     payload = result.to_dict()
     payload["timestamp"] = utc_iso()
     report_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    result.report_path = str(report_path)
     return result

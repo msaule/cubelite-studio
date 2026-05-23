@@ -25,6 +25,8 @@ class TextureBenchmarkRow:
     texture_file_size_mb: float | None
     texture_contrast_score: float | None
     texture_color_variance_score: float | None
+    texture_production_score: int | None
+    texture_warnings: list[str]
     error_message: str
 
     def to_dict(self) -> dict[str, object]:
@@ -72,6 +74,8 @@ def run_texture_benchmark(
                 texture_file_size_mb=texture_stats.file_size_mb if texture_stats else None,
                 texture_contrast_score=texture_stats.contrast_score if texture_stats else None,
                 texture_color_variance_score=texture_stats.color_variance_score if texture_stats else None,
+                texture_production_score=texture_stats.production_score if texture_stats else None,
+                texture_warnings=texture_stats.warnings if texture_stats and texture_stats.warnings else [],
                 error_message=result.error_message,
             )
         )
