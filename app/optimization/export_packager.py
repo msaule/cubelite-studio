@@ -70,6 +70,10 @@ def create_export_package(
         copied_repair_mtl = _copy_finished_file(finished_asset, "repair_material_path", export_dir / "repair_proxy.mtl")
         copied_repair_preview = _copy_finished_file(finished_asset, "repair_preview_path", export_dir / "repair_proxy_preview.png")
         copied_finish_report = _copy_finished_file(finished_asset, "report_path", export_dir / "finish_report.json")
+        copied_recommended_obj = _copy_finished_file(finished_asset, "repair_obj_path", export_dir / "roblox_import_this.obj")
+        if copied_recommended_obj is None:
+            recommended_source = optimized_obj if optimized_obj and optimized_obj.exists() else original_obj
+            copied_recommended_obj = copy_if_exists(recommended_source, export_dir / "roblox_import_this.obj")
 
         original_stats = original_stats or analyze_mesh(original_obj)
         if copied_optimized and optimized_stats is None:
@@ -102,10 +106,16 @@ def create_export_package(
             "repair_proxy_obj": str(copied_repair_obj.name) if copied_repair_obj else None,
             "repair_proxy_material_file": str(copied_repair_mtl.name) if copied_repair_mtl else None,
             "repair_proxy_preview": str(copied_repair_preview.name) if copied_repair_preview else None,
+            "recommended_import_obj": str(copied_recommended_obj.name) if copied_recommended_obj else None,
+            "recommended_import_note": (
+                "Use roblox_import_this.obj first. If a repair_proxy.mtl file is present, keep it next to the OBJ during import/viewing."
+                if copied_recommended_obj
+                else None
+            ),
             "finish_report": str(copied_finish_report.name) if copied_finish_report else None,
-            "texture_quality": (finished_asset or {}).get("texture_stats") if finished_asset else None,
-            "semantic_material": (finished_asset or {}).get("semantic_material") if finished_asset else None,
-            "repair": (finished_asset or {}).get("repair") if finished_asset else None,
+            "texture_quality": _redact_private_paths((finished_asset or {}).get("texture_stats"), include_private_paths) if finished_asset else None,
+            "semantic_material": _redact_private_paths((finished_asset or {}).get("semantic_material"), include_private_paths) if finished_asset else None,
+            "repair": _redact_private_paths((finished_asset or {}).get("repair"), include_private_paths) if finished_asset else None,
             "readiness_score": readiness.score,
             "readiness_status": readiness.status,
             "warnings": readiness.warnings,
@@ -138,3 +148,19 @@ def _stats_for_metadata(stats: MeshStats, include_private_paths: bool) -> dict[s
     if not include_private_paths and data.get("path"):
         data["path"] = Path(str(data["path"])).name
     return data
+
+
+def _redact_private_paths(value: object, include_private_paths: bool) -> object:
+    if include_private_paths:
+        return value
+    if isinstance(value, dict):
+        redacted: dict[str, object] = {}
+        for key, item in value.items():
+            if isinstance(item, str) and "path" in key.lower():
+                redacted[key] = Path(item).name
+            else:
+                redacted[key] = _redact_private_paths(item, include_private_paths)
+        return redacted
+    if isinstance(value, list):
+        return [_redact_private_paths(item, include_private_paths) for item in value]
+    return value
