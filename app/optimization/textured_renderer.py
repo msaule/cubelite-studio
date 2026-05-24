@@ -139,14 +139,7 @@ def _render_plate(vertices, triangles, colors, output_png: Path, title: str, sho
     margin = max_span * 0.08
     aspect = tuple(max(float(span), max_span * 0.08) for span in spans)
 
-    views = [
-        ("Front", 0, -90),
-        ("Right", 0, 0),
-        ("Back", 0, 90),
-        ("Left", 0, 180),
-        ("Top", 90, -90),
-        ("3/4", 28, 38),
-    ]
+    views = _inspection_views(spans)
     output_png.parent.mkdir(parents=True, exist_ok=True)
     fig = plt.figure(figsize=(12, 8), dpi=150)
     fig.patch.set_facecolor("#f7f8fa")
@@ -177,6 +170,27 @@ def _render_plate(vertices, triangles, colors, output_png: Path, title: str, sho
     fig.savefig(output_png, bbox_inches="tight", pad_inches=0.12)
     plt.close(fig)
     return TexturedRenderResult(True, str(output_png))
+
+
+def _inspection_views(spans) -> list[tuple[str, float, float]]:
+    x_span, y_span, z_span = (float(value) for value in spans)
+    if y_span > max(x_span, z_span) * 1.6 and z_span < max(x_span, y_span) * 0.18:
+        return [
+            ("Face", 90, -90),
+            ("3/4 Face", 38, -52),
+            ("Edge", 0, 0),
+            ("Back Face", -90, -90),
+            ("Hilt", 0, -90),
+            ("Guard Angle", 26, 136),
+        ]
+    return [
+        ("Front", 0, -90),
+        ("Right", 0, 0),
+        ("Back", 0, 90),
+        ("Left", 0, 180),
+        ("Top", 90, -90),
+        ("3/4", 28, 38),
+    ]
 
 
 def _parse_textured_obj(path: Path, np):

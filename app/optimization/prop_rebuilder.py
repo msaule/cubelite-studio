@@ -48,7 +48,7 @@ def rebuild_fantasy_sword(output_obj: Path) -> PropRebuildResult:
     output_mtl = output_obj.with_suffix(".mtl")
     builder = _ObjBuilder()
 
-    _add_blade(builder, y0=0.04, y1=1.55)
+    _add_fantasy_blade(builder)
     _add_blade_fuller(builder)
     _add_blade_socket(builder)
     _add_grip(builder)
@@ -79,39 +79,38 @@ class _ObjBuilder:
         self.add_face(material, a, c, d)
 
 
-def _add_blade(builder: _ObjBuilder, y0: float, y1: float) -> None:
-    length = y1 - y0
-    sections = [
-        (y0, 0.168, 0.066),
-        (y0 + length * 0.12, 0.158, 0.060),
-        (y0 + length * 0.32, 0.124, 0.050),
-        (y0 + length * 0.56, 0.090, 0.040),
-        (y0 + length * 0.78, 0.052, 0.026),
-        (y1, 0.0, 0.0),
+def _add_fantasy_blade(builder: _ObjBuilder) -> None:
+    outline = [
+        (-0.205, 0.030),
+        (-0.285, 0.170),
+        (-0.185, 0.305),
+        (-0.142, 0.760),
+        (-0.096, 1.185),
+        (-0.050, 1.500),
+        (0.000, 1.655),
+        (0.050, 1.500),
+        (0.096, 1.185),
+        (0.142, 0.760),
+        (0.185, 0.305),
+        (0.285, 0.170),
+        (0.205, 0.030),
     ]
-    rings: list[list[int]] = []
-    for y, width, thickness in sections:
-        rings.append(
-            [
-                builder.add_vertex((-width, y, 0.0)),
-                builder.add_vertex((-width * 0.38, y, thickness * 0.72)),
-                builder.add_vertex((0.0, y, thickness)),
-                builder.add_vertex((width * 0.38, y, thickness * 0.72)),
-                builder.add_vertex((width, y, 0.0)),
-                builder.add_vertex((width * 0.38, y, -thickness * 0.72)),
-                builder.add_vertex((0.0, y, -thickness)),
-                builder.add_vertex((-width * 0.38, y, -thickness * 0.72)),
-            ]
-        )
-    for first, second in zip(rings, rings[1:]):
-        for index in range(8):
-            a = first[index]
-            b = first[(index + 1) % 8]
-            c = second[(index + 1) % 8]
-            d = second[index]
-            material = "crystal_highlight" if index in {1, 2} else ("crystal_core" if index in {5, 6} else ("crystal_edge" if index in {0, 3} else "crystal_shadow"))
-            builder.add_face(material, a, b, c)
-            builder.add_face(material, a, c, d)
+    _add_extruded_polygon(builder, "crystal_core", outline, half_depth=0.055)
+    inner_left = [
+        (-0.050, 0.130),
+        (-0.150, 0.290),
+        (-0.110, 0.780),
+        (-0.060, 1.260),
+        (-0.015, 1.480),
+        (0.000, 1.535),
+        (0.000, 0.095),
+    ]
+    inner_right = [(-x, y) for x, y in reversed(inner_left)]
+    _add_surface_polygon(builder, "crystal_highlight", inner_left, z=0.061)
+    _add_surface_polygon(builder, "crystal_edge", inner_right, z=0.062)
+    _add_surface_polygon(builder, "crystal_shadow", inner_left, z=-0.061, reverse=True)
+    _add_surface_polygon(builder, "crystal_deep", inner_right, z=-0.062, reverse=True)
+    _add_raised_ridge(builder, y0=0.120, y1=1.520, z=0.072)
 
 
 def _add_blade_fuller(builder: _ObjBuilder) -> None:
@@ -172,6 +171,50 @@ def _add_box(builder: _ObjBuilder, material: str, mins: tuple[float, float, floa
     quads = [(0, 1, 2, 3), (4, 7, 6, 5), (0, 4, 5, 1), (3, 2, 6, 7), (0, 3, 7, 4), (1, 5, 6, 2)]
     for a, b, c, d in quads:
         builder.add_quad(material, verts[a], verts[b], verts[c], verts[d])
+
+
+def _add_extruded_polygon(builder: _ObjBuilder, material: str, outline: list[tuple[float, float]], half_depth: float) -> None:
+    front = [builder.add_vertex((x, y, half_depth)) for x, y in outline]
+    back = [builder.add_vertex((x, y, -half_depth)) for x, y in outline]
+    center_x = sum(x for x, _ in outline) / len(outline)
+    center_y = sum(y for _, y in outline) / len(outline)
+    front_center = builder.add_vertex((center_x, center_y, half_depth))
+    back_center = builder.add_vertex((center_x, center_y, -half_depth))
+    count = len(outline)
+    for index in range(count):
+        next_index = (index + 1) % count
+        edge_material = "crystal_edge" if index in {0, 1, 10, 11, 12} else ("crystal_shadow" if index in {4, 5, 6, 7} else material)
+        builder.add_face("crystal_highlight" if index < count // 2 else material, front_center, front[index], front[next_index])
+        builder.add_face("crystal_deep" if index < count // 2 else "crystal_shadow", back_center, back[next_index], back[index])
+        builder.add_quad(edge_material, front[index], back[index], back[next_index], front[next_index])
+
+
+def _add_surface_polygon(builder: _ObjBuilder, material: str, outline: list[tuple[float, float]], z: float, reverse: bool = False) -> None:
+    vertices = [builder.add_vertex((x, y, z)) for x, y in outline]
+    center_x = sum(x for x, _ in outline) / len(outline)
+    center_y = sum(y for _, y in outline) / len(outline)
+    center = builder.add_vertex((center_x, center_y, z))
+    indices = range(len(vertices))
+    if reverse:
+        indices = reversed(range(len(vertices)))
+    ordered = list(indices)
+    for offset, index in enumerate(ordered):
+        next_index = ordered[(offset + 1) % len(ordered)]
+        builder.add_face(material, center, vertices[index], vertices[next_index])
+
+
+def _add_raised_ridge(builder: _ObjBuilder, y0: float, y1: float, z: float) -> None:
+    points = [
+        builder.add_vertex((-0.014, y0, z)),
+        builder.add_vertex((0.000, y0 + 0.060, z + 0.022)),
+        builder.add_vertex((0.014, y0, z)),
+        builder.add_vertex((-0.010, y1, z)),
+        builder.add_vertex((0.000, y1 + 0.040, z + 0.016)),
+        builder.add_vertex((0.010, y1, z)),
+    ]
+    builder.add_quad("crystal_highlight", points[0], points[1], points[4], points[3])
+    builder.add_quad("crystal_edge", points[1], points[2], points[5], points[4])
+    builder.add_quad("crystal_deep", points[0], points[3], points[5], points[2])
 
 
 def _add_oriented_box_xy(
