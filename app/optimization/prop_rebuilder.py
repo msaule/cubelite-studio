@@ -19,14 +19,20 @@ class PropRebuildResult:
 
 MATERIALS = {
     "crystal_core": (0.36, 0.95, 1.00),
+    "crystal_highlight": (0.72, 1.00, 1.00),
     "crystal_edge": (0.12, 0.76, 0.90),
     "crystal_shadow": (0.08, 0.34, 0.58),
+    "crystal_deep": (0.06, 0.20, 0.46),
     "metal_dark": (0.16, 0.18, 0.22),
     "metal_mid": (0.36, 0.38, 0.43),
+    "metal_edge": (0.58, 0.61, 0.68),
     "gold": (0.92, 0.62, 0.20),
+    "gold_light": (1.00, 0.78, 0.34),
     "gold_shadow": (0.58, 0.34, 0.10),
     "gem_green": (0.12, 0.95, 0.46),
+    "gem_dark": (0.04, 0.38, 0.20),
     "grip_wrap": (0.09, 0.10, 0.13),
+    "leather": (0.20, 0.11, 0.06),
 }
 
 
@@ -44,10 +50,12 @@ def rebuild_fantasy_sword(output_obj: Path) -> PropRebuildResult:
 
     _add_blade(builder, y0=0.04, y1=1.55)
     _add_blade_fuller(builder)
+    _add_blade_socket(builder)
     _add_grip(builder)
     _add_guard(builder)
     _add_pommel(builder)
     _add_diamond(builder, "gem_green", center=(0.0, -0.025, 0.074), radius=0.060, depth=0.024)
+    _add_diamond(builder, "gem_dark", center=(0.0, -0.025, -0.074), radius=0.048, depth=0.018)
 
     _write_mtl(output_mtl)
     _write_obj(output_obj, output_mtl.name, builder)
@@ -66,13 +74,18 @@ class _ObjBuilder:
     def add_face(self, material: str, a: int, b: int, c: int) -> None:
         self.faces.append((material, (a, b, c)))
 
+    def add_quad(self, material: str, a: int, b: int, c: int, d: int) -> None:
+        self.add_face(material, a, b, c)
+        self.add_face(material, a, c, d)
+
 
 def _add_blade(builder: _ObjBuilder, y0: float, y1: float) -> None:
     length = y1 - y0
     sections = [
-        (y0, 0.155, 0.060),
-        (y0 + length * 0.18, 0.132, 0.052),
-        (y0 + length * 0.48, 0.092, 0.040),
+        (y0, 0.168, 0.066),
+        (y0 + length * 0.12, 0.158, 0.060),
+        (y0 + length * 0.32, 0.124, 0.050),
+        (y0 + length * 0.56, 0.090, 0.040),
         (y0 + length * 0.78, 0.052, 0.026),
         (y1, 0.0, 0.0),
     ]
@@ -96,34 +109,51 @@ def _add_blade(builder: _ObjBuilder, y0: float, y1: float) -> None:
             b = first[(index + 1) % 8]
             c = second[(index + 1) % 8]
             d = second[index]
-            material = "crystal_core" if index in {1, 2, 5, 6} else ("crystal_edge" if index in {0, 3} else "crystal_shadow")
+            material = "crystal_highlight" if index in {1, 2} else ("crystal_core" if index in {5, 6} else ("crystal_edge" if index in {0, 3} else "crystal_shadow"))
             builder.add_face(material, a, b, c)
             builder.add_face(material, a, c, d)
 
 
 def _add_blade_fuller(builder: _ObjBuilder) -> None:
-    _add_oriented_box_xy(builder, "crystal_edge", (-0.018, 0.16), (-0.010, 1.05), half_width=0.010, half_depth=0.066)
-    _add_oriented_box_xy(builder, "crystal_edge", (0.018, 0.16), (0.010, 1.05), half_width=0.010, half_depth=0.066)
+    _add_oriented_box_xy(builder, "crystal_deep", (-0.032, 0.19), (-0.012, 1.12), half_width=0.007, half_depth=0.071)
+    _add_oriented_box_xy(builder, "crystal_deep", (0.032, 0.19), (0.012, 1.12), half_width=0.007, half_depth=0.071)
+    _add_oriented_box_xy(builder, "crystal_highlight", (0.000, 0.20), (0.000, 1.34), half_width=0.006, half_depth=0.076)
+    for y in (0.36, 0.62, 0.88, 1.12):
+        _add_diamond(builder, "crystal_edge", center=(0.0, y, 0.078), radius=0.026, depth=0.007)
+
+
+def _add_blade_socket(builder: _ObjBuilder) -> None:
+    _add_box(builder, "metal_edge", (-0.150, -0.010, -0.075), (0.150, 0.095, 0.075))
+    _add_box(builder, "gold_shadow", (-0.115, -0.045, -0.080), (0.115, 0.005, 0.080))
+    _add_diamond(builder, "gem_green", center=(0.0, 0.050, 0.086), radius=0.048, depth=0.018)
 
 
 def _add_grip(builder: _ObjBuilder) -> None:
-    _add_octagonal_prism(builder, "metal_dark", y0=-0.68, y1=0.025, radius_x=0.058, radius_z=0.044)
-    for y in (-0.60, -0.47, -0.34, -0.21, -0.08):
-        _add_box(builder, "gold_shadow", (-0.075, y - 0.018, -0.050), (0.075, y + 0.018, 0.050))
-    _add_box(builder, "grip_wrap", (-0.047, -0.66, -0.052), (0.047, 0.01, 0.052))
+    _add_octagonal_prism(builder, "leather", y0=-0.70, y1=0.030, radius_x=0.066, radius_z=0.050, sides=12)
+    for index, y in enumerate((-0.62, -0.51, -0.40, -0.29, -0.18, -0.07)):
+        slant = 0.045 if index % 2 == 0 else -0.045
+        _add_oriented_box_xy(builder, "gold_shadow", (-0.080, y - 0.025), (0.080, y + slant), half_width=0.018, half_depth=0.058)
+    _add_octagonal_prism(builder, "grip_wrap", y0=-0.72, y1=-0.69, radius_x=0.084, radius_z=0.062, sides=12)
+    _add_octagonal_prism(builder, "grip_wrap", y0=0.010, y1=0.045, radius_x=0.084, radius_z=0.062, sides=12)
 
 
 def _add_guard(builder: _ObjBuilder) -> None:
-    _add_box(builder, "metal_mid", (-0.130, -0.030, -0.070), (0.130, 0.060, 0.070))
-    _add_oriented_box_xy(builder, "gold", (-0.55, -0.125), (-0.12, 0.030), half_width=0.055, half_depth=0.065)
-    _add_oriented_box_xy(builder, "gold", (0.12, 0.030), (0.55, -0.125), half_width=0.055, half_depth=0.065)
-    _add_diamond(builder, "gold_shadow", center=(-0.58, -0.135, 0.0), radius=0.052, depth=0.042)
-    _add_diamond(builder, "gold_shadow", center=(0.58, -0.135, 0.0), radius=0.052, depth=0.042)
+    _add_box(builder, "metal_mid", (-0.175, -0.060, -0.082), (0.175, 0.055, 0.082))
+    _add_oriented_box_xy(builder, "gold", (-0.62, -0.155), (-0.12, 0.035), half_width=0.065, half_depth=0.072)
+    _add_oriented_box_xy(builder, "gold", (0.12, 0.035), (0.62, -0.155), half_width=0.065, half_depth=0.072)
+    _add_oriented_box_xy(builder, "gold_light", (-0.52, -0.105), (-0.17, 0.025), half_width=0.020, half_depth=0.078)
+    _add_oriented_box_xy(builder, "gold_light", (0.17, 0.025), (0.52, -0.105), half_width=0.020, half_depth=0.078)
+    _add_diamond(builder, "gold_shadow", center=(-0.66, -0.170, 0.0), radius=0.064, depth=0.050)
+    _add_diamond(builder, "gold_shadow", center=(0.66, -0.170, 0.0), radius=0.064, depth=0.050)
+    _add_diamond(builder, "gem_green", center=(-0.37, -0.070, 0.082), radius=0.034, depth=0.012)
+    _add_diamond(builder, "gem_green", center=(0.37, -0.070, 0.082), radius=0.034, depth=0.012)
 
 
 def _add_pommel(builder: _ObjBuilder) -> None:
-    _add_box(builder, "gold", (-0.118, -0.835, -0.065), (0.118, -0.690, 0.065))
-    _add_diamond(builder, "gold_shadow", center=(0.0, -0.940, 0.0), radius=0.092, depth=0.064)
+    _add_octagonal_prism(builder, "gold", y0=-0.860, y1=-0.700, radius_x=0.112, radius_z=0.072, sides=8)
+    _add_octagonal_prism(builder, "gold_light", y0=-0.805, y1=-0.755, radius_x=0.140, radius_z=0.082, sides=8)
+    _add_diamond(builder, "gem_green", center=(0.0, -0.780, 0.088), radius=0.040, depth=0.016)
+    _add_diamond(builder, "gold_shadow", center=(0.0, -0.980, 0.0), radius=0.105, depth=0.070)
 
 
 def _add_box(builder: _ObjBuilder, material: str, mins: tuple[float, float, float], maxs: tuple[float, float, float]) -> None:
@@ -141,8 +171,7 @@ def _add_box(builder: _ObjBuilder, material: str, mins: tuple[float, float, floa
     ]
     quads = [(0, 1, 2, 3), (4, 7, 6, 5), (0, 4, 5, 1), (3, 2, 6, 7), (0, 3, 7, 4), (1, 5, 6, 2)]
     for a, b, c, d in quads:
-        builder.add_face(material, verts[a], verts[b], verts[c])
-        builder.add_face(material, verts[a], verts[c], verts[d])
+        builder.add_quad(material, verts[a], verts[b], verts[c], verts[d])
 
 
 def _add_oriented_box_xy(
@@ -171,30 +200,28 @@ def _add_oriented_box_xy(
     quads = [(front[0], front[1], front[2], front[3]), (back[3], back[2], back[1], back[0])]
     quads.extend((front[index], back[index], back[(index + 1) % 4], front[(index + 1) % 4]) for index in range(4))
     for a, b, c, d in quads:
-        builder.add_face(material, a, b, c)
-        builder.add_face(material, a, c, d)
+        builder.add_quad(material, a, b, c, d)
 
 
-def _add_octagonal_prism(builder: _ObjBuilder, material: str, y0: float, y1: float, radius_x: float, radius_z: float) -> None:
+def _add_octagonal_prism(builder: _ObjBuilder, material: str, y0: float, y1: float, radius_x: float, radius_z: float, sides: int = 8) -> None:
     rings: list[list[int]] = []
     for y in (y0, y1):
         ring = []
-        for index in range(8):
-            angle = (math.tau * index) / 8
+        for index in range(sides):
+            angle = (math.tau * index) / sides
             ring.append(builder.add_vertex((math.cos(angle) * radius_x, y, math.sin(angle) * radius_z)))
         rings.append(ring)
-    for index in range(8):
+    for index in range(sides):
         a = rings[0][index]
-        b = rings[0][(index + 1) % 8]
-        c = rings[1][(index + 1) % 8]
+        b = rings[0][(index + 1) % sides]
+        c = rings[1][(index + 1) % sides]
         d = rings[1][index]
-        builder.add_face(material, a, b, c)
-        builder.add_face(material, a, c, d)
+        builder.add_quad(material, a, b, c, d)
     center_bottom = builder.add_vertex((0.0, y0, 0.0))
     center_top = builder.add_vertex((0.0, y1, 0.0))
-    for index in range(8):
-        builder.add_face(material, center_bottom, rings[0][(index + 1) % 8], rings[0][index])
-        builder.add_face(material, center_top, rings[1][index], rings[1][(index + 1) % 8])
+    for index in range(sides):
+        builder.add_face(material, center_bottom, rings[0][(index + 1) % sides], rings[0][index])
+        builder.add_face(material, center_top, rings[1][index], rings[1][(index + 1) % sides])
 
 
 def _add_diamond(builder: _ObjBuilder, material: str, center: tuple[float, float, float], radius: float, depth: float) -> None:
@@ -216,7 +243,8 @@ def _write_mtl(output_mtl: Path) -> None:
     lines = ["# CubeLite procedural repair materials"]
     for name, color in MATERIALS.items():
         r, g, b = color
-        lines.extend([f"newmtl {name}", f"Kd {r:.4f} {g:.4f} {b:.4f}", "Ka 0.7000 0.7000 0.7000", "Ks 0.1000 0.1000 0.1000", "Ns 32.0000", ""])
+        specular = "0.2200 0.2200 0.2200" if "crystal" in name or "gem" in name else "0.1000 0.1000 0.1000"
+        lines.extend([f"newmtl {name}", f"Kd {r:.4f} {g:.4f} {b:.4f}", "Ka 0.7000 0.7000 0.7000", f"Ks {specular}", "Ns 48.0000", ""])
     output_mtl.write_text("\n".join(lines), encoding="utf-8")
 
 
@@ -224,10 +252,23 @@ def _write_obj(output_obj: Path, mtl_name: str, builder: _ObjBuilder) -> None:
     lines = ["# CubeLite procedural repair mesh", f"mtllib {mtl_name}"]
     for vertex in builder.vertices:
         lines.append(f"v {vertex[0]:.6f} {vertex[1]:.6f} {vertex[2]:.6f}")
+    normals = [_face_normal(builder.vertices[a - 1], builder.vertices[b - 1], builder.vertices[c - 1]) for _, (a, b, c) in builder.faces]
+    for normal in normals:
+        lines.append(f"vn {normal[0]:.6f} {normal[1]:.6f} {normal[2]:.6f}")
     current = ""
-    for material, (a, b, c) in builder.faces:
+    for index, (material, (a, b, c)) in enumerate(builder.faces, start=1):
         if material != current:
             lines.append(f"usemtl {material}")
             current = material
-        lines.append(f"f {a} {b} {c}")
+        lines.append(f"f {a}//{index} {b}//{index} {c}//{index}")
     output_obj.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _face_normal(a: tuple[float, float, float], b: tuple[float, float, float], c: tuple[float, float, float]) -> tuple[float, float, float]:
+    ux, uy, uz = b[0] - a[0], b[1] - a[1], b[2] - a[2]
+    vx, vy, vz = c[0] - a[0], c[1] - a[1], c[2] - a[2]
+    nx = uy * vz - uz * vy
+    ny = uz * vx - ux * vz
+    nz = ux * vy - uy * vx
+    length = max(math.sqrt(nx * nx + ny * ny + nz * nz), 1e-8)
+    return nx / length, ny / length, nz / length

@@ -15,7 +15,8 @@ def test_prop_rebuilder_creates_clean_sword_proxy(tmp_path: Path) -> None:
 
     stats = analyze_mesh(Path(result.output_obj_path))
     assert stats.success
-    assert stats.triangle_count >= 20
+    assert stats.triangle_count >= 500
+    assert stats.has_normals
     assert stats.has_materials
 
     render = render_material_inspection_plate(Path(result.output_obj_path), tmp_path / "proxy.png")
