@@ -47,17 +47,11 @@ def render_textured_inspection_plate(
         colors = [_face_color(uvs[uv_face], texture, triangles[index]) for index, uv_face in enumerate(uv_faces)]
         mins = vertices.min(axis=0)
         maxs = vertices.max(axis=0)
-        center = (mins + maxs) / 2
-        radius = max(float((maxs - mins).max()) / 2, 0.5)
-
-        views = [
-            ("Front", 0, -90),
-            ("Right", 0, 0),
-            ("Back", 0, 90),
-            ("Left", 0, 180),
-            ("Top", 90, -90),
-            ("3/4", 28, 38),
-        ]
+        spans = maxs - mins
+        max_span = max(float(spans.max()), 0.5)
+        margin = max_span * 0.08
+        aspect = tuple(max(float(span), max_span * 0.08) for span in spans)
+        views = _inspection_views(spans)
         output_png.parent.mkdir(parents=True, exist_ok=True)
         fig = plt.figure(figsize=(12, 8), dpi=150)
         fig.patch.set_facecolor("#f7f8fa")
@@ -75,11 +69,11 @@ def render_textured_inspection_plate(
                 antialiaseds=True,
             )
             ax.add_collection3d(collection)
-            ax.set_xlim(center[0] - radius, center[0] + radius)
-            ax.set_ylim(center[1] - radius, center[1] + radius)
-            ax.set_zlim(center[2] - radius, center[2] + radius)
+            ax.set_xlim(mins[0] - margin, maxs[0] + margin)
+            ax.set_ylim(mins[1] - margin, maxs[1] + margin)
+            ax.set_zlim(mins[2] - margin, maxs[2] + margin)
             ax.view_init(elev=elev, azim=azim)
-            ax.set_box_aspect((1, 1, 1))
+            ax.set_box_aspect(aspect)
             ax.set_axis_off()
             ax.set_title(label, fontsize=9, pad=2)
             ax.set_facecolor("#f7f8fa")
@@ -129,6 +123,85 @@ def render_material_inspection_plate(
         except Exception:
             pass
         return TexturedRenderResult(False, None, f"Material render failed: {exc}")
+
+
+def render_material_showcase_plate(
+    material_obj: Path,
+    output_png: Path,
+    title: str = "CubeLite Material Mesh",
+    show_edges: bool = True,
+) -> TexturedRenderResult:
+    if not material_obj.exists():
+        return TexturedRenderResult(False, None, "Material OBJ does not exist.")
+
+    try:
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        import numpy as np
+        from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+    except Exception as exc:
+        return TexturedRenderResult(False, None, f"Material rendering dependencies are unavailable: {exc}")
+
+    try:
+        vertices, faces, material_names = _parse_material_obj(material_obj, np)
+        if len(vertices) == 0 or len(faces) == 0:
+            return TexturedRenderResult(False, None, "Material OBJ has no renderable faces.")
+        material_colors = _parse_mtl_colors(material_obj)
+        triangles = vertices[faces]
+        colors = [_shade_color(material_colors.get(material, (0.55, 0.55, 0.50)), triangles[index]) for index, material in enumerate(material_names)]
+        return _render_showcase_plate(vertices, triangles, colors, output_png, title, show_edges, plt, Poly3DCollection)
+    except Exception as exc:
+        try:
+            plt.close("all")
+        except Exception:
+            pass
+        return TexturedRenderResult(False, None, f"Material showcase render failed: {exc}")
+
+
+def _render_showcase_plate(vertices, triangles, colors, output_png: Path, title: str, show_edges: bool, plt, Poly3DCollection) -> TexturedRenderResult:
+    mins = vertices.min(axis=0)
+    maxs = vertices.max(axis=0)
+    spans = maxs - mins
+    max_span = max(float(spans.max()), 0.5)
+    margin = max_span * 0.075
+    aspect = tuple(max(float(span), max_span * 0.08) for span in spans)
+    output_png.parent.mkdir(parents=True, exist_ok=True)
+
+    fig = plt.figure(figsize=(13, 8), dpi=160)
+    fig.patch.set_facecolor("#f6f7f9")
+    fig.suptitle("\n".join(wrap(title, width=76, max_lines=2, placeholder="...")), fontsize=14, fontweight="bold", y=0.97)
+    grid = fig.add_gridspec(2, 3, width_ratios=[1.15, 1.15, 0.92], height_ratios=[1, 1], wspace=0.02, hspace=0.12)
+    views = [
+        ("Hero face", 90, -90, grid[:, :2]),
+        ("3/4 shape", 34, -48, grid[0, 2]),
+        ("Edge depth", 4, 0, grid[1, 2]),
+    ]
+    edge_color = (0.03, 0.03, 0.035, 0.20) if show_edges else "none"
+    line_width = 0.10 if show_edges else 0.0
+    for label, elev, azim, slot in views:
+        ax = fig.add_subplot(slot, projection="3d")
+        collection = Poly3DCollection(
+            triangles,
+            facecolors=colors,
+            edgecolor=edge_color,
+            linewidth=line_width,
+            antialiaseds=True,
+        )
+        ax.add_collection3d(collection)
+        ax.set_xlim(mins[0] - margin, maxs[0] + margin)
+        ax.set_ylim(mins[1] - margin, maxs[1] + margin)
+        ax.set_zlim(mins[2] - margin, maxs[2] + margin)
+        ax.view_init(elev=elev, azim=azim)
+        ax.set_box_aspect(aspect)
+        ax.set_axis_off()
+        ax.set_title(label, fontsize=9, pad=0)
+        ax.set_facecolor("#f6f7f9")
+
+    fig.savefig(output_png, bbox_inches="tight", pad_inches=0.14)
+    plt.close(fig)
+    return TexturedRenderResult(True, str(output_png))
 
 
 def _render_plate(vertices, triangles, colors, output_png: Path, title: str, show_edges: bool, plt, Poly3DCollection) -> TexturedRenderResult:

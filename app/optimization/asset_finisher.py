@@ -8,7 +8,7 @@ from app.optimization.texture_analyzer import analyze_texture
 from app.optimization.texture_generator import generate_material_pack
 from app.optimization.uv_unwrapper import unwrap_obj_with_xatlas
 from app.optimization.semantic_materializer import materialize_obj_semantically
-from app.optimization.textured_renderer import render_material_inspection_plate
+from app.optimization.textured_renderer import render_material_inspection_plate, render_material_showcase_plate
 from app.optimization.prop_rebuilder import rebuild_prompt_proxy
 from app.utils.time_utils import utc_iso
 
@@ -124,10 +124,10 @@ def finish_asset_for_roblox(
     repair = rebuild_prompt_proxy(prompt, output_dir / "repair_proxy.obj")
     repair_preview_path = None
     if repair.success and repair.output_obj_path:
-        repair_preview = render_material_inspection_plate(
+        repair_preview = render_material_showcase_plate(
             Path(repair.output_obj_path),
             output_dir / "repair_proxy_preview.png",
-            "Procedural repair proxy",
+            "Rebuilt fantasy sword proxy",
             show_edges=True,
         )
         repair_preview_path = repair_preview.output_path if repair_preview.success else None
