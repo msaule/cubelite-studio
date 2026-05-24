@@ -25,10 +25,14 @@ def test_export_packager_creates_expected_files(tmp_path: Path) -> None:
     assert (export_dir / "roblox_import_this.obj").exists()
     assert (export_dir / "metadata.json").exists()
     assert (export_dir / "roblox_import_notes.txt").exists()
+    assert (export_dir / "asset_readme.md").exists()
     metadata = json.loads((export_dir / "metadata.json").read_text(encoding="utf-8"))
     assert metadata["dry_run"] is True
     assert metadata["readiness_score"] == readiness.score
     assert metadata["recommended_import_obj"] == "roblox_import_this.obj"
+    readme = (export_dir / "asset_readme.md").read_text(encoding="utf-8")
+    assert "roblox_import_this.obj" in readme
+    assert "heuristic Roblox-readiness check" in readme
 
 
 def test_export_packager_redacts_nested_finished_asset_paths(tmp_path: Path) -> None:

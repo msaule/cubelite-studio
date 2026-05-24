@@ -22,3 +22,29 @@ def test_invalid_obj_returns_useful_error(tmp_path: Path) -> None:
     stats = analyze_mesh(invalid)
     assert not stats.success
     assert stats.error_message
+
+
+def test_material_splits_do_not_count_as_separate_objects(tmp_path: Path) -> None:
+    obj = tmp_path / "single_asset_many_materials.obj"
+    obj.write_text(
+        "\n".join(
+            [
+                "mtllib mat.mtl",
+                "v 0 0 0",
+                "v 1 0 0",
+                "v 0 1 0",
+                "v 0 0 1",
+                "usemtl gold",
+                "f 1 2 3",
+                "usemtl crystal",
+                "f 1 3 4",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    stats = analyze_mesh(obj)
+
+    assert stats.success
+    assert stats.object_count == 1

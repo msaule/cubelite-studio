@@ -125,6 +125,7 @@ def analyze_mesh(obj_path: Path) -> MeshStats:
         }
         normals = "vn " in obj_text
         materials = any(token in obj_text for token in ("mtllib ", "usemtl "))
+        explicit_object_count = _explicit_obj_group_count(obj_text)
         return MeshStats(
             success=True,
             path=str(obj_path),
@@ -138,7 +139,7 @@ def analyze_mesh(obj_path: Path) -> MeshStats:
             has_normals=normals,
             has_materials=materials,
             watertight=bool(combined.is_watertight),
-            object_count=len(meshes),
+            object_count=explicit_object_count or 1,
             warnings=[] if bounds is not None else ["Bounds could not be calculated."],
         )
     except Exception as exc:
@@ -151,3 +152,13 @@ def analyze_mesh(obj_path: Path) -> MeshStats:
                 file_size_mb=round(obj_path.stat().st_size / (1024 * 1024), 3),
                 error_message=f"Mesh could not be loaded: {exc}",
             )
+
+
+def _explicit_obj_group_count(obj_text: str) -> int | None:
+    names = []
+    for line in obj_text.splitlines():
+        if line.startswith("o ") or line.startswith("g "):
+            name = line.split(maxsplit=1)[1].strip() if len(line.split(maxsplit=1)) > 1 else ""
+            if name and name.lower() not in {"default", "none"}:
+                names.append(name)
+    return len(set(names)) or None

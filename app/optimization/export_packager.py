@@ -128,6 +128,19 @@ def create_export_package(
         notes_path.write_text(readiness.to_text(), encoding="utf-8")
         summary_path = export_dir / "benchmark_summary.json"
         summary_path.write_text(json.dumps(benchmark_summary or {}, indent=2), encoding="utf-8")
+        asset_readme_path = export_dir / "asset_readme.md"
+        asset_readme_path.write_text(
+            _asset_readme(
+                prompt=prompt,
+                profile_name=profile_name,
+                metadata=metadata,
+                original_stats=original_stats,
+                readiness=readiness,
+                recommended_obj=copied_recommended_obj,
+                inspection_plate=copied_plate,
+            ),
+            encoding="utf-8",
+        )
 
         return ExportPackageResult(True, str(export_dir), str(metadata_path), str(notes_path))
     except Exception as exc:
@@ -164,3 +177,50 @@ def _redact_private_paths(value: object, include_private_paths: bool) -> object:
     if isinstance(value, list):
         return [_redact_private_paths(item, include_private_paths) for item in value]
     return value
+
+
+def _asset_readme(
+    prompt: str,
+    profile_name: str,
+    metadata: dict[str, object],
+    original_stats: MeshStats,
+    readiness: RobloxReadinessReport,
+    recommended_obj: Path | None,
+    inspection_plate: Path | None,
+) -> str:
+    recommended_name = recommended_obj.name if recommended_obj else "original.obj"
+    plate_line = f"![Inspection plate]({inspection_plate.name})\n\n" if inspection_plate else ""
+    return "\n".join(
+        [
+            "# CubeLite Asset Export",
+            "",
+            plate_line.rstrip(),
+            "## Recommended Import",
+            "",
+            f"Start with `{recommended_name}` in Roblox Studio.",
+            "",
+            "Keep any `.mtl` and texture files in this folder next to the OBJ when previewing in external tools. Roblox Studio material setup may still require manual checks.",
+            "",
+            "## Prompt",
+            "",
+            f"`{prompt}`",
+            "",
+            "## Run Summary",
+            "",
+            f"- Profile: {profile_name}",
+            f"- Readiness: {readiness.score}/100, {readiness.status}",
+            f"- Triangles: {original_stats.triangle_count}",
+            f"- Vertices: {original_stats.vertex_count}",
+            f"- File size: {original_stats.file_size_mb} MB",
+            f"- Bounding box: {original_stats.bounding_box_dimensions or 'n/a'}",
+            f"- Peak VRAM: {metadata.get('peak_vram_gb') or 'n/a'}",
+            f"- Generation time: {metadata.get('generation_time_seconds') or 'n/a'}",
+            "",
+            "## Notes",
+            "",
+            "This is a heuristic Roblox-readiness check, not official Roblox validation. Import the asset into Roblox Studio, check scale, materials, collision, and runtime performance before using it in a game.",
+            "",
+            metadata.get("license_note", LICENSE_NOTE),
+            "",
+        ]
+    )

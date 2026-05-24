@@ -26,9 +26,9 @@
       <div>
         <h1>Can Cube 3D run on a 6GB laptop GPU? I built CubeLite to find out.</h1>
         <p>
-          CubeLite Studio runs Cube 3D locally, logs VRAM and timing, renders OBJ files from a few angles,
-          and puts the files into a folder that is easier to test in Roblox Studio. It does not include model
-          weights. It is not an official Roblox tool.
+          CubeLite Studio runs Cube 3D locally, logs VRAM and timing, checks mesh quality, rebuilds weak prop
+          geometry when a repair template exists, and packages the recommended OBJ for Roblox Studio testing.
+          It does not include model weights. It is not an official Roblox tool.
         </p>
       </div>
       <dl class="run-card">
@@ -46,7 +46,7 @@
         </div>
         <div>
           <dt>Status</dt>
-          <dd>Runs locally; assets still need cleanup</dd>
+          <dd>Local runner + export workflow</dd>
         </div>
       </dl>
     </section>
@@ -72,11 +72,15 @@
         </article>
         <article>
           <h3>Mesh inspection</h3>
-          <p>Each mesh gets front, side, back, top, and 3/4 renders. One nice angle is not enough.</p>
+          <p>Each mesh gets multi-angle renders and geometry checks. One nice angle is not enough for game assets.</p>
         </article>
         <article>
           <h3>Candidate curation</h3>
           <p>Quality search runs several seeds, scores geometry, caps weak candidates, and writes a curation report before anything is treated as a showcase output.</p>
+        </article>
+        <article>
+          <h3>Repair exports</h3>
+          <p>For supported props, CubeLite can create a rebuilt mesh and mark <code>roblox_import_this.obj</code> as the recommended import file.</p>
         </article>
       </div>
     </section>
@@ -132,9 +136,16 @@
     <section id="meshes" class="section">
       <div class="section-title">
         <h2>Current meshes</h2>
-        <p>These are not finished Roblox assets. They are the best outputs I have locally right now.</p>
+        <p>Real local outputs plus CubeLite finishing artifacts. Raw generations still get reviewed before they are treated as examples.</p>
       </div>
       <div class="mesh-grid">
+        <article class="mesh-card mesh-card-wide">
+          <img src="assets/fantasy-sword-plate.png" alt="Showcase render of a rebuilt crystal fantasy longsword asset">
+          <div>
+            <h3>Crystal fantasy longsword</h3>
+            <p>Rebuilt from the weak sword path into a full-length Roblox-style prop: long crystal blade, gold guard, wrapped grip, gems, and a recommended OBJ export.</p>
+          </div>
+        </article>
         <article class="mesh-card">
           <img src="assets/chest-quality-plate.png" alt="Multi-angle render plate of a Cube 3D treasure chest candidate">
           <div>
@@ -161,13 +172,6 @@
           <div>
             <h3>Style materials</h3>
             <p>Style presets change both prompt wording and material output, so toy, sci-fi, and fantasy assets do not share one generic texture look.</p>
-          </div>
-        </article>
-        <article class="mesh-card">
-          <img src="assets/fantasy-sword-plate.png" alt="Multi-angle render plate of a Cube 3D fantasy sword candidate">
-          <div>
-            <h3>Fantasy sword</h3>
-            <p>The shape is recognizable, but it needs scale checks and surface cleanup before I would call it done.</p>
           </div>
         </article>
         <article class="mesh-card">
