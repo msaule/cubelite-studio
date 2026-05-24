@@ -31,6 +31,7 @@ def assess_geometry_quality(prompt: str, mesh_stats: dict[str, object] | None) -
     file_size_mb = _float(mesh_stats.get("file_size_mb"))
     object_count = _int(mesh_stats.get("object_count"))
     bbox = _bbox(mesh_stats.get("bounding_box_dimensions"))
+    archetype = _prompt_archetype(prompt)
     aspect_ratio = None
     flatness_ratio = None
 
@@ -61,7 +62,17 @@ def assess_geometry_quality(prompt: str, mesh_stats: dict[str, object] | None) -
         dims = [max(value, 1e-6) for value in bbox]
         aspect_ratio = max(dims) / min(dims)
         flatness_ratio = min(dims) / max(dims)
-        if aspect_ratio <= 4.5:
+        if archetype == "sword":
+            if 4.0 <= aspect_ratio <= 28.0:
+                score += 6
+                strengths.append("Sword proportions are allowed to be long and thin.")
+            elif aspect_ratio < 4.0:
+                score -= 12
+                warnings.append("Sword mesh is too squat; it may read like a knife, dagger, or chunky shard.")
+            else:
+                score -= 8
+                warnings.append("Sword mesh is extremely thin; inspect edge depth before using it.")
+        elif aspect_ratio <= 4.5:
             score += 8
             strengths.append("Bounding box proportions are stable.")
         elif aspect_ratio <= 8:
@@ -105,7 +116,7 @@ def assess_geometry_quality(prompt: str, mesh_stats: dict[str, object] | None) -
             "object_count": object_count,
             "aspect_ratio": round(aspect_ratio, 3) if aspect_ratio is not None else None,
             "flatness_ratio": round(flatness_ratio, 3) if flatness_ratio is not None else None,
-            "archetype": _prompt_archetype(prompt),
+            "archetype": archetype,
         },
     )
 
@@ -126,7 +137,28 @@ def _prompt_shape_score(prompt: str, dims: list[float], warnings: list[str], str
         else:
             score -= 12
             warnings.append("Prompt asks for a box-like prop but the mesh proportions are stretched.")
-    elif archetype in {"sword", "sign"}:
+    elif archetype == "sword":
+        width_to_length = middle / longest
+        thickness_to_length = shortest / longest
+        if aspect >= 3.0:
+            score += 8
+            strengths.append("Prompt asks for an elongated object and the mesh reads elongated.")
+        else:
+            score -= 12
+            warnings.append("Prompt asks for an elongated object but the mesh is too chunky.")
+        if 0.20 <= width_to_length <= 0.56 and thickness_to_length <= 0.12:
+            score += 10
+            strengths.append("Sword silhouette has a long blade profile with readable guard width.")
+        elif width_to_length > 0.62:
+            score -= 16
+            warnings.append("Sword is too broad relative to its length; it may read like a dagger or short fantasy blade.")
+        elif width_to_length < 0.12:
+            score -= 8
+            warnings.append("Sword is too narrow in silhouette; guard or blade shape may be hard to read.")
+        if thickness_to_length > 0.18:
+            score -= 8
+            warnings.append("Sword appears too thick relative to length; inspect scale and side profile.")
+    elif archetype == "sign":
         if aspect >= 3.0:
             score += 8
             strengths.append("Prompt asks for an elongated object and the mesh reads elongated.")

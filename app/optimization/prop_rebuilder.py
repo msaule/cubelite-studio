@@ -30,6 +30,7 @@ MATERIALS = {
     "gold_light": (1.00, 0.78, 0.34),
     "gold_shadow": (0.58, 0.34, 0.10),
     "gem_green": (0.12, 0.95, 0.46),
+    "gem_light": (0.58, 1.00, 0.72),
     "gem_dark": (0.04, 0.38, 0.20),
     "rune_purple": (0.58, 0.30, 1.00),
     "rune_pink": (1.00, 0.36, 0.78),
@@ -56,7 +57,8 @@ def rebuild_fantasy_sword(output_obj: Path) -> PropRebuildResult:
     _add_grip(builder)
     _add_guard(builder)
     _add_pommel(builder)
-    _add_diamond(builder, "gem_green", center=(0.0, -0.025, 0.074), radius=0.060, depth=0.024)
+    _add_diamond(builder, "gold_light", center=(0.0, -0.020, 0.088), radius=0.095, depth=0.012)
+    _add_diamond(builder, "gem_light", center=(0.0, -0.020, 0.104), radius=0.062, depth=0.025)
     _add_diamond(builder, "gem_dark", center=(0.0, -0.025, -0.074), radius=0.048, depth=0.018)
 
     _write_mtl(output_mtl)
@@ -82,103 +84,111 @@ class _ObjBuilder:
 
 
 def _add_fantasy_blade(builder: _ObjBuilder) -> None:
-    # Chunky, readable game-prop silhouette. Cube's raw sword generations often
-    # collapse into a spike; this proxy deliberately favors strong Roblox scale.
+    # Long fantasy-sword silhouette. Keep the blade readable at Roblox scale
+    # without letting the proportions collapse into a dagger.
     outline = [
-        (-0.260, 0.020),
-        (-0.375, 0.155),
-        (-0.315, 0.320),
-        (-0.255, 0.500),
-        (-0.225, 0.920),
-        (-0.160, 1.330),
-        (-0.075, 1.620),
-        (0.000, 1.820),
-        (0.075, 1.620),
-        (0.160, 1.330),
-        (0.225, 0.920),
-        (0.255, 0.500),
-        (0.315, 0.320),
-        (0.375, 0.155),
-        (0.260, 0.020),
+        (-0.205, 0.030),
+        (-0.340, 0.165),
+        (-0.285, 0.390),
+        (-0.250, 0.820),
+        (-0.215, 1.330),
+        (-0.162, 1.860),
+        (-0.095, 2.330),
+        (0.000, 2.620),
+        (0.095, 2.330),
+        (0.162, 1.860),
+        (0.215, 1.330),
+        (0.250, 0.820),
+        (0.285, 0.390),
+        (0.340, 0.165),
+        (0.205, 0.030),
     ]
-    _add_extruded_polygon(builder, "crystal_core", outline, half_depth=0.070)
+    _add_extruded_polygon(builder, "crystal_core", outline, half_depth=0.075)
     inner_left = [
-        (-0.045, 0.115),
-        (-0.205, 0.270),
-        (-0.175, 0.840),
-        (-0.105, 1.300),
-        (-0.030, 1.610),
-        (0.000, 1.705),
-        (0.000, 0.080),
+        (-0.040, 0.145),
+        (-0.180, 0.360),
+        (-0.165, 1.080),
+        (-0.115, 1.720),
+        (-0.048, 2.245),
+        (0.000, 2.470),
+        (0.000, 0.095),
     ]
     inner_right = [(-x, y) for x, y in reversed(inner_left)]
-    _add_surface_polygon(builder, "crystal_highlight", inner_left, z=0.078)
-    _add_surface_polygon(builder, "crystal_edge", inner_right, z=0.079)
-    _add_surface_polygon(builder, "crystal_shadow", inner_left, z=-0.078, reverse=True)
-    _add_surface_polygon(builder, "crystal_deep", inner_right, z=-0.079, reverse=True)
-    _add_raised_ridge(builder, y0=0.110, y1=1.665, z=0.090)
+    _add_surface_polygon(builder, "crystal_highlight", inner_left, z=0.084)
+    _add_surface_polygon(builder, "crystal_edge", inner_right, z=0.085)
+    _add_surface_polygon(builder, "crystal_shadow", inner_left, z=-0.084, reverse=True)
+    _add_surface_polygon(builder, "crystal_deep", inner_right, z=-0.085, reverse=True)
+    _add_raised_ridge(builder, y0=0.135, y1=2.380, z=0.096)
 
 
 def _add_blade_facets(builder: _ObjBuilder) -> None:
     _add_surface_polygon(
         builder,
         "crystal_shadow",
-        [(-0.285, 0.160), (-0.215, 0.315), (-0.175, 0.900), (-0.105, 1.345), (-0.045, 1.560), (-0.122, 1.335), (-0.205, 0.300)],
-        z=0.086,
+        [(-0.255, 0.190), (-0.200, 0.420), (-0.170, 1.170), (-0.110, 1.860), (-0.048, 2.240), (-0.126, 1.840), (-0.205, 0.405)],
+        z=0.092,
     )
     _add_surface_polygon(
         builder,
         "crystal_highlight",
-        [(0.285, 0.160), (0.215, 0.315), (0.175, 0.900), (0.105, 1.345), (0.045, 1.560), (0.122, 1.335), (0.205, 0.300)],
-        z=0.087,
+        [(0.255, 0.190), (0.200, 0.420), (0.170, 1.170), (0.110, 1.860), (0.048, 2.240), (0.126, 1.840), (0.205, 0.405)],
+        z=0.093,
         reverse=True,
     )
-    _add_oriented_box_xy(builder, "crystal_deep", (-0.060, 0.185), (-0.022, 1.280), half_width=0.010, half_depth=0.092)
-    _add_oriented_box_xy(builder, "crystal_deep", (0.060, 0.185), (0.022, 1.280), half_width=0.010, half_depth=0.092)
-    _add_oriented_box_xy(builder, "crystal_highlight", (0.000, 0.170), (0.000, 1.565), half_width=0.009, half_depth=0.102)
+    _add_oriented_box_xy(builder, "crystal_deep", (-0.055, 0.215), (-0.018, 1.950), half_width=0.010, half_depth=0.098)
+    _add_oriented_box_xy(builder, "crystal_deep", (0.055, 0.215), (0.018, 1.950), half_width=0.010, half_depth=0.098)
+    _add_oriented_box_xy(builder, "crystal_highlight", (0.000, 0.200), (0.000, 2.340), half_width=0.009, half_depth=0.108)
     for y, radius, material in (
-        (0.355, 0.030, "rune_purple"),
-        (0.610, 0.026, "rune_pink"),
-        (0.875, 0.030, "rune_purple"),
-        (1.145, 0.024, "rune_pink"),
+        (0.470, 0.030, "rune_purple"),
+        (0.820, 0.026, "rune_pink"),
+        (1.180, 0.030, "rune_purple"),
+        (1.540, 0.026, "rune_pink"),
+        (1.900, 0.024, "rune_purple"),
     ):
         _add_diamond(builder, material, center=(0.0, y, 0.106), radius=radius, depth=0.010)
+    for y, material in ((0.650, "rune_pink"), (1.360, "rune_purple"), (2.045, "rune_pink")):
+        _add_oriented_box_xy(builder, material, (-0.082, y), (0.082, y + 0.018), half_width=0.006, half_depth=0.111)
 
 
 def _add_blade_socket(builder: _ObjBuilder) -> None:
-    _add_box(builder, "metal_edge", (-0.205, -0.020, -0.092), (0.205, 0.105, 0.092))
+    _add_box(builder, "metal_edge", (-0.185, -0.020, -0.098), (0.185, 0.105, 0.098))
     _add_box(builder, "gold_shadow", (-0.155, -0.070, -0.098), (0.155, 0.010, 0.098))
-    _add_diamond(builder, "gem_green", center=(0.0, 0.045, 0.105), radius=0.066, depth=0.026)
+    _add_diamond(builder, "gold_light", center=(0.0, 0.045, 0.105), radius=0.070, depth=0.014)
+    _add_diamond(builder, "gem_green", center=(0.0, 0.045, 0.124), radius=0.046, depth=0.020)
 
 
 def _add_grip(builder: _ObjBuilder) -> None:
-    _add_octagonal_prism(builder, "leather", y0=-0.76, y1=0.030, radius_x=0.080, radius_z=0.060, sides=12)
-    for index, y in enumerate((-0.675, -0.555, -0.435, -0.315, -0.195, -0.075)):
+    _add_octagonal_prism(builder, "leather", y0=-0.94, y1=0.030, radius_x=0.076, radius_z=0.058, sides=12)
+    for index, y in enumerate((-0.835, -0.700, -0.565, -0.430, -0.295, -0.160, -0.055)):
         slant = 0.055 if index % 2 == 0 else -0.055
         _add_oriented_box_xy(builder, "gold_shadow", (-0.105, y - 0.032), (0.105, y + slant), half_width=0.020, half_depth=0.070)
-    _add_octagonal_prism(builder, "grip_wrap", y0=-0.800, y1=-0.750, radius_x=0.106, radius_z=0.074, sides=12)
+    _add_octagonal_prism(builder, "grip_wrap", y0=-0.980, y1=-0.930, radius_x=0.102, radius_z=0.074, sides=12)
     _add_octagonal_prism(builder, "grip_wrap", y0=0.000, y1=0.055, radius_x=0.108, radius_z=0.074, sides=12)
 
 
 def _add_guard(builder: _ObjBuilder) -> None:
-    _add_box(builder, "metal_mid", (-0.240, -0.075, -0.102), (0.240, 0.065, 0.102))
-    left_wing = [(-0.920, -0.175), (-0.710, -0.030), (-0.370, 0.055), (-0.150, 0.025), (-0.245, -0.120), (-0.620, -0.280)]
+    _add_box(builder, "metal_mid", (-0.220, -0.075, -0.106), (0.220, 0.065, 0.106))
+    left_wing = [(-0.760, -0.120), (-0.620, 0.010), (-0.330, 0.060), (-0.145, 0.025), (-0.230, -0.115), (-0.550, -0.225)]
     right_wing = [(-x, y) for x, y in reversed(left_wing)]
     _add_extruded_polygon(builder, "gold", left_wing, half_depth=0.080)
     _add_extruded_polygon(builder, "gold", right_wing, half_depth=0.080)
-    _add_surface_polygon(builder, "gold_light", [(-0.760, -0.160), (-0.645, -0.072), (-0.330, 0.020), (-0.250, -0.025), (-0.575, -0.190)], z=0.088)
-    _add_surface_polygon(builder, "gold_light", [(0.760, -0.160), (0.645, -0.072), (0.330, 0.020), (0.250, -0.025), (0.575, -0.190)], z=0.088, reverse=True)
-    _add_diamond(builder, "gold_shadow", center=(-0.920, -0.180, 0.0), radius=0.082, depth=0.060)
-    _add_diamond(builder, "gold_shadow", center=(0.920, -0.180, 0.0), radius=0.082, depth=0.060)
-    _add_diamond(builder, "gem_green", center=(-0.460, -0.065, 0.095), radius=0.042, depth=0.016)
-    _add_diamond(builder, "gem_green", center=(0.460, -0.065, 0.095), radius=0.042, depth=0.016)
+    _add_surface_polygon(builder, "gold_light", [(-0.650, -0.095), (-0.545, -0.030), (-0.315, 0.025), (-0.240, -0.018), (-0.505, -0.155)], z=0.088)
+    _add_surface_polygon(builder, "gold_light", [(0.650, -0.095), (0.545, -0.030), (0.315, 0.025), (0.240, -0.018), (0.505, -0.155)], z=0.088, reverse=True)
+    _add_oriented_box_xy(builder, "gold_shadow", (-0.650, -0.130), (-0.275, -0.018), half_width=0.012, half_depth=0.096)
+    _add_oriented_box_xy(builder, "gold_shadow", (0.275, -0.018), (0.650, -0.130), half_width=0.012, half_depth=0.096)
+    _add_oriented_box_xy(builder, "gold_light", (-0.560, -0.060), (-0.260, 0.018), half_width=0.008, half_depth=0.102)
+    _add_oriented_box_xy(builder, "gold_light", (0.260, 0.018), (0.560, -0.060), half_width=0.008, half_depth=0.102)
+    _add_diamond(builder, "gold_shadow", center=(-0.765, -0.125, 0.0), radius=0.070, depth=0.060)
+    _add_diamond(builder, "gold_shadow", center=(0.765, -0.125, 0.0), radius=0.070, depth=0.060)
+    _add_diamond(builder, "gem_green", center=(-0.390, -0.045, 0.095), radius=0.038, depth=0.016)
+    _add_diamond(builder, "gem_green", center=(0.390, -0.045, 0.095), radius=0.038, depth=0.016)
 
 
 def _add_pommel(builder: _ObjBuilder) -> None:
-    _add_octagonal_prism(builder, "gold", y0=-0.930, y1=-0.760, radius_x=0.135, radius_z=0.084, sides=8)
-    _add_octagonal_prism(builder, "gold_light", y0=-0.870, y1=-0.815, radius_x=0.170, radius_z=0.096, sides=8)
-    _add_diamond(builder, "gem_green", center=(0.0, -0.845, 0.103), radius=0.048, depth=0.018)
-    _add_diamond(builder, "gold_shadow", center=(0.0, -1.075, 0.0), radius=0.130, depth=0.078)
+    _add_octagonal_prism(builder, "gold", y0=-1.110, y1=-0.940, radius_x=0.122, radius_z=0.082, sides=8)
+    _add_octagonal_prism(builder, "gold_light", y0=-1.050, y1=-0.995, radius_x=0.150, radius_z=0.094, sides=8)
+    _add_diamond(builder, "gem_green", center=(0.0, -1.020, 0.102), radius=0.044, depth=0.018)
+    _add_diamond(builder, "gold_shadow", center=(0.0, -1.255, 0.0), radius=0.120, depth=0.078)
 
 
 def _add_box(builder: _ObjBuilder, material: str, mins: tuple[float, float, float], maxs: tuple[float, float, float]) -> None:

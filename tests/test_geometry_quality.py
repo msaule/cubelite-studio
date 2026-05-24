@@ -41,3 +41,37 @@ def test_geometry_quality_rejects_failed_mesh() -> None:
 
     assert report.score == 0
     assert report.status == "reject"
+
+
+def test_geometry_quality_accepts_long_thin_sword() -> None:
+    report = assess_geometry_quality(
+        "full length crystal fantasy sword",
+        {
+            "success": True,
+            "triangle_count": 2200,
+            "file_size_mb": 0.8,
+            "object_count": 3,
+            "bounding_box_dimensions": (1.6, 4.0, 0.24),
+            "warnings": [],
+        },
+    )
+
+    assert report.status == "showcase_candidate"
+    assert not any("extremely stretched" in warning for warning in report.warnings)
+    assert any("long blade profile" in strength for strength in report.strengths)
+
+
+def test_geometry_quality_flags_dagger_like_sword() -> None:
+    report = assess_geometry_quality(
+        "crystal fantasy sword",
+        {
+            "success": True,
+            "triangle_count": 2200,
+            "file_size_mb": 0.8,
+            "object_count": 3,
+            "bounding_box_dimensions": (2.2, 3.0, 0.22),
+            "warnings": [],
+        },
+    )
+
+    assert any("dagger" in warning for warning in report.warnings)
