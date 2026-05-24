@@ -12,6 +12,8 @@ Roblox Cube 3D is an open-source 3D generation model designed for text-to-shape 
 
 The goal is not to claim ownership of Cube 3D, retrain a foundation model, or present a fake compatibility layer. The goal is a technically honest case study: test Cube 3D on consumer hardware, identify practical bottlenecks, and make the output easier to measure and prepare for Roblox Studio.
 
+For a shorter reviewer-facing overview, see [PRODUCT_BRIEF.md](PRODUCT_BRIEF.md).
+
 ## Key Features
 
 - Streamlit local app for generation, benchmarks, system checks, settings, and results.
@@ -192,6 +194,8 @@ Export packages are written to `exports/sanitized-prompt-timestamp/` and include
 - `inspection_plate.png` when multi-angle rendering succeeds
 - `finish_report.json` with UV unwrap and texture generation details
 - `metadata.json`
+- `roblox_import_this.obj`, the recommended first file to test in Roblox Studio
+- `asset_readme.md`, a short review note with prompt, stats, readiness, and import caveats
 - `roblox_import_notes.txt`
 - `benchmark_summary.json`
 
